@@ -1,16 +1,76 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Hub Management System</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NSBM Sports Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-    <h1>Welcome to Sports Hub</h1>
-    <p>Your complete sports management system.</p>
-    <script src="script.js"></script>
+  <!-- Main navigation -->
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="NSBM SportsHub home">
+      <img class="brand-logo" src="assets/nsbm.jpg" alt="NSBM SportsHub logo">
+      <span class="brand-text">NSBM SPORTS HUB</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="index.html">Home</a>
+      <a href="clubs.html">Clubs</a>
+      <a href="fixtures.html">Events</a>
+      <a href="#announcements">Announcements</a>
+      <a class="btn btn-small" href="login.html">Sign in</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Color theme">
+      <button class="theme-button" type="button" data-theme-choice="light" aria-label="Use light theme" title="Light theme" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+      <button class="theme-button" type="button" data-theme-choice="dark" aria-label="Use dark theme" title="Dark theme" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Introduction -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Every Match <span class="muted">Builds Future</span>  Champions</h1>
+        <p>NSBM SportsHub brings every university sports club together: memberships, schedules, fixtures and results.</p>
+        <div class="hero-actions">
+          <a class="btn" href="clubs.html">Explore clubs</a>
+          <a class="btn btn-ghost" href="login.html">Sign in</a>
+        </div>
+        <p class="hero-note">New here? <a href="register.html">Create a student account</a></p>
+      </div>
+      <div class="hero-word" aria-hidden="true">CHAMPION</div>
+    </section>
+
+    <!-- Call to action -->
+    <section class="cta">
+      <h2>Ready to play?</h2>
+      <div class="hero-actions">
+        <a class="btn" href="clubs.html">Explore clubs</a>
+        <a class="btn btn-ghost" href="login.html">Sign in</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+     <div class="social">
+  <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+  <a href="https://web.facebook.com/nsbm.lk/?_rdc=1&_rdr#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+  <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+  <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+     </div>
+  <p>&#169; 2026 NSBM  <b>GROUP-28</b>. All Rights Reserved.</p>
+ </footer>
+  <script src="js/theme.js" defer></script>
+  <script src="js/ass11widgets.js" defer></script>
 </body>
 </html>
