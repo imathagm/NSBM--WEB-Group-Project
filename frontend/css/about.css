@@ -1,64 +1,34 @@
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #0a221a; color: white; }
 
-:root{
-    --deep-green: #173D2B;
-    --leaf-green: #477A50;
-    --moss-green: #71866A;
-    --soft-sage: #C5D4BE;
-    --natural-white: #F5F5EF;
-    --charcoal: #26332B;
-}
+/* HEADER */
+.main-header { background:#0f3428; padding:15px 80px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1a4d3a; position:sticky; top:0; z-index:100; }
+.logo { font-weight:800; font-size:22px; color:#a3ff5a; } .logo span { color:white; }
+.main-header nav a { color:#ccc; margin-left:25px; text-decoration:none; transition:0.3s; }
+.main-header nav a:hover, .main-header nav a.active { color:#a3ff5a; }
 
-*{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
-body{background: var(--natural-white); color: var(--charcoal);}
+/* HERO */
+.about-hero { display:flex; padding:80px; gap:50px; align-items:center; background: linear-gradient(to right, #0f3428, #0a221a); }
+.hero-text h1 { font-size:48px; color:#a3ff5a; margin-bottom:15px; }
+.hero-text p { color:#b0c4b8; line-height:1.6; font-size:16px; margin-bottom:30px; max-width:500px; }
+.hero-stats { display:flex; gap:40px; } .hero-stats h3 { color:#a3ff5a; font-size:28px; } .hero-stats span { color:#aaa; font-size:13px; }
+.hero-image img { width:450px; height:300px; object-fit:cover; border-radius:20px; border:2px solid #1a4d3a; }
 
-.navbar{
-    background: var(--deep-green);
-    color: white;
-    padding: 15px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.logo{font-weight:bold; font-size:20px;}
-.nav-links{list-style:none; display:flex; gap:25px;}
-.nav-links a{color:white; text-decoration:none; opacity:0.8;}
-.nav-links a.active, .nav-links a:hover{opacity:1; border-bottom:2px solid var(--leaf-green);}
+/* CLUBS */
+.clubs-section { padding:60px 80px; } .clubs-section h2 { text-align:center; color:#a3ff5a; font-size:32px; margin-bottom:40px; }
+.clubs-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; }
+.club-card { background:#132f24; border:1px solid #1e4a35; border-radius:12px; overflow:hidden; text-align:center; transition:0.3s; cursor:pointer; }
+.club-card:hover { transform:translateY(-5px); border-color:#a3ff5a; box-shadow:0 10px 20px rgba(163,255,90,0.15); }
+.club-card img { width:100%; height:140px; object-fit:cover; } .club-card h4 { padding:12px; color:#e0e0e0; font-weight:600; }
 
-.hero{
-    background: var(--deep-green);
-    color: var(--natural-white);
-    text-align:center;
-    padding:80px 20px;
-}
-.hero h1{font-size:42px;}
-.hero p{color: var(--soft-sage); margin-top:10px; font-size:18px;}
+/* FOOTER */
+.main-footer { background: #0f3428; padding: 30px 80px; position: relative; border-top: 1px solid #1a4d3a; }
+.footer-content { display: flex; flex-direction: column; gap: 15px; }
+.social-icons { display: flex; gap: 12px; }
+.social-icons a { width: 40px; height: 40px; border: 1px solid rgba(160, 255, 120, 0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #a3ff5a; text-decoration: none; font-size: 18px; transition: 0.3s; }
+.social-icons a:hover { background: #a3ff5a; color: #0f3428; }
+.copyright { color: #7ed321; font-size: 14px; opacity: 0.9; }
+.accessibility-btn { position: absolute; right: 30px; bottom: 25px; width: 50px; height: 50px; background: #7ed321; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; border: 2px solid white; cursor: pointer; }
 
-.main-bg{padding:50px; max-width:1100px; margin:auto;}
-.card{
-    background: var(--soft-sage);
-    padding:30px;
-    border-radius:12px;
-    margin-bottom:25px;
-}
-.card h2{color: var(--deep-green); margin-bottom:10px;}
-.two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
-
-.facilities{text-align:center; margin-top:40px;}
-.facilities h2{color: var(--deep-green); margin-bottom:20px;}
-.btn{
-    background: var(--leaf-green);
-    color:white;
-    padding:12px 30px;
-    border-radius:25px;
-    text-decoration:none;
-    display:inline-block;
-    font-weight:bold;
-}
-.btn:hover{background: var(--deep-green);}
-.footer{
-    background: var(--deep-green);
-    color: var(--soft-sage);
-    text-align:center;
-    padding:20px;
-    margin-top:50px;
-}
+/* RESPONSIVE */
+@media(max-width:768px){ .about-hero{flex-direction:column; padding:30px;} .hero-image img{width:100%;} .clubs-grid{grid-template-columns: repeat(2,1fr);} .main-header,.clubs-section,.main-footer{padding:20px;} }
