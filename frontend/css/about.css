@@ -1,0 +1,56 @@
+:root{
+  --deep-green:#0a1f14;
+  --lime:#8fe04f;
+  --glass: rgba(255,255,255,0.08);
+}
+
+body{ background: var(--deep-green); color:white; font-family:'Segoe UI',sans-serif; margin:0; }
+
+.navbar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 50px; background:rgba(0,0,0,0.3); backdrop-filter:blur(10px);
+  position:sticky; top:0; z-index:10;
+}
+.logo{display:flex; align-items:center; gap:10px; font-weight:900; color:var(--lime); font-size:22px;}
+.nav-links a{ color:white; text-decoration:none; margin:0 15px; }
+.btn-sign{ background:white; color:black !important; padding:8px 18px; border-radius:20px; font-weight:600; }
+
+.about-hero{
+  height:85vh; display:flex; align-items:center; padding:0 80px;
+  background: linear-gradient(90deg, #05100b 30%, rgba(5,16,11,0.2) 100%), url('../assets/sports/football.jpg');
+  background-size:cover; background-position:center;
+  position:relative; overflow:hidden;
+}
+.about-hero h1{ font-size:68px; line-height:1.1; font-weight:900; margin:0; }
+.about-hero h1 span{ color:#c2e8ff; }
+.about-hero p{ color:#cbd5d1; max-width:420px; margin-top:20px; font-size:16px; line-height:1.6; }
+
+.hero-cards{ display:flex; gap:20px; position:absolute; right:8%; bottom:10%; }
+.h-card{
+  width:180px; height:260px; border-radius:20px;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(143,224,79,0.3);
+  backdrop-filter:blur(5px);
+}
+.h-card.active{ height:320px; transform:translateY(-40px); background:rgba(255,255,255,0.12); }
+
+.about-section{ padding:80px; }
+.about-grid{ display:grid; grid-template-columns:1.2fr 0.8fr; gap:60px; align-items:center; }
+.section-title{ font-size:36px; color:var(--lime); }
+.stats-row{ display:flex; gap:40px; margin-top:30px; }
+.stats-row h3{ font-size:32px; color:var(--lime); margin:0; }
+.stats-row span{ color:#aaa; font-size:14px; }
+.about-img-box{ height:350px; border-radius:24px; background:linear-gradient(135deg, #1a3d2a, #0a1f14); position:relative; }
+.green-glow{ position:absolute; width:200px; height:200px; background:var(--lime); filter:blur(80px); opacity:0.4; top:-20px; right:-20px; }
+
+.sports-we-do{ padding:40px 80px 80px; background:#081a11; }
+.center-title{ text-align:center; font-size:38px; margin-bottom:40px; }
+.sport-cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.s-card{
+  background:var(--glass); border:1px solid rgba(255,255,255,0.1);
+  padding:25px; border-radius:18px; transition:0.3s;
+}
+.s-card:hover{ transform:translateY(-8px); border-color:var(--lime); background:rgba(143,224,79,0.1); }
+.s-card h3{ margin:0 0 10px; }
+.s-card p{ color:#aaa; font-size:14px; }
+
+.about-footer{ text-align:center; padding:30px; color:#666; border-top:1px solid rgba(255,255,255,0.05); }
