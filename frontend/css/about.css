@@ -1,0 +1,64 @@
+
+:root{
+    --deep-green: #173D2B;
+    --leaf-green: #477A50;
+    --moss-green: #71866A;
+    --soft-sage: #C5D4BE;
+    --natural-white: #F5F5EF;
+    --charcoal: #26332B;
+}
+
+*{margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif;}
+body{background: var(--natural-white); color: var(--charcoal);}
+
+.navbar{
+    background: var(--deep-green);
+    color: white;
+    padding: 15px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo{font-weight:bold; font-size:20px;}
+.nav-links{list-style:none; display:flex; gap:25px;}
+.nav-links a{color:white; text-decoration:none; opacity:0.8;}
+.nav-links a.active, .nav-links a:hover{opacity:1; border-bottom:2px solid var(--leaf-green);}
+
+.hero{
+    background: var(--deep-green);
+    color: var(--natural-white);
+    text-align:center;
+    padding:80px 20px;
+}
+.hero h1{font-size:42px;}
+.hero p{color: var(--soft-sage); margin-top:10px; font-size:18px;}
+
+.main-bg{padding:50px; max-width:1100px; margin:auto;}
+.card{
+    background: var(--soft-sage);
+    padding:30px;
+    border-radius:12px;
+    margin-bottom:25px;
+}
+.card h2{color: var(--deep-green); margin-bottom:10px;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+
+.facilities{text-align:center; margin-top:40px;}
+.facilities h2{color: var(--deep-green); margin-bottom:20px;}
+.btn{
+    background: var(--leaf-green);
+    color:white;
+    padding:12px 30px;
+    border-radius:25px;
+    text-decoration:none;
+    display:inline-block;
+    font-weight:bold;
+}
+.btn:hover{background: var(--deep-green);}
+.footer{
+    background: var(--deep-green);
+    color: var(--soft-sage);
+    text-align:center;
+    padding:20px;
+    margin-top:50px;
+}
