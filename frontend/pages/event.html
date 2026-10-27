@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Events & Announcements | NSBM SportsHub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/event.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <a href="../index.html" class="logo">
+            <span class="logo-icon">S</span>
+            <span>Sports<span class="lime-text">Hub</span></span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="../index.html">Home</a>
+            <a href="#events" class="active">Events</a>
+            <a href="#announcements">Announcements</a>
+        </nav>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+            ☾
+        </button>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">NSBM GREEN UNIVERSITY</span>
+                <h1>Every Game.<br>Every <span class="lime-text">Moment.</span></h1>
+                <p>
+                    Stay updated with upcoming sports events, competitions,
+                    important notices, and everything happening at SportsHub.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#events" class="btn btn-primary">Explore Events ↗</a>
+                    <a href="#announcements" class="btn btn-outline">Latest Updates</a>
+                </div>
+            </div>
+
+            <div class="hero-card">
+                <div class="hero-symbol">🏆</div>
+                <p class="hero-card-label">CAMPUS SPORTS</p>
+                <h2>Be Part of the Action</h2>
+                <p>Discover. Participate. Achieve.</p>
+            </div>
+        </section>
+
+        <!-- Events -->
+        <section class="section" id="events">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">WHAT'S HAPPENING?</span>
+                    <h2>Upcoming <span class="lime-text">Events</span></h2>
+                    <p>Find your next campus sports experience.</p>
+                </div>
+
+                <span class="results-count" id="event-results-count">
+                    6 events
+                </span>
+            </div>
+
+            <form id="event-search-form" class="search-bar">
+                <label class="search-input-wrap">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="event-search"
+                        placeholder="Search events..."
+                        aria-label="Search events"
+                    >
+                </label>
+
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="button" id="clear-event-search" class="btn btn-outline">
+                    Clear
+                </button>
+            </form>
+
+            <div class="filter-list" aria-label="Filter events">
+                <button type="button" class="filter-btn active" data-event-filter="all">
+                    All Events
+                </button>
+                <button type="button" class="filter-btn" data-event-filter="tournament">
+                    Tournaments
+                </button>
+                <button type="button" class="filter-btn" data-event-filter="fitness">
+                    Fitness
+                </button>
+                <button type="button" class="filter-btn" data-event-filter="recreation">
+                    Recreation
+                </button>
+            </div>
+
+            <div class="event-grid" id="event-grid">
+
+                <article class="event-card" data-category="tournament">
+                    <div class="event-visual visual-football">
+                        <span class="event-category">Tournament</span>
+                        <span class="event-emoji">⚽</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Inter-Faculty Football</h3>
+                        <p>Bring your team spirit and compete with students from different faculties.</p>
+                        <div class="event-meta">
+                            <span>📍 Sports Ground</span>
+                            <span>👥 Team event</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Inter-Faculty Football"
+                            data-description="Bring your team spirit and compete with students from different faculties."
+                            data-date="Date to be announced"
+                            data-location="Sports Ground"
+                            data-category="Tournament">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+                <article class="event-card" data-category="fitness">
+                    <div class="event-visual visual-fitness">
+                        <span class="event-category">Fitness</span>
+                        <span class="event-emoji">🏃</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Campus Fitness Challenge</h3>
+                        <p>Challenge yourself, stay active, and build healthy habits with fellow students.</p>
+                        <div class="event-meta">
+                            <span>📍 Campus</span>
+                            <span>💪 All levels</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Campus Fitness Challenge"
+                            data-description="Challenge yourself, stay active, and build healthy habits with fellow students."
+                            data-date="Date to be announced"
+                            data-location="Campus"
+                            data-category="Fitness">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+                <article class="event-card" data-category="tournament">
+                    <div class="event-visual visual-cricket">
+                        <span class="event-category">Tournament</span>
+                        <span class="event-emoji">🏏</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Inter-Faculty Cricket</h3>
+                        <p>Enjoy the excitement of cricket and support your faculty team.</p>
+                        <div class="event-meta">
+                            <span>📍 Cricket Ground</span>
+                            <span>👥 Team event</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Inter-Faculty Cricket"
+                            data-description="Enjoy the excitement of cricket and support your faculty team."
+                            data-date="Date to be announced"
+                            data-location="Cricket Ground"
+                            data-category="Tournament">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+                <article class="event-card" data-category="recreation">
+                    <div class="event-visual visual-badminton">
+                        <span class="event-category">Recreation</span>
+                        <span class="event-emoji">🏸</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Badminton Meetup</h3>
+                        <p>Meet new people and enjoy a friendly game in a welcoming environment.</p>
+                        <div class="event-meta">
+                            <span>📍 Indoor Courts</span>
+                            <span>🤝 Friendly play</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Badminton Meetup"
+                            data-description="Meet new people and enjoy a friendly game in a welcoming environment."
+                            data-date="Date to be announced"
+                            data-location="Indoor Courts"
+                            data-category="Recreation">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+                <article class="event-card" data-category="fitness">
+                    <div class="event-visual visual-yoga">
+                        <span class="event-category">Fitness</span>
+                        <span class="event-emoji">🧘</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Mind & Body Session</h3>
+                        <p>Take a break from academic stress with movement, stretching, and relaxation.</p>
+                        <div class="event-meta">
+                            <span>📍 Activity Area</span>
+                            <span>🌿 Wellness</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Mind & Body Session"
+                            data-description="Take a break from academic stress with movement, stretching, and relaxation."
+                            data-date="Date to be announced"
+                            data-location="Activity Area"
+                            data-category="Fitness">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+                <article class="event-card" data-category="recreation">
+                    <div class="event-visual visual-games">
+                        <span class="event-category">Recreation</span>
+                        <span class="event-emoji">🎯</span>
+                    </div>
+                    <div class="event-content">
+                        <p class="event-date">DATE TO BE ANNOUNCED</p>
+                        <h3>Sports & Recreation Day</h3>
+                        <p>Enjoy fun activities, friendly challenges, and memorable campus moments.</p>
+                        <div class="event-meta">
+                            <span>📍 University Campus</span>
+                            <span>🎉 Open activities</span>
+                        </div>
+                        <button class="event-details-btn" type="button"
+                            data-title="Sports & Recreation Day"
+                            data-description="Enjoy fun activities, friendly challenges, and memorable campus moments."
+                            data-date="Date to be announced"
+                            data-location="University Campus"
+                            data-category="Recreation">
+                            View Details ↗
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="empty-state" id="event-empty-state" hidden>
+                <span>🔎</span>
+                <h3>No events found</h3>
+                <p>Try another keyword or choose a different category.</p>
+            </div>
+        </section>
+
+        <!-- Announcements -->
+        <section class="section announcements-section" id="announcements">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">DON'T MISS OUT</span>
+                    <h2>Latest <span class="lime-text">Announcements</span></h2>
+                    <p>Important information for the SportsHub community.</p>
+                </div>
+            </div>
+
+            <div class="announcement-list">
+                <article class="announcement-card">
+                    <div class="announcement-icon">📢</div>
+                    <div>
+                        <span class="announcement-tag">General Notice</span>
+                        <h3>Stay Updated with SportsHub</h3>
+                        <p>Check this page regularly for official event dates, registration information, and sports updates.</p>
+                        <span class="announcement-date">General information</span>
+                    </div>
+                </article>
+
+                <article class="announcement-card">
+                    <div class="announcement-icon">📝</div>
+                    <div>
+                        <span class="announcement-tag">Registration</span>
+                        <h3>Event Registration Information</h3>
+                        <p>Follow the official university announcements for confirmed registration links and participation requirements.</p>
+                        <span class="announcement-date">Check official updates</span>
+                    </div>
+                </article>
+
+                <article class="announcement-card">
+                    <div class="announcement-icon">🏅</div>
+                    <div>
+                        <span class="announcement-tag">Participation</span>
+                        <h3>Get Involved in Campus Sports</h3>
+                        <p>Explore sports and recreational activities, connect with fellow students, and participate in campus life.</p>
+                        <span class="announcement-date">For the student community</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Event details dialog -->
+        <dialog id="event-dialog" class="event-dialog">
+            <div class="dialog-header">
+                <span class="eyebrow">EVENT DETAILS</span>
+                <button type="button" id="close-event-dialog" class="dialog-close"
+                    aria-label="Close details">✕</button>
+            </div>
+            <span class="dialog-category" id="dialog-category"></span>
+            <h2 id="dialog-title"></h2>
+            <p id="dialog-description"></p>
+            <p><strong>Date:</strong> <span id="dialog-date"></span></p>
+            <p><strong>Location:</strong> <span id="dialog-location"></span></p>
+            <p class="dialog-note">Event dates and details should be confirmed through official university announcements.</p>
+            <button type="button" id="dialog-done" class="btn btn-primary">Close</button>
+        </dialog>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="../index.html" class="logo">
+            <span class="logo-icon">S</span>
+            <span>Sports<span class="lime-text">Hub</span></span>
+        </a>
+        <p>Connecting students through sports, teamwork, and campus life.</p>
+        <p class="copyright">© <span id="current-year"></span> NSBM SportsHub. Student project.</p>
+    </footer>
+
+    <script src="../js/event.js"></script>
+</body>
+</html>
