@@ -175,6 +175,7 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--medal); outline-o
   border-color: #9ca3af;
 }
 .social a:focus-visible { outline: 3px solid #9ca3af; outline-offset: 3px; }
+.site-footer__copyright { text-align: center; }
 
 /* Mobile */
 @media (max-width: 760px) {
