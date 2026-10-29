@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" role="img" aria-label="BADMINTON sports illustration">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#063b2a"/>
+    <stop offset="1" stop-color="#0b7950"/>
+  </linearGradient>
+  <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+    <path d="M50 0H0V50" fill="none" stroke="#ffffff" stroke-opacity=".07" stroke-width="2"/>
+  </pattern>
+</defs>
+<rect width="1200" height="600" fill="url(#bg)"/>
+<rect width="1200" height="600" fill="url(#grid)"/>
+<path d="M360 185l110 110" stroke="#f2d5a0" stroke-width="15" stroke-linecap="round"/><path d="M450 145l70 70-42 42-70-70z" fill="none" stroke="#f5f7ef" stroke-width="9"/><path d="M450 145l70 70M435 160l70 70M420 175l70 70" stroke="#f5f7ef" stroke-width="5"/><path d="M520 215l45 45" stroke="#f5f7ef" stroke-width="7"/>
+<text x="65" y="525" fill="#ffffff" font-family="Arial,sans-serif" font-size="42" font-weight="700" letter-spacing="8" opacity=".88">BADMINTON</text>
+<text x="68" y="560" fill="#c5f36b" font-family="Arial,sans-serif" font-size="18" letter-spacing="5">NSBM SPORTS HUB</text>
+</svg>
