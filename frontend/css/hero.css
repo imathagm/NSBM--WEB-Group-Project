@@ -1,0 +1,67 @@
+/* Hero-specific styles layered over the shared base styles. */
+
+/* Fixed header over the page */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 5;
+  background: rgba(7, 38, 23, 0.9); padding: 1.5rem 5vw;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+/* Pill navigation */
+.site-header nav {
+  gap: 0.25rem; padding: 0.4rem 0.5rem; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.site-header nav a:not(.btn) { padding: 0.45rem 0.9rem; border-radius: 999px; color: #fff; text-decoration: none; }
+.site-header nav a:not(.btn):hover { background: rgba(255, 255, 255, 0.12); text-decoration: none; }
+.site-header .btn-small { background: #fff; color: var(--turf-dark); border-radius: 999px; padding: 0.45rem 1.1rem; }
+.site-header .btn-small:hover { background: var(--chalk); }
+
+/* Full-screen hero */
+.hero {
+  position: relative; display: flex; align-items: center; overflow: hidden;
+  min-height: 100vh; padding: 8rem 5vw 7rem;
+  background-color: #0b3a24;
+  background-image:
+    linear-gradient(90deg, rgba(7, 38, 23, 0.96) 0%, rgba(7, 38, 23, 0.72) 42%, rgba(7, 38, 23, 0.2) 100%),
+    radial-gradient(ellipse at 70% 40%, rgba(40, 120, 80, 0.35), transparent 60%),
+    url("../assets/hero.jpg");
+  background-size: cover; background-position: center right;
+}
+/* thin frame lines behind the player, like the reference */
+.hero::before {
+  content: ""; position: absolute; top: 18%; right: 8%; width: 20%; height: 50%;
+  border: 1px solid #477a15; border-radius:28px; pointer-events: none;
+}
+.hero::after {
+  content: ""; position: absolute; top: 24%; right: 18%; width: 20%; height: 50%;
+  border: 1px solid #477a15; border-radius: 28px; pointer-events: none;
+}
+
+.hero-text { position: relative; z-index: 2; max-width: 34rem; }
+.hero h1 .muted { color: #8fa99a; }
+.hero-text p { max-width: 30ch; margin: 1.5rem 0 2rem; color: #cfdcd4; }
+
+.hero .btn { background: #fff; color: var(--turf-dark); border-radius: 999px; padding: 0.8rem 1.8rem; }
+.hero .btn:hover { background: var(--chalk); }
+.hero .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.5); }
+.hero .btn-ghost:hover { background: rgba(255, 255, 255, 0.12); }
+.hero-note { color: #cfdcd4; }
+.hero-text .hero-note { margin-top: 2rem; }
+
+/* Giant faded word at the bottom */
+.hero-word {
+  position: absolute; left: 0; right: 0; bottom: -0.12em; z-index: 1;
+  text-align: center; white-space: nowrap; pointer-events: none; user-select: none;
+  color: rgba(255, 255, 255, 0.16);
+  -webkit-mask-image: linear-gradient(to bottom, #000 25%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 25%, transparent 90%);
+}
+
+@media (max-width: 760px) {
+  .site-header { flex-direction: column; gap: 0.9rem; }
+  .site-header nav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; }
+  .site-header nav a:not(.btn) { padding: 0.4rem 0.6rem; white-space: nowrap; }
+  .hero { padding: 9rem 5vw 6rem; background-position: 70% center; }
+  .hero::before, .hero::after { display: none; }
+}
