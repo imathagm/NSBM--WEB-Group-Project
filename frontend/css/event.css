@@ -1,0 +1,611 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root {
+    --green: #075c3b;
+    --green-dark: #063b2a;
+    --green-deep: #032b1e;
+    --lime: #c5f36b;
+    --text: #18231e;
+    --muted: #68756e;
+    --page: #f5f8f5;
+    --border: #e2eae4;
+    --shadow: 0 14px 36px rgba(10, 49, 32, .09);
+}
+
+
+/* General Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Sans', Arial, sans-serif;
+    color: var(--text);
+    background: var(--page);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+
+/* Navigation Bar */
+
+.navbar {
+    min-height: 76px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--green-dark);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    color: white;
+    font: 800 1.2rem 'Manrope', sans-serif;
+    letter-spacing: .02em;
+}
+
+.logo span {
+    color: var(--lime);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: #e8f2eb;
+    font-weight: 600;
+    font-size: .94rem;
+    transition: color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--lime);
+}
+
+.menu-toggle {
+    display: none;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 1.7rem;
+    cursor: pointer;
+}
+
+
+/* Hero Section */
+
+.hero {
+    min-height: 470px;
+    padding: 70px 8%;
+    display: flex;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(2, 39, 27, .94),
+            rgba(2, 39, 27, .48)
+        ),
+        url('../assets/images/sports-banner.svg')
+        center/cover no-repeat;
+
+    color: white;
+}
+
+.hero-content {
+    max-width: 680px;
+}
+
+.eyebrow {
+    color: #8dbd53;
+    font-size: .76rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+}
+
+.hero .eyebrow {
+    color: var(--lime);
+}
+
+.hero h1 {
+    font: 800 clamp(2.5rem, 5vw, 4.3rem)/1.08 'Manrope', sans-serif;
+    margin: 16px 0;
+}
+
+.hero p {
+    color: #e0ebe4;
+    font-size: 1.12rem;
+    margin-bottom: 30px;
+    max-width: 540px;
+}
+
+
+/* Buttons */
+
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 13px 25px;
+    border-radius: 7px;
+    font-weight: 700;
+    border: 0;
+    cursor: pointer;
+    transition: transform .2s, background .2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    color: var(--green-deep);
+    background: var(--lime);
+}
+
+.btn-primary:hover {
+    background: white;
+}
+
+.btn-light {
+    background: white;
+    color: var(--green-dark);
+}
+
+
+/* Statistics */
+
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    padding: 0 7%;
+}
+
+.stat-box {
+    background: white;
+    text-align: center;
+    padding: 28px 12px;
+    display: grid;
+    gap: 3px;
+}
+
+.stat-box strong {
+    color: var(--green);
+    font: 800 2rem 'Manrope', sans-serif;
+}
+
+.stat-box span {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+
+/* Common Sections */
+
+.section {
+    padding: 82px 7%;
+}
+
+.section-heading {
+    text-align: center;
+    margin: 0 auto 34px;
+}
+
+.section-heading h2 {
+    color: var(--green-dark);
+    font: 800 clamp(1.8rem, 3vw, 2.5rem) 'Manrope', sans-serif;
+    margin: 7px 0;
+}
+
+.section-heading p {
+    color: var(--muted);
+}
+
+
+/* Search */
+
+.event-tools {
+    display: grid;
+    gap: 22px;
+    margin-bottom: 34px;
+}
+
+.search-box {
+    width: min(100%, 570px);
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 15px;
+    color: var(--green);
+}
+
+.search-box span {
+    font-size: 1.7rem;
+}
+
+.search-box input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    padding: 14px 0;
+    background: transparent;
+}
+
+
+/* Category Filters */
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 9px;
+}
+
+.filter-btn {
+    border: 1px solid #b9d4c3;
+    border-radius: 30px;
+    background: white;
+    color: var(--green);
+    padding: 9px 17px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+}
+
+
+/* Events Cards */
+
+.events-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.event-card,
+.past-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .25s, box-shadow .25s;
+}
+
+.event-card:hover,
+.past-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 42px rgba(10, 49, 32, .14);
+}
+
+.event-card > img {
+    width: 100%;
+    height: 190px;
+    display: block;
+    object-fit: cover;
+    background: #dce9df;
+}
+
+.event-details {
+    padding: 21px;
+}
+
+.event-category {
+    display: inline-block;
+    color: var(--green);
+    background: #edf7e8;
+    border-radius: 20px;
+    padding: 5px 11px;
+    font-size: .75rem;
+    font-weight: 700;
+    margin-bottom: 11px;
+}
+
+.event-details h3 {
+    color: var(--green-dark);
+    font: 700 1.15rem 'Manrope', sans-serif;
+    margin-bottom: 12px;
+}
+
+.event-meta {
+    display: grid;
+    gap: 6px;
+    color: var(--muted);
+    font-size: .88rem;
+    margin-bottom: 12px;
+}
+
+.event-details > p {
+    color: var(--muted);
+    font-size: .9rem;
+    min-height: 46px;
+}
+
+.register-btn {
+    width: 100%;
+    margin-top: 17px;
+    padding: 11px;
+    border: 0;
+    border-radius: 7px;
+    background: var(--green);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.register-btn:hover {
+    background: var(--green-dark);
+}
+
+.no-events {
+    text-align: center;
+    color: var(--muted);
+    padding: 25px;
+}
+
+
+/* Sports Banner */
+
+.sports-banner {
+    padding: 52px 8%;
+    background: var(--green-dark);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.sports-banner .eyebrow {
+    color: var(--lime);
+}
+
+.sports-banner h2 {
+    font: 800 clamp(1.5rem, 3vw, 2.2rem) 'Manrope', sans-serif;
+    margin: 7px 0;
+}
+
+.sports-banner p {
+    color: #d9e8df;
+}
+
+
+/* Past Events */
+
+.past-event-container {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.past-card img {
+    display: block;
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    background: #dce9df;
+}
+
+.past-card-content {
+    padding: 18px 20px 21px;
+}
+
+.past-card h3 {
+    color: var(--green-dark);
+    font: 700 1.1rem 'Manrope', sans-serif;
+    margin-bottom: 5px;
+}
+
+.past-card p {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+
+/* Footer */
+
+footer {
+    padding: 38px 20px;
+    text-align: center;
+    background: var(--green-deep);
+    color: #dce9e0;
+}
+
+.footer-logo {
+    display: inline-block;
+    margin-bottom: 9px;
+}
+
+footer p {
+    margin-bottom: 13px;
+    font-size: .92rem;
+}
+
+footer small {
+    color: #a9beb1;
+}
+
+
+/* Registration Modal */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 20, 12, .72);
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    position: relative;
+    width: min(100%, 460px);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 20px 70px rgba(0,0,0,.25);
+}
+
+.modal-content h2 {
+    color: var(--green-dark);
+    font: 800 1.7rem 'Manrope', sans-serif;
+    margin: 6px 0 8px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 17px;
+    border: 0;
+    background: transparent;
+    font-size: 2rem;
+    color: #65736a;
+    cursor: pointer;
+}
+
+.selected-event {
+    color: var(--green);
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.modal-content form {
+    display: grid;
+    gap: 8px;
+}
+
+.modal-content label {
+    font-size: .87rem;
+    font-weight: 700;
+    color: #425148;
+}
+
+.modal-content input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 12px;
+    margin-bottom: 8px;
+    outline-color: var(--green);
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.form-note {
+    color: var(--muted);
+    font-size: .76rem;
+    margin-top: 14px;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 950px) {
+
+    .events-container,
+    .past-event-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .navbar {
+        padding: 0 5%;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .navbar {
+        min-height: 68px;
+        flex-wrap: wrap;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 0 0 18px;
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .hero {
+        min-height: 410px;
+        padding: 55px 7%;
+    }
+
+    .statistics {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0;
+    }
+
+    .section {
+        padding: 60px 5%;
+    }
+
+    .events-container,
+    .past-event-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sports-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
