@@ -372,6 +372,20 @@ footer {
     font-size: 12px;
 }
 
+.login-page footer.site-footer,
+body > footer.site-footer {
+    padding: 2rem 5vw;
+    text-align: left;
+    color: #70c21f;
+    font-family: "Source Sans 3", system-ui, sans-serif;
+}
+
+body > footer.site-footer > p:last-child {
+    margin-top: 0;
+    color: #70c21f;
+    font-size: 1rem;
+}
+
 @media (max-width: 760px) {
     .navbar {
         padding: 14px 5%;
@@ -411,7 +425,8 @@ footer {
 }
 
 /* login.css - HEADER FIX + QUOTES */
-.site-header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:9999}
+.site-header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:9999;background:rgba(7,38,23,.9)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.site-header .brand-text{color:var(--medal)!important}
 .login-main{max-width:1250px;margin:0 auto;padding: 110px; 5vw 2rem 5vw;min-height:70vh}
 .login-layout{display:grid;grid-template-columns:0.9fr 1.1fr;gap: 4.5rem;align-items:start}
 .login-left{display:flex;flex-direction:column;gap:1.2rem}
