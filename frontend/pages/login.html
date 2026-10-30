@@ -1,0 +1,356 @@
+ shazni-work
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBM Sports Club | Account Portal</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<header class="navbar">
+    <a class="brand" href="#" aria-label="NSBM Sports Club home">
+        <span class="brand-icon">N</span>
+        <span>NSBM <strong>SPORTS CLUB</strong></span>
+    </a>
+    <span class="portal-label">ACCOUNT PORTAL</span>
+</header>
+
+<main class="page-layout">
+
+    <section class="welcome-panel">
+        <span class="eyebrow">PLAY WITH PASSION</span>
+        <h1>One team.<br>Many dreams.</h1>
+        <p>
+            Welcome to the NSBM Sports Club portal.
+            Sign in, join our sporting community, and
+            be part of something bigger.
+        </p>
+
+        <div class="sport-tags">
+            <span>Football</span>
+            <span>Cricket</span>
+            <span>Basketball</span>
+            <span>Volleyball</span>
+        </div>
+
+        <div class="welcome-bottom">
+            <span class="status-dot"></span>
+            <span>YOUR GAME. YOUR COMMUNITY.</span>
+        </div>
+    </section>
+
+    <section class="form-panel">
+
+        <div class="panel-heading">
+            <span class="eyebrow">NSBM SPORTS CLUB</span>
+            <h2 id="pageTitle">Student Login</h2>
+            <p id="pageDescription">
+                Welcome back! Please enter your details.
+            </p>
+        </div>
+
+        <div class="mode-tabs" aria-label="Account type">
+            <button type="button" class="mode-tab active"
+                    data-mode="student">Student</button>
+            <button type="button" class="mode-tab"
+                    data-mode="admin">Administrator</button>
+        </div>
+
+        <div id="notice" class="notice" role="status"
+             aria-live="polite" hidden></div>
+
+        <!-- STUDENT LOGIN -->
+        <form id="studentLogin" class="account-form">
+            <div class="field">
+                <label for="loginIdentity">Student ID or Email</label>
+                <input id="loginIdentity" name="identity"
+                       type="text" placeholder="Enter your student ID or email"
+                       autocomplete="username" required>
+            </div>
+
+            <div class="field">
+                <label for="loginPassword">Password</label>
+                <div class="password-wrap">
+                    <input id="loginPassword" name="password"
+                           type="password" placeholder="Enter your password"
+                           autocomplete="current-password" required>
+                    <button type="button" class="show-password"
+                            data-target="loginPassword">Show</button>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember">
+                    <input type="checkbox" id="rememberMe">
+                    Remember me
+                </label>
+                <button type="button" class="text-button"
+                        data-view="forgot">Forgot password?</button>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Sign In <span>→</span>
+            </button>
+
+            <p class="switch-text">
+                New to the club?
+                <button type="button" class="text-button"
+                        data-view="register">Create an account</button>
+            </p>
+        </form>
+
+        <!-- STUDENT REGISTRATION -->
+        <form id="studentRegister" class="account-form" hidden>
+            <div class="field">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" name="fullName"
+                       type="text" autocomplete="name"
+                       placeholder="Enter your full name" required>
+            </div>
+
+            <div class="field">
+                <label for="studentId">Student ID</label>
+                <input id="studentId" name="studentId"
+                       type="text" placeholder="Enter your student ID"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="registerEmail">Email Address</label>
+                <input id="registerEmail" name="email"
+                       type="email" autocomplete="email"
+                       placeholder="Enter your email" required>
+            </div>
+
+            <div class="field">
+                <label for="phone">Contact Number</label>
+                <input id="phone" name="phone" type="tel"
+                       autocomplete="tel"
+                       placeholder="Enter your contact number" required>
+            </div>
+
+            <div class="field">
+                <label for="sport">Sport of Interest</label>
+                <select id="sport" name="sport" required>
+                    <option value="">Select a sport</option>
+                    <option>Football</option>
+                    <option>Cricket</option>
+                    <option>Basketball</option>
+                    <option>Volleyball</option>
+                    <option>Badminton</option>
+                    <option>Swimming</option>
+                    <option>Athletics</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="registerPassword">Create Password</label>
+                <div class="password-wrap">
+                    <input id="registerPassword" name="password"
+                           type="password" autocomplete="new-password"
+                           minlength="8" placeholder="At least 8 characters"
+                           required>
+                    <button type="button" class="show-password"
+                            data-target="registerPassword">Show</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword">Confirm Password</label>
+                <input id="confirmPassword" name="confirmPassword"
+                       type="password" autocomplete="new-password"
+                       minlength="8" placeholder="Repeat your password"
+                       required>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Create Account <span>→</span>
+            </button>
+
+            <p class="switch-text">
+                Already registered?
+                <button type="button" class="text-button"
+                        data-view="login">Sign in</button>
+            </p>
+        </form>
+
+        <!-- ADMIN LOGIN -->
+        <form id="adminLogin" class="account-form" hidden>
+            <div class="admin-notice">
+                Restricted area for authorized club administrators.
+            </div>
+
+            <div class="field">
+                <label for="adminIdentity">Administrator Email</label>
+                <input id="adminIdentity" name="identity"
+                       type="email" autocomplete="username"
+                       placeholder="Enter your admin email" required>
+            </div>
+
+            <div class="field">
+                <label for="adminPassword">Password</label>
+                <div class="password-wrap">
+                    <input id="adminPassword" name="password"
+                           type="password" autocomplete="current-password"
+                           placeholder="Enter your password" required>
+                    <button type="button" class="show-password"
+                            data-target="adminPassword">Show</button>
+                </div>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Administrator Sign In <span>→</span>
+            </button>
+
+            <p class="switch-text">
+                This portal is only for authorized administrators.
+            </p>
+        </form>
+
+        <!-- FORGOT / RESET PASSWORD REQUEST -->
+        <form id="forgotPassword" class="account-form" hidden>
+            <p class="helper-text">
+                Enter your registered email address to request a
+                password reset link.
+            </p>
+
+            <div class="field">
+                <label for="recoveryEmail">Registered Email</label>
+                <input id="recoveryEmail" name="email"
+                       type="email" autocomplete="email"
+                       placeholder="Enter your registered email" required>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Request Reset Link <span>→</span>
+            </button>
+
+            <p class="switch-text">
+                Remember your password?
+                <button type="button" class="text-button"
+                        data-view="login">Back to login</button>
+            </p>
+        </form>
+
+        <p class="security-note">
+            Secure access for the NSBM Sports Club community.
+        </p>
+
+    </section>
+</main>
+
+<footer>
+    <p>© 2026 NSBM Sports Club. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - NSBM Sports Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/hero.css">
+  <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">
+      <!-- LOGO FIX - 2 perum try pannum -->
+      <img class="brand-logo" src="../assets/nsbm.jpg" onerror="this.onerror=null; this.src='../assets/NSBM-campus.jpg'" alt="NSBM">
+      <span class="brand-text">NSBM SPORTS HUB</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="../index.html">Home</a>
+      <a href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Clubs</a>
+      <a href="./event.html">Events</a>
+      <a href="./contact.html">Contact</a>
+      <a href="./about.html">About</a>
+      <a class="btn btn-small active" href="./login.html">Sign in</a>
+    </nav>
+    <div class="theme-switch" role="group" aria-label="Color theme">
+      <button class="theme-button" type="button" data-theme-choice="light" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+      <button class="theme-button" type="button" data-theme-choice="dark" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button>
+    </div>
+  </header>
+
+  <main class="login-main" style="padding-top:130px !important;">
+    <div class="login-layout" style="gap:4.5rem !important;">
+    
+      <div class="login-left">
+        <div class="quote-hero">
+          <span class="eyebrow">NSBM SPORTS HUB</span>
+          <h2>Play. <span>Connect.</span> Grow.</h2>
+          <p>More than just sports, it's a community where champions are made.</p>
+        </div>
+
+        <div class="quotes-grid">
+          <div class="quote-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"The strength of the team is each individual member. The strength of each member is the team."</p>
+            <span>- Phil Jackson</span>
+          </div>
+          <div class="quote-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p>"You miss 100% of the shots you don't take. So step onto the field and play!"</p>
+            <span>- NSBM Sports Council</span>
+          </div>
+          <div class="quote-card full">
+            <i class="fa-solid fa-fire"></i>
+            <p>"Champions keep playing until they get it right. Join NSBM Sports Family today!"</p>
+            <span>- GROUP-28 | 2026</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="login-right">
+        <span class="eyebrow">WELCOME BACK</span>
+        <h1>Sign in to <span>Sports Hub</span></h1>
+        <p class="sub">Access clubs, events and community - GROUP-28</p>
+
+        <form class="login-form" id="loginForm">
+          <div class="field">
+            <label><i class="fa-solid fa-envelope"></i> Email</label>
+            <input type="email" placeholder="student@nsbm.ac.lk" required>
+          </div>
+          <div class="field">
+            <label><i class="fa-solid fa-lock"></i> Password</label>
+            <input type="password" placeholder="••••••••" required>
+          </div>
+          <div class="form-options">
+            <label class="remember"><input type="checkbox"> Remember me</label>
+            <a href="#">Forgot password?</a>
+          </div>
+          <button class="btn btn-login" type="submit">Sign In</button>
+          <p class="signup">Don't have an account? <a href="#">Sign up</a></p>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="social">
+      <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://web.facebook.com/nsbm.lk/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p>&#169; 2026 NSBM <b>GROUP-28</b>. All Rights Reserved.</p>
+  </footer>
+  <script src="../js/login.js" defer></script>
+</body>
+</html>
+ main
