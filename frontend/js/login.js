@@ -1,6 +1,7 @@
 
 const loginForm = document.getElementById("loginForm");
 
+if (loginForm) {
 loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -14,3 +15,4 @@ loginForm.addEventListener("submit", function (event) {
 
     alert("Login form submitted successfully! Backend authentication is not connected yet.");
 });
+}
