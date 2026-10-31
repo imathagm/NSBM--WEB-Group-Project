@@ -1,78 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - NSBM Sports Hub</title>
-    <link rel="stylesheet" href="../css/about.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - NSBM Sports Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/hero.css">
+  <link rel="stylesheet" href="../css/about.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<header class="main-header">
-    <div class="logo">NSBM <span>Sports Hub</span></div>
-    <nav>
-        <a href="./index.html">Home</a>
-        <a href="./about.html" class="active">About</a>
-        <a href="./clubs.html">Clubs</a>
-        <a href="./events.html">Events</a>
-        <a href="./contact.html">Contact</a>
+  <header class="site-header">
+    <a class="brand" href="../index.html" aria-label="NSBM SportsHub home">
+      <img class="brand-logo" src="../assets/nsbm.jpg" alt="NSBM SportsHub logo">
+      <span class="brand-text">NSBM SPORTS HUB</span>
+    </a>
+    <nav aria-label="Main">
+      <a href="../index.html">Home</a>
+      <a href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Clubs</a>
+      <a class="primary-nav__link" href="./event.html">Events</a>
+      <a class="primary-nav__link" href="./contact.html">Contact</a>
+      <a href="./about.html" class="active">About</a>
+      <a class="btn btn-small" href="./login.html">Sign in</a>
     </nav>
-</header>
+    <div class="theme-switch" role="group" aria-label="Color theme">
+      <button class="theme-button" type="button" data-theme-choice="light" aria-label="Use light theme" title="Light theme" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      </button>
+      <button class="theme-button" type="button" data-theme-choice="dark" aria-label="Use dark theme" title="Dark theme" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
+      </button>
+    </div>
+  </header>
 
-<!-- HERO SECTION -->
-<section class="about-hero">
-    <div class="hero-text">
-        <h1>About NSBM Sports Hub</h1>
-        <p>We are NSBM Green University's premier sports community, uniting 15+ sports clubs under one digital platform. Empowering athletes, building champions.</p>
-        <div class="hero-stats">
-            <div><h3>15+</h3><span>Sports Clubs</span></div>
-            <div><h3>500+</h3><span>Active Athletes</span></div>
-            <div><h3>50+</h3><span>Events Yearly</span></div>
+  <main>
+    <section class="about-hero-banner">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="eyebrow">ABOUT US</span>
+        <h2> More Than Just <span>Sports</span><br>It's a Community</h2>
+        <p> NSBM SportsHub is your one-stop platform to explore sports clubs, stay updated with events, and be part of a vibrant student community at NSBM.</p>
+      </div>
+      <img class="hero-bg" src="../assets/nsbm-campus.jpg" onerror="this.src='../assets/nsbm.jpg'" alt="NSBM Building">
+    </section>
+
+    <div class="about-main">
+      <div class="content-layout">
+        <div class="left-stories">
+          <div class="story-item">
+            <div class="story-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="story-text">
+              <h3>Our Story</h3>
+              <p>NSBM SportsHub was created to bring together students who share a passion for sports and a healthy lifestyle. What started as a simple idea has now grown into a platform that connects clubs and builds a stronger NSBM community.</p>
+            </div>
+          </div>
+          <div class="story-item">
+            <div class="story-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <div class="story-text">
+              <h3>Our Mission</h3>
+              <p>To provide a centralized platform for all sports clubs at NSBM, encouraging participation, communication and engagement throughout the university community.</p>
+            </div>
+          </div>
+          <div class="story-item">
+            <div class="story-icon"><i class="fa-solid fa-eye"></i></div>
+            <div class="story-text">
+              <h3>Our Vision</h3>
+              <p>To become the leading sports and wellness platform in NSBM, creating opportunities for every student to get involved, stay active and grow together.</p>
+            </div>
+          </div>
+          <!-- 2 PICTURES REMOVED AS YOU ASKED -->
         </div>
-    </div>
-    <div class="hero-image">
-        <img src="../assets/nsbm.jpg" alt="NSBM" onerror="this.src='../assets/hero.jpg'">
-    </div>
-</section>
 
-<section class="clubs-section">
-    <h2>Our Sports Clubs</h2>
-    <div class="clubs-grid">
-        <div class="club-card"><img src="../assets/football.jpg" alt=""><h4>Football</h4></div>
-        <div class="club-card"><img src="../assets/cricket.jpg" alt=""><h4>Cricket</h4></div>
-        <div class="club-card"><img src="../assets/basketball.jpg" alt=""><h4>Basketball</h4></div>
-        <div class="club-card"><img src="../assets/hockey.jpg" alt=""><h4>Hockey</h4></div>
-        <div class="club-card"><img src="../assets/rugby.jpg" alt=""><h4>Rugby</h4></div>
-        <div class="club-card"><img src="../assets/swimming.jpg" alt=""><h4>Swimming</h4></div>
-        <div class="club-card"><img src="../assets/athletics.jpg" alt=""><h4>Athletics</h4></div>
-        <div class="club-card"><img src="../assets/badminton.jpg" alt=""><h4>Badminton</h4></div>
-        <div class="club-card"><img src="../assets/tennis.jpg" alt=""><h4>Tennis</h4></div>
-        <div class="club-card"><img src="../assets/volleyball.jpg" alt=""><h4>Volleyball</h4></div>
-        <div class="club-card"><img src="../assets/chess.jpg" alt=""><h4>Chess</h4></div>
-        <div class="club-card"><img src="../assets/archery.jpg" alt=""><h4>Archery</h4></div>
-        <div class="club-card"><img src="../assets/table-tennis.jpg" alt=""><h4>Table Tennis</h4></div>
-        <div class="club-card"><img src="../assets/netball.jpg" alt=""><h4>Netball</h4></div>
-        <div class="club-card"><img src="../assets/karate.jpg" alt=""><h4>Karate</h4></div>
-        <div class="club-card"><img src="../assets/hero.jpg" alt=""><h4>More Sports</h4></div>
-    </div>
-</section>
-
-<footer class="main-footer">
-    <div class="footer-content">
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
+        <div class="right-showcase">
+          <div class="campus-card">
+            <img src="../assets/nsbm-campus.jpg" onerror="this.src='../assets/nsbm.jpg'" alt="NSBM Sunset Campus">
+            <div class="play-overlay">
+              <span class="play-text">Play<br>Connect<br>Grow</span>
+              <div class="play-underline"></div>
+            </div>
+          </div>
+          <div class="values-card">
+            <h4>Our Values</h4>
+            <div class="values-grid">
+              <div class="value"><i class="fa-solid fa-people-group"></i><strong>Inclusion</strong><span>Everyone belongs</span></div>
+              <div class="value"><i class="fa-solid fa-handshake-angle"></i><strong>Teamwork</strong><span>Stronger together</span></div>
+              <div class="value"><i class="fa-solid fa-heart-pulse"></i><strong>Health</strong><span>Active minds</span></div>
+              <div class="value"><i class="fa-solid fa-star"></i><strong>Excellence</strong><span>Always improve</span></div>
+            </div>
+          </div>
         </div>
-        <p class="copyright">© 2026 NSBM GROUP-28. All Rights Reserved.</p>
-    </div>
-    <div class="accessibility-btn">
-        <i class="fas fa-universal-access"></i>
-    </div>
-</footer>
+      </div>
 
-<script src="../js/about.js"></script>
+      <section class="people-section">
+        <span class="eyebrow">OUR TEAM</span>
+        <h2>Meet the People Behind It</h2>
+        <p class="sub">A group of passionate students working together to make NSBM SportsHub a success.</p>
+        <div class="people-grid">
+          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Buthmi Ashinsa</h3><span class="role">President - Sports Council</span><span class="dept">2025/26</span></div>
+          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Prof. Bharatha</h3><span class="role">Head - Academic</span><span class="dept">Patron</span></div>
+          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Mr. Karan</h3><span class="role">Head - Student Affairs</span><span class="dept">Coordinator</span></div>
+          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Ms. Dewmini</h3><span class="role">President - Chess Club</span><span class="dept">Captain</span></div>
+        </div>
+        <div class="people-grid single"><div class="card group28"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>GROUP-28</h3><span class="role">Dev Team</span><span class="dept">2026 Batch</span></div></div>
+      </section>
+    </div>
+
+    <section class="cta">
+      <h2>Ready to play?</h2>
+      <div class="hero-actions">
+        <a class="btn" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Explore clubs</a>
+        <a class="btn btn-ghost" href="./login.html">Sign in</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="social">
+      <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://web.facebook.com/nsbm.lk/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+    <p>&#169; 2026 NSBM <b>GROUP-28</b>. All Rights Reserved.</p>
+  </footer>
+
+  <script src="../js/theme.js" defer></script>
 </body>
 </html>
