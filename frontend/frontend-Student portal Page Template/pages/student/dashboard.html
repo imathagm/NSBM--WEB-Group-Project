@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Dashboard | SportsHub</title>
+
+  <!-- Apply saved theme before paint (prevents a light flash in dark mode) -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('sportshub-theme'); } catch (e) {}
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (needed for the swimming / running / basketball icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <button class="icon-btn menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a class="brand" href="dashboard.html"><i class="fas fa-graduation-cap"></i> NSBM SPORTS HUB</a>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="icon-btn" id="bellBtn" type="button" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="count-badge" id="bellCount">2</span>
+      </button>
+      <button class="icon-btn" type="button" aria-label="My profile" data-go="profile">
+        <i class="fas fa-circle-user"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <p class="menu-label">Menu</p>
+      <nav class="nav" aria-label="Student menu">
+        <button class="nav-btn" type="button" data-target="dashboard"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span> Dashboard</button>
+        <button class="nav-btn" type="button" data-target="profile"><span class="nav-icon"><i class="fas fa-user"></i></span> My Profile</button>
+        <button class="nav-btn" type="button" data-target="join-club"><span class="nav-icon"><i class="fas fa-people-group"></i></span> Join Club</button>
+        <button class="nav-btn" type="button" data-target="applications"><span class="nav-icon"><i class="fas fa-file-lines"></i></span> Applications</button>
+        <button class="nav-btn" type="button" data-target="schedule"><span class="nav-icon"><i class="fas fa-calendar-days"></i></span> Schedule</button>
+        <button class="nav-btn" type="button" data-target="notifications"><span class="nav-icon"><i class="fas fa-bell"></i></span> Notifications</button>
+        <button class="nav-btn" type="button" data-target="matches"><span class="nav-icon"><i class="fas fa-trophy"></i></span> Matches</button>
+      </nav>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main class="content">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="view" id="dashboard">
+        <div class="page-head">
+          <h1>Student Dashboard</h1>
+          <p>Welcome back! Here’s your sports overview.</p>
+        </div>
+
+        <h2 class="block-title">Overview</h2>
+        <div class="stats">
+          <div class="stat stat--green">
+            <span class="stat-icon"><i class="fas fa-people-group"></i></span>
+            <div><strong id="myClubsCount">01</strong><span>My Clubs</span></div>
+          </div>
+          <div class="stat stat--blue">
+            <span class="stat-icon"><i class="fas fa-file-lines"></i></span>
+            <div><strong id="applicationsCount">02</strong><span>Applications</span></div>
+          </div>
+          <div class="stat stat--amber">
+            <span class="stat-icon"><i class="fas fa-calendar-check"></i></span>
+            <div><strong id="eventsCount">03</strong><span>Upcoming Events</span></div>
+          </div>
+          <div class="stat stat--purple">
+            <span class="stat-icon"><i class="fas fa-bell"></i></span>
+            <div><strong id="notificationsCount">04</strong><span>Notifications</span></div>
+          </div>
+        </div>
+
+        <h2 class="block-title">Upcoming Activities</h2>
+        <ul class="activities">
+          <li class="activity-item">
+            <div>
+              <h3>University Cricket Practice</h3>
+              <p><i class="far fa-clock"></i> Monday · 3:00 PM</p>
+            </div>
+            <span class="badge badge--upcoming">Upcoming</span>
+          </li>
+          <li class="activity-item">
+            <div>
+              <h3>Inter-University Football</h3>
+              <p><i class="far fa-clock"></i> Friday · 9:00 AM</p>
+            </div>
+            <span class="badge badge--scheduled">Scheduled</span>
+          </li>
+          <li class="activity-item">
+            <div>
+              <h3>Football Friendly Match</h3>
+              <p><i class="far fa-clock"></i> Saturday · 4:00 PM</p>
+            </div>
+            <span class="badge badge--scheduled">Scheduled</span>
+          </li>
+        </ul>
+
+        <!-- Club Overview -->
+        <section class="clubs-overview-section" id="clubs">
+          <div class="section-header">
+            <h2>Club Overview</h2>
+            <span class="subtitle">Explore active sports clubs and practice schedules</span>
+          </div>
+
+          <div class="clubs-grid">
+
+            <article class="club-card" data-club="cricket">
+              <div class="club-cover-wrap">
+                <i class="fas fa-baseball-bat-ball club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/cricket.jpg" alt="Cricket Club" class="club-cover" loading="lazy" onerror="this.remove()">
+                <span class="joined-badge"><i class="fas fa-check-circle"></i> Joined</span>
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-baseball-bat-ball"></i></div>
+                  <h3 class="club-title">Cricket Club</h3>
+                </div>
+                <p class="club-desc">Official university cricket squad focusing on competitive tournaments and weekly practice drills.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 48 Members</span>
+                  <span><i class="far fa-clock"></i> Mon, 3:00 PM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+            <article class="club-card" data-club="football">
+              <div class="club-cover-wrap">
+                <i class="fas fa-futbol club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/football.jpg" alt="Football Club" class="club-cover" loading="lazy" onerror="this.remove()">
+                <span class="joined-badge"><i class="fas fa-check-circle"></i> Joined</span>
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-futbol"></i></div>
+                  <h3 class="club-title">Football Club</h3>
+                </div>
+                <p class="club-desc">High-energy football coaching, inter-university leagues, and regular friendly matches.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 64 Members</span>
+                  <span><i class="far fa-clock"></i> Fri, 9:00 AM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+            <article class="club-card" data-club="basketball">
+              <div class="club-cover-wrap">
+                <i class="fas fa-basketball club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/basketball.jpg" alt="Basketball Club" class="club-cover" loading="lazy" onerror="this.remove()">
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-basketball"></i></div>
+                  <h3 class="club-title">Basketball Club</h3>
+                </div>
+                <p class="club-desc">Indoor and outdoor court practice, tactical training, and weekend leagues.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 32 Members</span>
+                  <span><i class="far fa-clock"></i> Wed, 4:00 PM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+            <article class="club-card" data-club="badminton">
+              <div class="club-cover-wrap">
+                <i class="fas fa-table-tennis-paddle-ball club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/badminton.jpg" alt="Badminton Club" class="club-cover" loading="lazy" onerror="this.remove()">
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-table-tennis-paddle-ball"></i></div>
+                  <h3 class="club-title">Badminton Club</h3>
+                </div>
+                <p class="club-desc">Singles and doubles indoor training for beginners and competitive players.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 28 Members</span>
+                  <span><i class="far fa-clock"></i> Tue, 5:00 PM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+            <article class="club-card" data-club="swimming">
+              <div class="club-cover-wrap">
+                <i class="fas fa-person-swimming club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/swimming.jpg" alt="Swimming Club" class="club-cover" loading="lazy" onerror="this.remove()">
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-person-swimming"></i></div>
+                  <h3 class="club-title">Swimming Club</h3>
+                </div>
+                <p class="club-desc">Pool training sessions, stamina building, stroke technique, and swim meets.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 22 Members</span>
+                  <span><i class="far fa-clock"></i> Thu, 6:30 AM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+            <article class="club-card" data-club="athletics">
+              <div class="club-cover-wrap">
+                <i class="fas fa-person-running club-fallback" aria-hidden="true"></i>
+                <img src="../assets/images/clubs/athletics.jpg" alt="Athletics Club" class="club-cover" loading="lazy" onerror="this.remove()">
+              </div>
+              <div class="club-content">
+                <div class="club-header">
+                  <div class="club-icon"><i class="fas fa-person-running"></i></div>
+                  <h3 class="club-title">Athletics Club</h3>
+                </div>
+                <p class="club-desc">Track and field events including sprinting, distance running, high jump, and throws.</p>
+                <div class="club-meta">
+                  <span><i class="fas fa-users"></i> 35 Members</span>
+                  <span><i class="far fa-clock"></i> Sat, 7:00 AM</span>
+                </div>
+                <button class="btn-view-club" type="button">View Club</button>
+              </div>
+            </article>
+
+          </div>
+        </section>
+      </section>
+
+      <!-- ============ MY PROFILE ============ -->
+      <section class="view" id="profile" hidden>
+        <div class="page-head"><h1>My Profile</h1><p>Your details and participation history.</p></div>
+        <div class="panel empty">
+          <i class="fas fa-user"></i>
+          <p>Profile details will show here once your account is connected.</p>
+        </div>
+      </section>
+
+      <!-- ============ JOIN CLUB ============ -->
+      <section class="view" id="join-club" hidden>
+        <div class="page-head"><h1>Join Club</h1><p>Find a club and send your application.</p></div>
+        <div class="panel empty">
+          <i class="fas fa-people-group"></i>
+          <p>Browse every club on the dashboard, then open one to apply.</p>
+          <button class="btn-primary" type="button" data-go="dashboard">Browse clubs</button>
+        </div>
+      </section>
+
+      <!-- ============ APPLICATIONS ============ -->
+      <section class="view" id="applications" hidden>
+        <div class="page-head"><h1>Applications</h1><p>Track your club membership requests.</p></div>
+        <ul class="activities">
+          <li class="activity-item">
+            <div><h3>Basketball Club</h3><p><i class="far fa-clock"></i> Sent this week</p></div>
+            <span class="badge badge--scheduled">Pending</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ SCHEDULE ============ -->
+      <section class="view" id="schedule" hidden>
+        <div class="page-head"><h1>Schedule</h1><p>Training sessions and fixtures for your clubs.</p></div>
+        <ul class="activities">
+          <li class="activity-item">
+            <div><h3>University Cricket Practice</h3><p><i class="far fa-clock"></i> Monday · 3:00 PM</p></div>
+            <span class="badge badge--upcoming">Upcoming</span>
+          </li>
+          <li class="activity-item">
+            <div><h3>Inter-University Football</h3><p><i class="far fa-clock"></i> Friday · 9:00 AM</p></div>
+            <span class="badge badge--scheduled">Scheduled</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ NOTIFICATIONS ============ -->
+      <section class="view" id="notifications" hidden>
+        <div class="page-head"><h1>Notifications</h1><p>Updates from your clubs and admins.</p></div>
+        <ul class="activities">
+          <li class="activity-item notif-item">
+            <div><h3>Cricket practice moved to 3:00 PM</h3><p>From the Cricket Club admin</p></div>
+          </li>
+          <li class="activity-item notif-item">
+            <div><h3>Your Basketball Club application is under review</h3><p>From SportsHub admin</p></div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ MATCHES ============ -->
+      <section class="view" id="matches" hidden>
+        <div class="page-head"><h1>Matches</h1><p>Fixtures, results and standings.</p></div>
+        <ul class="activities">
+          <li class="activity-item">
+            <div><h3>Inter-University Football</h3><p><i class="far fa-clock"></i> Friday · 9:00 AM</p></div>
+            <span class="badge badge--scheduled">Scheduled</span>
+          </li>
+        </ul>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="../../js/dashboard.js"></script>
+</body>
+</html>
