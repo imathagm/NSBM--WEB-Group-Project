@@ -1,6 +1,4 @@
- shazni-work
-
-:root {
+ :root {
     --navy: #101c2c;
     --navy-light: #1a2a3d;
     --green: #b7ef45;
@@ -427,7 +425,7 @@ body > footer.site-footer > p:last-child {
 /* login.css - HEADER FIX + QUOTES */
 .site-header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:9999;background:rgba(7,38,23,.9)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .site-header .brand-text{color:var(--medal)!important}
-.login-main{max-width:1250px;margin:0 auto;padding: 110px; 5vw 2rem 5vw;min-height:70vh}
+.login-main{max-width:1250px;margin:0 auto;padding:110px 5vw 2rem 5vw;min-height:70vh}
 .login-layout{display:grid;grid-template-columns:0.9fr 1.1fr;gap: 4.5rem;align-items:start}
 .login-left{display:flex;flex-direction:column;gap:1.2rem}
 .quote-hero{background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--medal);border-radius:8px;padding:1.5rem}
@@ -463,4 +461,3 @@ body > footer.site-footer > p:last-child {
 .signup{text-align:center;font-size:0.8rem;color:var(--muted);margin-top:0.5rem}
 .signup a{color:var(--turf);font-weight:700;text-decoration:none}
 @media(max-width:900px){.login-layout{grid-template-columns:1fr}.quotes-grid{grid-template-columns:1fr}}
- main
