@@ -101,5 +101,12 @@ function setMenu(open){
   document.body.classList.toggle("sidebar-open", open);
   menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
 }
-menuBtn.addEventListener("click", function(){ setMenu(!document.body.classList.contains("sidebar-open")); });
+menuBtn.addEventListener("click", function(){
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    setMenu(!document.body.classList.contains("sidebar-open"));
+  } else {
+    var hidden = document.body.classList.toggle("sidebar-collapsed");
+    menuBtn.setAttribute("aria-expanded", hidden ? "false" : "true");
+  }
+});
 document.getElementById("sidebar-backdrop").addEventListener("click", function(){ setMenu(false); });
