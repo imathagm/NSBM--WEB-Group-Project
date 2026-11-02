@@ -69,6 +69,9 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--medal); outline-o
   display: flex; justify-content: space-between; align-items: center; gap: 1rem;
 }
 .theme-switch { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+.theme-switch {
+    align-self: flex-end;
+}
 .theme-button {
   display: grid; width: 2.5rem; height: 2.5rem; place-items: center;
   padding: 0; border: 1px solid rgba(255, 255, 255, 0.5);
@@ -161,8 +164,16 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--medal); outline-o
 /* Footer social mid icons*/
 .site-footer { padding: 2rem 5vw; background: var(--turf-dark); color: #70c21f; }
 .social {
-  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
-  justify-content: flex-start; gap: 1rem; margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    width: fit-content;
+    max-width: 100%;
 }
 .social a {
   display: grid; width: 3rem; height: 3rem; place-items: center;
@@ -176,6 +187,10 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--medal); outline-o
 }
 .social a:focus-visible { outline: 3px solid #9ca3af; outline-offset: 3px; }
 .site-footer__copyright { text-align: center; }
+
+.site-header nav a[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.12);
+}
 
 /* Mobile */
 @media (max-width: 760px) {

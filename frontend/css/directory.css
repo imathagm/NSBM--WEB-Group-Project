@@ -121,6 +121,7 @@ input:focus-visible {
     gap: 10px;
     color: var(--color-white);
     text-decoration: none;
+    margin-top: -11px;
 }
 
 .brand__mark {
