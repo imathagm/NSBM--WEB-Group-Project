@@ -1,0 +1,208 @@
+.site-header {
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    padding: 1.5rem 5vw;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 0;
+    background: rgba(7, 38, 23, 0.9);
+    color: var(--ink, #17231c);
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.site-header .brand {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--medal);
+    cursor: pointer;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    text-decoration: none;
+}
+
+.site-header .brand-logo {
+    display: block;
+    width: 3.8rem;
+    height: 3.8rem;
+    flex: 0 0 auto;
+    border: 3px solid var(--medal);
+    border-radius: 50%;
+    background: var(--paper);
+    object-fit: cover;
+    box-shadow: 0 0.4rem 0.9rem rgba(20, 66, 42, 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.site-header .brand:hover .brand-logo {
+    transform: scale(1.12);
+    box-shadow: 0 0.6rem 1.2rem rgba(20, 66, 42, 0.22);
+}
+
+.site-header .brand-text {
+    color: var(--medal);
+    font-family: "Archivo", system-ui, sans-serif;
+    font-size: 1.8rem;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.site-header nav {
+    display: block;
+    max-width: 100%;
+    padding: 0.4rem 0.5rem;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    scrollbar-width: none;
+}
+
+.site-header nav::-webkit-scrollbar {
+    display: none;
+}
+
+.site-header nav a:not(.btn) {
+    display: inline;
+    min-height: 0;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.site-header nav a:not(.btn):hover {
+    background: rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+}
+
+.site-header nav a[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.site-header .btn-small {
+    display: inline-block;
+    min-height: 0;
+    padding: 0.45rem 1.1rem;
+    flex: initial;
+    align-items: initial;
+    justify-content: initial;
+    gap: normal;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--turf-dark);
+    font-size: inherit;
+    font-weight: 600;
+    transition: none;
+    transform: none;
+    text-decoration: none;
+}
+
+.site-header .btn-small:hover {
+    background: var(--chalk);
+    transform: none;
+}
+
+.site-header .theme-switch {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.35rem;
+    align-self: flex-end;
+}
+
+.site-header .theme-button {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-family: Arial;
+    font-size: 13.3333px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.site-header .theme-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.site-header .theme-button[aria-pressed="true"] {
+    border-color: var(--medal);
+    background: var(--medal);
+    color: #17231c;
+}
+
+.site-header nav a:focus-visible,
+.site-header .btn:focus-visible,
+.site-header .theme-button:focus-visible {
+    outline: 3px solid var(--medal);
+    outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+    .site-header {
+        flex-direction: column;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+        padding: 12px 4%;
+        gap: 10px;
+    }
+
+    .site-header .brand-text {
+        font-size: 1.1rem;
+    }
+
+    .site-header .brand-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .site-header nav {
+        display: flex;
+        width: 100%;
+        padding: 0.4rem 0.5rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        overflow-x: auto;
+    }
+
+    .site-header nav a:not(.btn) {
+        padding: 5px 8px;
+        font-size: 13px;
+    }
+
+    .site-header nav .btn {
+        padding: 5px 12px;
+        font-size: 13px;
+    }
+
+    .site-header .theme-switch {
+        align-self: flex-end;
+    }
+}

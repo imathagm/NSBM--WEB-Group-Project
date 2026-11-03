@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="directory.css">
-    <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="sports-hub-theme.css">
+    <link rel="stylesheet" href="../css/navigation.css">
     <script src="directory.js" defer></script>
     <script src="../js/theme.js" defer></script>
 </head>
@@ -26,7 +26,7 @@
         </a>
         <nav aria-label="Main">
             <a href="../index.html">Home</a>
-            <a href="#directory" aria-current="page">Clubs</a>
+            <a href="sport-club-directory.html#directory" aria-current="page">Clubs</a>
             <a href="../pages/event.html">Events</a>
             <a href="../pages/about.html">About</a>
             <a class="btn btn-small" href="../pages/login.html">Sign in</a>
@@ -169,38 +169,40 @@
         </section>
     </main>
 
-   <footer class="site-footer">
-    <div class="site-footer__main">
-        <div class="site-footer__brand">
-            <a class="brand brand--footer" href="../index.html" aria-label="NSBM SportsHub home">
-                <img class="brand-logo" src="../assets/nsbm.jpg" alt="NSBM SportsHub logo">
-                <span class="brand-text">NSBM SPORTS HUB</span>
-            </a>
-            <p>Find your game. Find your community.</p>
-
-            <div class="social">
-                <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-                <a href="https://web.facebook.com/nsbm.lk/?_rdc=1&_rdr#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
-                <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
-                <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+    <footer class="site-footer" id="contact">
+        <div class="site-footer__main">
+            <div class="site-footer__brand">
+                <a class="brand brand--footer" href="../index.html" aria-label="NSBM SportsHub home">
+                    <img class="brand-logo" src="../assets/nsbm.jpg" alt="NSBM SportsHub logo">
+                    <span class="brand-text">NSBM SPORTS HUB</span>
+                </a>
+                <p>Find your game. Find your community.</p>
+            </div>
+            <div class="site-footer__links">
+                <h2>Explore</h2>
+                <a href="../index.html">Home</a>
+                <a href="#directory">Sports Clubs</a>
+                <a href="../pages/event.html">Events</a>
+                <a href="../pages/about.html">About</a>
+            </div>
+            <div class="site-footer__contact">
+                <h2>Get in touch</h2>
+                <p>For club enquiries, please contact the relevant university sports office.</p>
+                <a href="#main-content">Back to top <span aria-hidden="true">↑</span></a>
             </div>
         </div>
-
-        <div class="site-footer__links">
-            <h2>Explore</h2>
-            <a href="../index.html">Home</a>
-            <a href="#directory">Sports Clubs</a>
-            <a href="../pages/event.html">Events</a>
-            <a href="../pages/about.html">About</a>
+        <div class="social">
+            <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="https://web.facebook.com/nsbm.lk/?_rdc=1&_rdr#" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+            <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
         </div>
-
-        <div class="site-footer__contact">
-            <h2>Get in touch</h2>
-            <p>For club enquiries, please contact the relevant university sports office.</p>
-            <a href="#main-content">Back to top <span aria-hidden="true">↑</span></a>
-        </div>
-    </div>
-</footer>
+<<<<<<< HEAD
+        <div class="site-footer__bottom"><span>© <span id="current-year">2026</span> NSBM SportsHub</span></div>
+=======
+        
+>>>>>>> 6f582661accdf6131e396190590e13e451b87d02
+    </footer>
 
     <dialog class="club-dialog" id="club-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
         <div class="club-dialog__inner">
