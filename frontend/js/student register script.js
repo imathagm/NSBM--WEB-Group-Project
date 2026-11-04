@@ -1,4 +1,3 @@
-// This page demonstrates registration in the browser. It sends and saves no data.
 const form = document.getElementById("registration-form");
 const fields = Array.from(form.querySelectorAll("input, select"));
 const password = document.getElementById("password");
@@ -9,7 +8,6 @@ const successPanel = document.getElementById("registration-success");
 const touchedFields = new Set();
 let submitted = false;
 
-// Return a helpful error message, or an empty string for a valid field.
 function getError(field) {
   const value = field.value.trim();
 
@@ -147,6 +145,4 @@ document.getElementById("register-another").addEventListener("click", function (
   document.getElementById("full-name").focus();
 });
 
-// Enable submission only after the JavaScript handler is ready.
-// Without JavaScript, the disabled button also prevents implicit Enter submission.
 form.querySelector('button[type="submit"]').disabled = false;
