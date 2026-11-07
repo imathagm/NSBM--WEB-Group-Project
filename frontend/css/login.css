@@ -461,3 +461,31 @@ body > footer.site-footer > p:last-child {
 .signup{text-align:center;font-size:0.8rem;color:var(--muted);margin-top:0.5rem}
 .signup a{color:var(--turf);font-weight:700;text-decoration:none}
 @media(max-width:900px){.login-layout{grid-template-columns:1fr}.quotes-grid{grid-template-columns:1fr}}
+
+@media (max-width: 760px) {
+    .login-main {
+        padding: 150px 4vw 1.5rem !important;
+    }
+
+    .login-layout {
+        gap: 1rem !important;
+    }
+
+    .login-left {
+        min-width: 0;
+    }
+
+    .login-right {
+        min-width: 0;
+        padding: 1.2rem;
+    }
+
+    .quote-card.full {
+        grid-column: 1;
+    }
+
+    .form-options {
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+}
