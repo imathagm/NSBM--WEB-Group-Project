@@ -186,7 +186,7 @@ a:focus-visible, .btn:focus-visible { outline: 3px solid var(--medal); outline-o
   border-color: #9ca3af;
 }
 .social a:focus-visible { outline: 3px solid #9ca3af; outline-offset: 3px; }
-.site-footer__copyright { text-align: center; }
+.site-footer__copyright { text-align: left; }
 
 .site-header nav a[aria-current="page"] {
     background: rgba(255, 255, 255, 0.12);

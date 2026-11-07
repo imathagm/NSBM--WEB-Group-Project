@@ -120,3 +120,79 @@
         padding: 5px 12px;
     }
 }
+
+/* Shared public-site mobile safeguards */
+@media (max-width: 760px) {
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    img, video, canvas, svg {
+        max-width: 100%;
+    }
+
+    .site-header {
+        min-width: 0;
+        height: auto;
+        padding: 0.65rem 4%;
+    }
+
+    .site-header .brand {
+        min-width: 0;
+        gap: 0.45rem;
+    }
+
+    .site-header .brand-text {
+        overflow: hidden;
+        max-width: calc(100vw - 5rem);
+        font-size: clamp(0.82rem, 4vw, 1.05rem);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .site-header nav {
+        order: 3;
+        min-width: 0;
+        max-width: 100%;
+        padding-top: 0.1rem;
+    }
+
+    .site-header nav a {
+        min-width: 0;
+        text-align: center;
+    }
+
+    .theme-switch {
+        margin-left: auto;
+    }
+
+    .section,
+    .cta,
+    .hero {
+        padding-inline: 4vw;
+    }
+
+    .two-col,
+    .club-grid,
+    .steps {
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .fixtures li {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    input, select, textarea {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
