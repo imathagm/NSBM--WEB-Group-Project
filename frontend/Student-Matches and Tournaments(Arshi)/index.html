@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Student portal for NSBM SportsHub matches and tournaments.">
+  <meta name="theme-color" content="#f1f6f3">
+  <title>Matches &amp; Tournaments | NSBM Student Portal</title>
+  <script src="portal-theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="portal-header">
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open student portal navigation" aria-expanded="false" aria-controls="portal-sidebar">
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+    </button>
+    <a class="portal-brand" href="#page-top" aria-label="NSBM SportsHub student portal">
+      <img src="../assets/nsbm.jpg" alt="">
+      <span>NSBM <strong>SPORTSHUB</strong><small>STUDENT PORTAL</small></span>
+    </a>
+    <div class="header-student">
+      <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+      <button class="icon-btn notification-button" type="button" aria-label="Notifications" data-portal-link>
+        <i class="fa-solid fa-bell" aria-hidden="true"></i>
+      </button>
+      <button class="icon-btn profile-button" type="button" aria-label="My profile" data-portal-link>
+        <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="portal-shell" id="page-top">
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" aria-label="Close navigation" tabindex="-1"></button>
+    <aside class="portal-sidebar" id="portal-sidebar" aria-label="Student portal navigation">
+      <div class="sidebar-heading">STUDENT PORTAL</div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-house" aria-hidden="true"></i><span>Dashboard</span></a>
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-user" aria-hidden="true"></i><span>My Profile</span></a>
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span>Join a Club</span></a>
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span>My Applications</span></a>
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><span>Training Schedule</span></a>
+        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-bell" aria-hidden="true"></i><span>Notifications</span></a>
+        <a href="#matches" class="sidebar-link is-active" aria-current="page"><i class="fa-solid fa-trophy" aria-hidden="true"></i><span>Matches &amp; Tournaments</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="../pages/login.html" class="sidebar-link sidebar-logout"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Logout</span></a>
+        <div class="sidebar-version"><span class="status-pulse"></span> SportsHub <span>·</span> Student access</div>
+      </div>
+    </aside>
+
+    <main class="portal-main" id="matches">
+      <div class="main-inner">
+        <section class="page-intro" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-mark"></span> STUDENT SPORTS</p>
+            <h1 id="page-title">Matches <span>&amp;</span> Tournaments</h1>
+            <p class="intro-copy">Explore upcoming sports matches, tournaments and previous match results.</p>
+          </div>
+          <div class="season-chip"><i class="fa-regular fa-calendar" aria-hidden="true"></i> 2026 season</div>
+        </section>
+
+        <section class="filter-panel" aria-label="Filter matches and tournaments">
+          <div class="filter-title"><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Filter schedule</span></div>
+          <label class="filter-control">
+            <span>Sport category</span>
+            <select id="sport-filter">
+              <option value="all">All sports</option>
+              <option value="football">Football</option>
+              <option value="cricket">Cricket</option>
+              <option value="badminton">Badminton</option>
+              <option value="basketball">Basketball</option>
+              <option value="volleyball">Volleyball</option>
+              <option value="netball">Netball</option>
+              <option value="hockey">Hockey</option>
+              <option value="table-tennis">Table Tennis</option>
+              <option value="karate">Karate</option>
+              <option value="athletics">Athletics</option>
+            </select>
+          </label>
+          <label class="filter-control">
+            <span>Match status</span>
+            <select id="status-filter">
+              <option value="all">All statuses</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="live">Live</option>
+              <option value="completed">Completed</option>
+              <option value="open">Registration open</option>
+              <option value="closed">Registration closed</option>
+            </select>
+          </label>
+          <label class="filter-control filter-date">
+            <span>Date</span>
+            <input id="date-filter" type="date" aria-label="Filter by date">
+          </label>
+          <button class="reset-filters" id="reset-filters" type="button">Reset filters</button>
+        </section>
+        <section class="dashboard-section" id="upcoming-section" data-keep-visible="true" aria-labelledby="upcoming-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-overline">UPCOMING FIXTURES</p>
+              <h2 id="upcoming-title">Upcoming Matches</h2>
+            </div>
+            <span class="section-count" id="upcoming-count">04 MATCHES</span>
+          </div>
+          <div class="match-grid">
+            <article class="match-card filter-card" data-kind="match" data-section="upcoming" data-sport="badminton" data-status="upcoming" data-fixture-id="upcoming-badminton">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/badminton.jpg" alt=""> Badminton</span><span class="status-tag status-pending">Details TBA</span></div>
+              <p class="match-name">Inter-University Badminton Series</p>
+              <div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Badminton</strong></div><span class="versus-label">VS</span><div class="team team-right"><img class="team-crest team-logo" src="images/team-logos/sliit.png" alt="SLIIT logo"><strong>SLIIT<br>Badminton</strong></div></div>
+              <div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>To Be Announced</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>To Be Announced</span></span></div>
+              <div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>Venue To Be Announced</span></div>
+              <button class="details-button" type="button" data-details data-title="Inter-University Badminton Series" data-sport-name="Badminton" data-date-label="To Be Announced" data-time="To Be Announced" data-venue="To Be Announced" data-status-label="Fixture details to be announced" data-team-a="NSBM Badminton" data-team-b="SLIIT Badminton" data-extra-label="Competition" data-extra="Inter-University Badminton Series">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="upcoming" data-sport="cricket" data-status="upcoming" data-fixture-id="upcoming-cricket">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/cricket.jpg" alt=""> Cricket</span><span class="status-tag status-pending">Details TBA</span></div>
+              <p class="match-name">Inter-University T20</p>
+              <div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Cricket</strong></div><span class="versus-label">VS</span><div class="team team-right"><img class="team-crest team-logo" src="images/team-logos/kdu.png" alt="General Sir John Kotelawala Defence University logo"><strong>KDU<br>Cricket</strong></div></div>
+              <div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>To Be Announced</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>To Be Announced</span></span></div>
+              <div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>Venue To Be Announced</span></div>
+              <button class="details-button" type="button" data-details data-title="Inter-University T20" data-sport-name="Cricket" data-date-label="To Be Announced" data-time="To Be Announced" data-venue="To Be Announced" data-status-label="Fixture details to be announced" data-team-a="NSBM Cricket" data-team-b="KDU Cricket" data-extra-label="Competition" data-extra="Inter-University T20">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="upcoming" data-sport="football" data-status="upcoming" data-fixture-id="upcoming-football">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/football.jpg" alt=""> Football</span><span class="status-tag status-pending">Details TBA</span></div>
+              <p class="match-name">Inter-University Football Cup</p>
+              <div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Football</strong></div><span class="versus-label">VS</span><div class="team team-right"><img class="team-crest team-logo" src="images/team-logos/sliit.png" alt="SLIIT logo"><strong>SLIIT<br>Football</strong></div></div>
+              <div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>To Be Announced</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>To Be Announced</span></span></div>
+              <div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>Venue To Be Announced</span></div>
+              <button class="details-button" type="button" data-details data-title="Inter-University Football Cup" data-sport-name="Football" data-date-label="To Be Announced" data-time="To Be Announced" data-venue="To Be Announced" data-status-label="Fixture details to be announced" data-team-a="NSBM Football" data-team-b="SLIIT Football" data-extra-label="Competition" data-extra="Inter-University Football Cup">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="upcoming" data-sport="basketball" data-status="upcoming" data-fixture-id="upcoming-basketball">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/basketball.jpg" alt=""> Basketball</span><span class="status-tag status-pending">Details TBA</span></div>
+              <p class="match-name">University Basketball Challenge</p>
+              <div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Basketball</strong></div><span class="versus-label">VS</span><div class="team team-right"><img class="team-crest team-logo" src="images/team-logos/usj.png" alt="University of Sri Jayewardenepura logo"><strong>USJ<br>Basketball</strong></div></div>
+              <div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>To Be Announced</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>To Be Announced</span></span></div>
+              <div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>Venue To Be Announced</span></div>
+              <button class="details-button" type="button" data-details data-title="University Basketball Challenge" data-sport-name="Basketball" data-date-label="To Be Announced" data-time="To Be Announced" data-venue="To Be Announced" data-status-label="Fixture details to be announced" data-team-a="NSBM Basketball" data-team-b="USJ Basketball" data-extra-label="Competition" data-extra="University Basketball Challenge">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section scheduled-section" id="scheduled-section" data-keep-visible="true" aria-labelledby="scheduled-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-overline">FIXTURE SCHEDULE</p>
+              <h2 id="scheduled-title">Scheduled Matches</h2>
+            </div>
+            <span class="section-count" id="scheduled-count">07 EVENTS</span>
+          </div>
+          <p class="proposed-schedule-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Proposed schedule for display only; dates, times and venues are not officially confirmed. University opponents marked “Demo” are unconfirmed demonstration pairings.</p>
+          <div class="match-grid">
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="football" data-status="upcoming" data-date="2026-11-14" data-fixture-id="scheduled-inter-faculty-football">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/football.jpg" alt=""> Football</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Inter Faculty Football Cup</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Football</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>14 Nov 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>9:00 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Football Ground</span></div><button class="details-button" type="button" data-details data-title="Inter Faculty Football Cup" data-sport-name="Football" data-date-label="14 November 2026" data-time="9:00 AM" data-venue="NSBM Football Ground" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Football" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Inter Faculty Football Cup">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="badminton" data-status="upcoming" data-date="2026-11-17" data-fixture-id="scheduled-badminton">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/badminton.jpg" alt=""> Badminton</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Badminton Cup</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Badminton</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>17 Nov 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>10:00 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Indoor Sports Complex</span></div><button class="details-button" type="button" data-details data-title="Badminton Cup" data-sport-name="Badminton" data-date-label="17 November 2026" data-time="10:00 AM" data-venue="NSBM Indoor Sports Complex" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Badminton" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Badminton Cup">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="basketball" data-status="upcoming" data-date="2026-11-20" data-fixture-id="scheduled-basketball">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/basketball.jpg" alt=""> Basketball</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Basketball Tournament</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Basketball</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>20 Nov 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>2:00 PM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Basketball Court</span></div><button class="details-button" type="button" data-details data-title="Basketball Tournament" data-sport-name="Basketball" data-date-label="20 November 2026" data-time="2:00 PM" data-venue="NSBM Basketball Court" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Basketball" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Basketball Tournament">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="volleyball" data-status="upcoming" data-date="2026-11-24" data-fixture-id="scheduled-volleyball">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/volleyball.jpg" alt=""> Volleyball</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Volleyball Tournament</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Volleyball</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>24 Nov 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>9:00 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Indoor Sports Complex</span></div><button class="details-button" type="button" data-details data-title="Volleyball Tournament" data-sport-name="Volleyball" data-date-label="24 November 2026" data-time="9:00 AM" data-venue="NSBM Indoor Sports Complex" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Volleyball" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Volleyball Tournament">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="cricket" data-status="upcoming" data-date="2026-11-28" data-fixture-id="scheduled-cricket">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/cricket.jpg" alt=""> Cricket</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Cricket T20 League</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Cricket</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>28 Nov 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>8:30 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Cricket Ground</span></div><button class="details-button" type="button" data-details data-title="Cricket T20 League" data-sport-name="Cricket" data-date-label="28 November 2026" data-time="8:30 AM" data-venue="NSBM Cricket Ground" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Cricket" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Cricket T20 League">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="netball" data-status="upcoming" data-date="2026-12-02" data-fixture-id="scheduled-netball">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/netball.jpg" alt=""> Netball</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Netball Tournament</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Netball</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>2 Dec 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>10:00 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Sports Ground</span></div><button class="details-button" type="button" data-details data-title="Netball Tournament" data-sport-name="Netball" data-date-label="2 December 2026" data-time="10:00 AM" data-venue="NSBM Sports Ground" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Netball" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Netball Tournament">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+            <article class="match-card filter-card" data-kind="match" data-section="scheduled" data-sport="hockey" data-status="upcoming" data-date="2026-12-05" data-fixture-id="scheduled-hockey">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="images/tournaments/hockey.jpg" alt=""> Hockey</span><span class="status-tag status-proposed">Proposed</span></div><p class="match-name">Hockey Tournament</p><div class="versus"><div class="team"><img class="team-crest team-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM<br>Hockey</strong></div><span class="versus-label">VS</span><div class="team team-right"><span class="team-crest crest-green" data-opponent-code>TBA</span><strong data-opponent-name>Opponent<br>To Be Announced</strong></div></div><div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> <span data-fixture-date>5 Dec 2026</span></span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-fixture-time>9:00 AM</span></span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span data-fixture-venue>NSBM Sports Ground</span></div><button class="details-button" type="button" data-details data-title="Hockey Tournament" data-sport-name="Hockey" data-date-label="5 December 2026" data-time="9:00 AM" data-venue="NSBM Sports Ground" data-status-label="Proposed schedule - not officially announced" data-team-a="NSBM Hockey" data-team-b="Opponent To Be Announced" data-extra-label="Competition" data-extra="Hockey Tournament">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" id="tournaments-section" data-keep-visible="true" aria-labelledby="tournaments-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-overline">TOURNAMENT REGISTRATION</p>
+              <h2 id="tournaments-title">Tournament Registration</h2>
+            </div>
+            <span class="section-count" id="tournaments-count">10 TOURNAMENTS</span>
+          </div>
+          <div class="tournament-grid">
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="cricket" data-status="open" data-date="2026-11-28" data-registration-deadline="2026-11-20">
+              <div class="tournament-visual visual-cricket"><img class="tournament-photo" src="images/tournaments/cricket.jpg" alt="Cricket match" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">01</span></div>
+              <div class="tournament-content">
+                <span class="sport-caption">CRICKET <span>·</span> TEAM EVENT</span>
+                <h3>NSBM T20 League</h3>
+                <div class="tournament-details">
+                  <p><span>Participating teams</span><strong>Campus teams</strong></p>
+                  <p><span>Starting date</span><strong>28 November 2026</strong></p>
+                  <p><span>Registration deadline</span><strong>20 November 2026</strong></p>
+                  <p><span>Venue</span><strong>Main Grounds</strong></p>
+                </div>
+                <button class="details-button" type="button" data-details data-title="NSBM T20 League" data-sport-name="Cricket" data-date-label="28 November 2026" data-time="9:00 AM" data-venue="Main Grounds" data-status-label="Registration open" data-team-a="Campus teams" data-team-b="11 players per squad" data-extra-label="Registration deadline" data-extra="20 November 2026">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                <a class="register-button" data-registration-link href="tournament-registration.html?tournament=nsbm-t20">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="football" data-status="open" data-date="2026-12-01" data-registration-deadline="2026-11-24">
+              <div class="tournament-visual visual-football"><img class="tournament-photo" src="images/tournaments/football.jpg" alt="Football match" loading="lazy"><img class="tournament-cup-detail" src="images/tournaments/inter-faculty-cup.jpg" alt="Inter Faculty Cup trophy" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">02</span></div>
+              <div class="tournament-content">
+                <span class="sport-caption">FOOTBALL <span>·</span> FACULTY TEAMS</span>
+                <h3>Inter-Faculty Cup</h3>
+                <div class="tournament-details">
+                  <p><span>Participating teams</span><strong>NSBM faculty teams</strong></p>
+                  <p><span>Starting date</span><strong>01 December 2026</strong></p>
+                  <p><span>Registration deadline</span><strong>24 November 2026</strong></p>
+                  <p><span>Venue</span><strong>University Main Grounds</strong></p>
+                </div>
+                <button class="details-button" type="button" data-details data-title="Inter-Faculty Cup" data-sport-name="Football" data-date-label="01 December 2026" data-time="To be announced" data-venue="University Main Grounds" data-status-label="Registration open" data-team-a="Faculty teams" data-team-b="7-a-side" data-extra-label="Registration deadline" data-extra="24 November 2026">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                <a class="register-button" data-registration-link href="tournament-registration.html?tournament=inter-faculty-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+              </div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="athletics" data-status="closed" data-date="2026-12-10" data-registration-deadline="2026-10-05">
+              <div class="tournament-visual visual-athletics"><img class="tournament-photo" src="images/tournaments/green-run.jpg" alt="Green Run Challenge" loading="lazy"><span class="registration-tag registration-closed" data-registration-badge><span></span>Registration Closed</span><span class="tournament-number">03</span></div>
+              <div class="tournament-content">
+                <span class="sport-caption">ATHLETICS <span>·</span> INDIVIDUAL</span>
+                <h3>Green Run Challenge</h3>
+                <div class="tournament-details">
+                  <p><span>Entry format</span><strong>Individual event</strong></p>
+                  <p><span>Starting date</span><strong>10 December 2026</strong></p>
+                  <p><span>Registration deadline</span><strong>05 October 2026</strong></p>
+                  <p><span>Venue</span><strong>Campus running track</strong></p>
+                </div>
+                <button class="details-button" type="button" data-details data-title="Green Run Challenge" data-sport-name="Athletics" data-date-label="10 December 2026" data-time="7:00 AM" data-venue="Campus running track" data-status-label="Registration closed" data-team-a="Individual event" data-team-b="5 km campus run" data-extra-label="Registration deadline" data-extra="05 October 2026">View Details <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+                <button class="register-button register-button--disabled" type="button" disabled aria-disabled="true">Registration Closed <i class="fa-solid fa-lock" aria-hidden="true"></i></button>
+              </div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="badminton" data-status="open" data-date="2026-11-14" data-registration-deadline="2026-11-07">
+              <div class="tournament-visual visual-badminton"><img class="tournament-photo" src="images/tournaments/badminton.jpg" alt="Badminton cup" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">04</span></div>
+              <div class="tournament-content"><span class="sport-caption">BADMINTON</span><h3>Inter-University Badminton Cup</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / SLIIT</strong></p><p><span>Tournament date</span><strong>14 Nov 2026</strong></p><p><span>Registration deadline</span><strong>07 Nov 2026</strong></p><p><span>Venue</span><strong>NSBM Recreational Center</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=badminton-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="basketball" data-status="open" data-date="2026-11-21" data-registration-deadline="2026-11-14">
+              <div class="tournament-visual visual-basketball"><img class="tournament-photo" src="images/tournaments/basketball.jpg" alt="Basketball tournament" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">05</span></div>
+              <div class="tournament-content"><span class="sport-caption">BASKETBALL</span><h3>University Basketball Challenge</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / USJ</strong></p><p><span>Tournament date</span><strong>21 Nov 2026</strong></p><p><span>Registration deadline</span><strong>14 Nov 2026</strong></p><p><span>Venue</span><strong>NSBM Basketball Court</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=basketball-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="volleyball" data-status="open" data-date="2026-11-23" data-registration-deadline="2026-11-16">
+              <div class="tournament-visual visual-volleyball"><img class="tournament-photo" src="images/tournaments/volleyball.jpg" alt="Volleyball match" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">06</span></div>
+              <div class="tournament-content"><span class="sport-caption">VOLLEYBALL</span><h3>University Volleyball Trophy</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / UOC</strong></p><p><span>Tournament date</span><strong>23 Nov 2026</strong></p><p><span>Registration deadline</span><strong>16 Nov 2026</strong></p><p><span>Venue</span><strong>University Indoor Court</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=volleyball-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="netball" data-status="open" data-date="2026-11-25" data-registration-deadline="2026-11-18">
+              <div class="tournament-visual visual-netball"><img class="tournament-photo" src="images/tournaments/netball.jpg" alt="Netball match" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">07</span></div>
+              <div class="tournament-content"><span class="sport-caption">NETBALL</span><h3>Inter-University Netball Cup</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / SLIIT</strong></p><p><span>Tournament date</span><strong>25 Nov 2026</strong></p><p><span>Registration deadline</span><strong>18 Nov 2026</strong></p><p><span>Venue</span><strong>NSBM Sports Hall</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=netball-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="hockey" data-status="closed" data-date="2026-11-27" data-registration-deadline="2026-10-20">
+              <div class="tournament-visual visual-hockey"><img class="tournament-photo" src="images/tournaments/hockey.jpg" alt="Hockey match" loading="lazy"><span class="registration-tag registration-closed" data-registration-badge><span></span>Registration Closed</span><span class="tournament-number">08</span></div>
+              <div class="tournament-content"><span class="sport-caption">HOCKEY</span><h3>Inter-University Hockey Series</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / KDU</strong></p><p><span>Tournament date</span><strong>27 Nov 2026</strong></p><p><span>Registration deadline</span><strong>20 Oct 2026</strong></p><p><span>Venue</span><strong>Colombo Hockey Ground</strong></p></div><button class="register-button register-button--disabled" type="button" disabled aria-disabled="true">Registration Closed <i class="fa-solid fa-lock" aria-hidden="true"></i></button></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="table-tennis" data-status="open" data-date="2026-11-29" data-registration-deadline="2026-11-20">
+              <div class="tournament-visual visual-table-tennis"><img class="tournament-photo" src="images/tournaments/table-tennis.jpg" alt="Table tennis tournament" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">09</span></div>
+              <div class="tournament-content"><span class="sport-caption">TABLE TENNIS</span><h3>Inter-University Table Tennis Cup</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / UOC</strong></p><p><span>Tournament date</span><strong>29 Nov 2026</strong></p><p><span>Registration deadline</span><strong>20 Nov 2026</strong></p><p><span>Venue</span><strong>NSBM Indoor Sports Center</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=table-tennis-cup">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+            <article class="tournament-card filter-card" data-kind="tournament" data-section="tournaments" data-sport="karate" data-status="open" data-date="2026-12-02" data-registration-deadline="2026-11-22">
+              <div class="tournament-visual visual-karate"><img class="tournament-photo" src="images/tournaments/karate.jpg" alt="Karate tournament" loading="lazy"><span class="registration-tag" data-registration-badge><span></span>Registration Open</span><span class="tournament-number">10</span></div>
+              <div class="tournament-content"><span class="sport-caption">KARATE</span><h3>Open Karate Championship</h3><div class="tournament-details"><p><span>Participating teams</span><strong>NSBM / invited clubs</strong></p><p><span>Tournament date</span><strong>02 Dec 2026</strong></p><p><span>Registration deadline</span><strong>22 Nov 2026</strong></p><p><span>Venue</span><strong>NSBM Sports Hall</strong></p></div><a class="register-button" data-registration-link href="tournament-registration.html?tournament=karate-open">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section results-section" id="results-section" data-keep-visible="true" aria-labelledby="results-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-overline">FINAL WHISTLE</p>
+              <h2 id="results-title">Recent Match Details</h2>
+            </div>
+            <span class="section-count">5 MATCH RESULTS</span>
+          </div>
+          <div class="pdf-match-grid">
+            <article class="research-card pdf-match-card">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/cricket.jpg" alt=""> Cricket · completed</span><span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Final</span></div>
+              <p class="sport-caption">KDU LEADERS’ TROPHY T20 CHAMPIONSHIP · GRAND FINAL</p>
+              <h3>NSBM beat SLIIT by 5 wickets</h3>
+              <div class="cricket-scoreline"><div><img class="score-logo" src="images/team-logos/sliit.png" alt="SLIIT logo"><span>SLIIT</span><strong>130/9</strong></div><b>VS</b><div><img class="score-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><span>NSBM</span><strong>136/5</strong></div></div>
+              <dl class="research-details">
+                <div><dt>Result</dt><dd>NSBM won by 5 wickets</dd></div>
+                <div><dt>Bowling highlight</dt><dd>Punsara Rajakaruna: 3/23</dd></div>
+                <div><dt>NSBM batting</dt><dd>Ushen Silva: 63*; Lahiru Abeysinghe: 44 off 21 balls</dd></div>
+                <div><dt>Player of the Tournament</dt><dd>Amoda Vidanapathirana</dd></div>
+                <div><dt>Event date / venue</dt><dd>Not published</dd></div>
+              </dl>
+              
+            </article>
+            <article class="research-card pdf-match-card">
+              <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/cricket.jpg" alt=""> Cricket · completed</span><span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Final</span></div>
+              <p class="sport-caption">T10 CLASH · NSBM VS SLIIT CITY UNIVERSITY</p>
+              <h3>NSBM won by 56 runs</h3>
+              <div class="cricket-scoreline"><div><img class="score-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><span>NSBM</span><strong>120/6 · 10 overs</strong></div><b>VS</b><div><img class="score-logo" src="images/team-logos/sliit.png" alt="SLIIT City University logo"><span>SLIIT CITY CAMPUS</span><strong>64 · 8.1 overs</strong></div></div>
+              <dl class="research-details">
+                <div><dt>Result</dt><dd>NSBM won by 56 runs</dd></div>
+                <div><dt>Bowling highlights</dt><dd>Dumindu: 2/14; Yashmitha: 2/20</dd></div>
+                <div><dt>Event date / venue</dt><dd>Not published</dd></div>
+              </dl>
+              
+            </article>
+          </div>
+          <p class="research-note pdf-date-note">Match dates, starting times and venues have not been published.</p>
+          <div class="results-list">
+            <article class="result-card filter-card" data-kind="result" data-section="results" data-sport="unspecified" data-status="completed">
+              <div class="result-match"><span class="result-team"><img class="result-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM</strong></span><span>VS</span><span class="result-team"><img class="result-logo" src="images/team-logos/sliit.png" alt="SLIIT logo"><strong>SLIIT</strong></span></div>
+              <div class="result-score"><strong>3 <i>–</i> 2</strong><span>FINAL SCORE</span></div>
+              <div class="result-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Date To Be Announced</div>
+              <span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Completed</span>
+            </article>
+            <article class="result-card filter-card" data-kind="result" data-section="results" data-sport="unspecified" data-status="completed">
+              <div class="result-match"><span class="result-team"><img class="result-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>NSBM</strong></span><span>VS</span><span class="result-team"><img class="result-logo result-logo--uom" src="images/team-logos/uom.png" alt="University of Moratuwa logo"><strong>University of Moratuwa</strong></span></div>
+              <div class="result-score"><strong>1 <i>–</i> 4</strong><span>FINAL SCORE</span></div>
+              <div class="result-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Date To Be Announced</div>
+              <span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Completed</span>
+            </article>
+            <article class="result-card filter-card" data-kind="result" data-section="results" data-sport="unspecified" data-status="completed">
+              <div class="result-match"><span class="result-team"><img class="result-logo" src="images/team-logos/nsbm.png" alt="NSBM Green University logo"><strong>Team NSBM</strong></span><span>VS</span><span class="result-team"><span class="result-logo result-logo--placeholder"><i class="fa-solid fa-users" aria-hidden="true"></i></span><strong>Team Alumni</strong></span></div>
+              <div class="result-score"><strong>3 <i>–</i> 0</strong><span>FINAL SCORE</span></div>
+              <div class="result-date"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Date To Be Announced</div>
+              <span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Completed</span>
+            </article>
+          </div>
+          <h3 class="pdf-additional-title">Additional sports results and awards</h3>
+          <div class="pdf-additional-grid">
+            <article class="research-card"><img class="result-sport-photo" src="../assets/basketball.jpg" alt="" loading="lazy"><p class="sport-caption">BASKETBALL · FRIENDLY ENCOUNTER</p><h3>NSBM hosted USJ in men’s and women’s categories</h3><dl class="research-details"><div><dt>Opponent</dt><dd>University of Sri Jayewardenepura (USJ)</dd></div><div><dt>Venue</dt><dd>NSBM Basketball Court</dd></div><div><dt>Score / date</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/volleyball.jpg" alt="" loading="lazy"><p class="sport-caption">VOLLEYBALL · VICE CHANCELLOR’S CHALLENGE TROPHY</p><h3>Men’s champions; women’s team second runners-up</h3><dl class="research-details"><div><dt>Men’s final</dt><dd>NSBM defeated UOC Old Boys</dd></div><div><dt>Best Player</dt><dd>Ishen Thilochana</dd></div><div><dt>Best Attacker</dt><dd>Dasun Navodya</dd></div><div><dt>Date / venue / score</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/basketball.jpg" alt="" loading="lazy"><p class="sport-caption">BASKETBALL · VICE CHANCELLOR’S CHALLENGE TROPHY</p><h3>Alumni team defeated the current university team</h3><dl class="research-details"><div><dt>Format</dt><dd>Past vs present</dd></div><div><dt>Venue</dt><dd>NSBM Recreational Centre</dd></div><div><dt>Score / date</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/netball.jpg" alt="" loading="lazy"><p class="sport-caption">NETBALL · SLIIT NETBALL TOURNAMENT</p><h3>Chathushi Zoysa named Best Center Court Player</h3><dl class="research-details"><div><dt>Recognition</dt><dd>Best Center Court Player award</dd></div><div><dt>Event date / team result</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/karate.jpg" alt="" loading="lazy"><p class="sport-caption">KARATE · SLIIT SENSHINO INTER-UNIVERSITY CHAMPIONSHIP</p><h3>NSBM earned 14 medals</h3><dl class="research-details"><div><dt>Gold</dt><dd>8</dd></div><div><dt>Silver</dt><dd>1</dd></div><div><dt>Bronze</dt><dd>5</dd></div><div><dt>Event date / venue</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/karate.jpg" alt="" loading="lazy"><p class="sport-caption">KARATE · 9TH SOUTH ASIAN CHAMPIONSHIP</p><h3>Daham Weerasinghe won bronze for Team Sri Lanka</h3><dl class="research-details"><div><dt>Category</dt><dd>Under-21 male individual kumite, −67 kg</dd></div><div><dt>Placement</dt><dd>3rd place</dd></div><div><dt>Event date / venue</dt><dd>Not published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/karate.jpg" alt="" loading="lazy"><p class="sport-caption">KARATE · OPEN CHAMPIONSHIP</p><h3>Daham Weerasinghe took gold</h3><dl class="research-details"><div><dt>Category</dt><dd>Individual male kumite, −67 kg</dd></div><div><dt>Placement</dt><dd>1st place</dd></div><div><dt>Competition date / name</dt><dd>Not further published</dd></div></dl></article>
+            <article class="research-card"><img class="result-sport-photo" src="../assets/karate.jpg" alt="" loading="lazy"><p class="sport-caption">KARATE · NSBM SPORTS FIESTA</p><h3>Inter-house karate championship</h3><dl class="research-details"><div><dt>Houses</dt><dd>Emerald Fighters, Sapphire Heroes, Ruby Adventurers and Citrine Warriors</dd></div><div><dt>Winner / date / venue</dt><dd>Not published</dd></div></dl></article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" aria-labelledby="event-notice-title">
+          <div class="section-heading">
+          <div><p class="section-overline">SPORTS EVENT RECORDS</p><h2 id="event-notice-title">Sports Events</h2></div>
+          <span class="section-count">2 EVENTS</span>
+          </div>
+          <div class="research-card-grid">
+          <article class="research-card" data-event-id="badminton-inter-faculty-2026" data-event-type="tournament" data-sport="badminton" data-event-date="2026-08-04" data-publication-date="2026-07-30">
+              <span class="research-card-icon"><i class="fa-solid fa-shuttlecock" aria-hidden="true"></i></span>
+              <p class="sport-caption">BADMINTON · NSBM</p>
+              <h3>Inter-Faculty Badminton Tournament 2026</h3>
+              <dl class="research-details">
+              <div><dt>Event date / time</dt><dd>4 August 2026, 9:00 AM onward</dd></div>
+              <div><dt>Venue</dt><dd>Recreational Center, NSBM Green University</dd></div>
+              <div><dt>Format / entry</dt><dd>Singles and doubles; open to NSBM students</dd></div>
+              <div><dt>Event status</dt><dd>Date passed; completion and results not verified</dd></div>
+            </dl>
+            <p class="research-note">No registration deadline, match draw, final score or tournament result was found. The past event date does not establish that the event took place.</p>
+            
+          </article>
+          <article class="research-card" data-event-id="nsbm-sports-fiesta-2026" data-event-type="campus-sports-event" data-sport="unspecified" data-publication-date="2026-03-30">
+            <span class="research-card-icon"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></span>
+            <p class="sport-caption">CAMPUS SPORTS EVENT</p>
+            <h3>NSBM Sports Fiesta ’26</h3>
+            <dl class="research-details">
+              <div><dt>Event date</dt><dd>Not published</dd></div>
+              <div><dt>Schedule / results</dt><dd>Not published</dd></div>
+              <div><dt>Event status</dt><dd>Not determined</dd></div>
+            </dl>
+            <p class="research-note">The sports played, event date, venue and results have not been published.</p>
+            
+          </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section" aria-labelledby="achievements-title">
+          <div class="section-heading">
+          <div><p class="section-overline">SPORTS ACHIEVEMENTS</p><h2 id="achievements-title">Tournament Achievements &amp; NSBM Sports Records</h2></div>
+          <span class="section-count">NSBM-PUBLISHED</span>
+          </div>
+          <p class="research-note achievement-disclaimer">Historical placements and achievements are listed separately from current fixtures. Details that were not published remain unspecified.</p>
+          <div class="research-card-grid achievement-grid">
+          <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">BADMINTON · 2025</p>
+              <h3>Colombo Shuttle Saga</h3>
+              <p class="achievement-copy">NSBM finished runners-up at Colombo Shuttle Saga 2025.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">BADMINTON · 2019–2024</p>
+              <h3>Inter-university and club tournament placements</h3>
+              <ul class="achievement-list">
+                <li>USports 2023: boys’ champions; girls’ runners-up</li>
+                <li>USports 2022: male champions; female second runners-up</li>
+                <li>GSF 2024: runners-up; ICBT Smash Down 2024 (girls): second runners-up</li>
+                <li>ICBT Smash Down 2023 (girls): second runners-up</li>
+                <li>SMASHES 2022 and APIIT Extravaganza 2022 (mixed): second runners-up</li>
+                <li>GSF 2019 (Green Shuttle Fiest, as named in the NSBM listing): champions</li>
+              </ul>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">TABLE TENNIS · USPORTS 2022</p>
+              <h3>Mixed-team champions</h3>
+              <p class="achievement-copy">NSBM’s mixed team were champions, with the men’s and women’s teams finishing second at USports 2022.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">NETBALL · UNIVERSITY COMPETITIONS</p>
+              <h3>Inter-university podium finishes</h3>
+              <p class="achievement-copy">NSBM finished second at USports 2022, runners-up at the KDU Leaders Trophy in 2017 and 2018, and second runners-up at CIMA 2017.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">SWIMMING · 2017</p>
+              <h3>Interuniversity Swimming Championship</h3>
+              <p class="achievement-copy">NSBM won the Interuniversity Swimming Championship / USPORTS 2017.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">RUGBY · NSBM CLUB REPORTED RESULTS</p>
+              <h3>Inter-university tournament wins</h3>
+              <p class="achievement-copy">NSBM won Mora 7s, ICBT 7s, KDU 10s and UiTM International, and finished runners-up in the UiTM cup stage. Exact event dates are not available.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+              <p class="sport-caption">MARTIAL ARTS · KARATE</p>
+              <h3>International competition medals</h3>
+              <ul class="achievement-list">
+                <li>25th International Open Karate Championships 2022: 5 gold medals</li>
+                <li>10th Commonwealth Karate Championship: second runners-up</li>
+                <li>Kanninjuku International Karate Championship: 11 medals</li>
+                <li>Peter Gimo Super Cup: 5 gold, 2 silver and 1 bronze medals</li>
+              </ul>
+              <p class="achievement-copy">Dates for the last three results have not been published.</p>
+              
+            </article>
+            <article class="research-card">
+              <span class="research-card-icon"><i class="fa-solid fa-chess" aria-hidden="true"></i></span>
+              <p class="sport-caption">CHESS · 2019, 2022–2023</p>
+              <h3>Inter-university and university titles</h3>
+              <ul class="achievement-list">
+                <li>4th SLIIT Castle Fest 2019: girls’ runners-up; boys’ second runners-up</li>
+                <li>NSBM U-Sports 2019: girls’ champions; boys’ first runners-up</li>
+                <li>2022–2023 season: Sabra Chess Championship title and a first-runners-up finish; the specific event for the latter is unclear</li>
+              </ul>
+              
+            </article>
+          </div>
+        </section>
+        <footer class="portal-footer"><span>NSBM SportsHub</span><span>Student Portal <i class="footer-dot"></i> Matches &amp; Tournaments</span></footer>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="details-dialog" id="details-dialog" aria-labelledby="dialog-title">
+    <form method="dialog"><button class="dialog-close" aria-label="Close details"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></form>
+    <p class="dialog-eyebrow" id="dialog-sport">MATCH DETAILS</p>
+    <h2 id="dialog-title">Match details</h2>
+    <div class="dialog-status" id="dialog-status"></div>
+    <div class="dialog-teams" id="dialog-teams"></div>
+    <dl class="dialog-info">
+      <div><dt>Date</dt><dd id="dialog-date"></dd></div>
+      <div><dt>Time</dt><dd id="dialog-time"></dd></div>
+      <div><dt>Venue</dt><dd id="dialog-venue"></dd></div>
+      <div><dt id="dialog-extra-label"></dt><dd id="dialog-extra"></dd></div>
+    </dl>
+    <form method="dialog"><button class="dialog-done">Done</button></form>
+  </dialog>
+  <div class="toast-message" id="toast-message" role="status" aria-live="polite"></div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

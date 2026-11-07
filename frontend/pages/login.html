@@ -1,16 +1,25 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login - NSBM Sports Hub</title>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSBM Sports Club | Account Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/hero.css">
   <link rel="stylesheet" href="../css/login.css">
+  <link rel="stylesheet" href="../css/responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="../js/theme.js" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -23,7 +32,7 @@
       <a href="../index.html">Home</a>
       <a href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Clubs</a>
       <a href="./event.html">Events</a>
-      <a href="./contact.html">Contact</a>
+   
       <a href="./about.html">About</a>
       <a class="btn btn-small active" href="./login.html">Sign in</a>
     </nav>
@@ -71,18 +80,20 @@
         <form class="login-form" id="loginForm">
           <div class="field">
             <label><i class="fa-solid fa-envelope"></i> Email</label>
-            <input type="email" placeholder="student@nsbm.ac.lk" required>
+            <input type="email" id="loginEmail" name="email"
+       placeholder="student@nsbm.ac.lk" required>
           </div>
           <div class="field">
             <label><i class="fa-solid fa-lock"></i> Password</label>
-            <input type="password" placeholder="••••••••" required>
+            <input type="password" id="loginPassword" name="password"
+       placeholder="Enter your password" required>
           </div>
           <div class="form-options">
             <label class="remember"><input type="checkbox"> Remember me</label>
-            <a href="#">Forgot password?</a>
+            <a href="./forgot-password.html">Forgot password?</a>
           </div>
           <button class="btn btn-login" type="submit">Sign In</button>
-          <p class="signup">Don't have an account? <a href="#">Sign up</a></p>
+          <p class="signup">Don't have an account? <a href="./register.html">Sign up</a></p>
         </form>
       </div>
     </div>
@@ -98,5 +109,7 @@
     <p>&#169; 2026 NSBM <b>GROUP-28</b>. All Rights Reserved.</p>
   </footer>
   <script src="../js/login.js" defer></script>
+   
 </body>
 </html>
+
