@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NSBM Sports Hub | Account Portal</title>
+
+    <link rel="stylesheet" href="login.css">
+    <script src="login.js" defer></script>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <!-- LEFT SIDE -->
+        <div class="welcome-section">
+
+            <div class="logo">
+                <span class="logo-icon">🏆</span>
+                <h2>NSBM <span>SPORTS HUB</span></h2>
+            </div>
+
+            <div class="welcome-content">
+
+                <p class="small-heading">WELCOME TO NSBM SPORTS HUB</p>
+
+                <h1>One Team.<br>
+                    <span>Many Dreams.</span>
+                </h1>
+
+                <p class="welcome-description">
+                    Join our sports community, connect with athletes,
+                    participate in events and discover your potential.
+                </p>
+
+                <div class="sports-list">
+                    <span>⚽ Football</span>
+                    <span>🏏 Cricket</span>
+                    <span>🏀 Basketball</span>
+                    <span>🏐 Volleyball</span>
+                </div>
+
+            </div>
+
+            <div class="welcome-footer">
+                © 2026 NSBM Sports Hub. All Rights Reserved.
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="form-section">
+
+            <div class="form-container">
+
+                <div class="form-heading">
+                    <h2>Account Portal</h2>
+                    <p>Access your NSBM Sports Hub account</p>
+                </div>
+
+
+                <!-- LOGIN / ADMIN TABS -->
+                <div class="tabs">
+
+                    <button class="tab active" data-mode="student">
+                        Student
+                    </button>
+
+                    <button class="tab" data-mode="admin">
+                        Administrator
+                    </button>
+
+                </div>
+
+
+                <!-- STUDENT LOGIN -->
+                <form id="studentLogin" class="portal-form">
+
+                    <h3>Student Login</h3>
+
+                    <p class="form-description">
+                        Welcome back! Please enter your details.
+                    </p>
+
+                    <label for="studentEmail">Student ID or Email</label>
+
+                    <input
+                        type="text"
+                        id="studentEmail"
+                        placeholder="Enter your Student ID or Email"
+                        required
+                    >
+
+                    <label for="studentPassword">Password</label>
+
+                    <div class="password-box">
+                        <input
+                            type="password"
+                            id="studentPassword"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button type="button" class="toggle-password"
+                            data-target="studentPassword">Show</button>
+                    </div>
+
+                    <div class="form-options">
+
+                        <label class="remember">
+                            <input type="checkbox">
+                            Remember me
+                        </label>
+
+                        <a href="#" data-view="forgot">
+                            Forgot password?
+                        </a>
+
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Sign In
+                    </button>
+
+                    <p class="bottom-text">
+                        Don't have an account?
+                        <a href="#" data-view="register">Create Account</a>
+                    </p>
+
+                </form>
+
+
+                <!-- STUDENT REGISTRATION -->
+                <form id="studentRegister" class="portal-form hidden">
+
+                    <h3>Create Student Account</h3>
+
+                    <p class="form-description">
+                        Register and become part of our sports community.
+                    </p>
+
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName"
+                        placeholder="Enter your full name" required>
+
+                    <label for="registerStudentID">Student ID</label>
+                    <input type="text" id="registerStudentID"
+                        placeholder="Enter your student ID" required>
+
+                    <label for="registerEmail">Email Address</label>
+                    <input type="email" id="registerEmail"
+                        placeholder="Enter your email" required>
+
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="tel" id="contactNumber"
+                        placeholder="Enter your contact number" required>
+
+                    <label for="sport">Sport of Interest</label>
+                    <select id="sport" required>
+                        <option value="">Select your sport</option>
+                        <option>Cricket</option>
+                        <option>Football</option>
+                        <option>Basketball</option>
+                        <option>Volleyball</option>
+                        <option>Badminton</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label for="registerPassword">Password</label>
+                    <div class="password-box">
+                        <input type="password" id="registerPassword"
+                            placeholder="Create a password" required>
+                        <button type="button" class="toggle-password"
+                            data-target="registerPassword">Show</button>
+                    </div>
+
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword"
+                        placeholder="Confirm your password" required>
+
+                    <button type="submit" class="submit-btn">
+                        Create Account
+                    </button>
+
+                    <p class="bottom-text">
+                        Already registered?
+                        <a href="#" data-view="login">Sign In</a>
+                    </p>
+
+                </form>
+
+
+                <!-- ADMIN LOGIN -->
+                <form id="adminLogin" class="portal-form hidden">
+
+                    <h3>Administrator Login</h3>
+
+                    <p class="form-description">
+                        Secure access for authorized administrators only.
+                    </p>
+
+                    <label for="adminEmail">Admin Email</label>
+                    <input type="email" id="adminEmail"
+                        placeholder="Enter administrator email" required>
+
+                    <label for="adminPassword">Password</label>
+
+                    <div class="password-box">
+                        <input type="password" id="adminPassword"
+                            placeholder="Enter your password" required>
+
+                        <button type="button" class="toggle-password"
+                            data-target="adminPassword">Show</button>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Admin Sign In
+                    </button>
+
+                    <p class="security-note">
+                        🔒 Protected administrator access
+                    </p>
+
+                </form>
+
+
+                <!-- FORGOT PASSWORD -->
+                <form id="forgotPassword" class="portal-form hidden">
+
+                    <h3>Forgot Password?</h3>
+
+                    <p class="form-description">
+                        Enter your registered email address to request
+                        a password reset.
+                    </p>
+
+                    <label for="resetEmail">Email Address</label>
+
+                    <input type="email" id="resetEmail"
+                        placeholder="Enter your registered email" required>
+
+                    <button type="submit" class="submit-btn">
+                        Request Reset
+                    </button>
+
+                    <p class="bottom-text">
+                        Remember your password?
+                        <a href="#" data-view="login">Back to Login</a>
+                    </p>
+
+                </form>
+
+                <p id="message" class="message" aria-live="polite"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
