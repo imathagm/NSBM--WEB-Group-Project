@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 function sportshubDatabaseConnection(): PDO
 {
-    $host = getenv('NSBM_DB_HOST');
-    $database = getenv('NSBM_DB_NAME');
-    $username = getenv('NSBM_DB_USER');
-    $password = getenv('NSBM_DB_PASSWORD');
+    $host = getenv('NSBM_DB_HOST')?:'localhost';
+    $database = getenv('NSBM_DB_NAME')?:'nsbm_sportshub';
+    $username = getenv('NSBM_DB_USER')?:'root';
+    $password = getenv('NSBM_DB_PASSWORD')?:'';
     $port = getenv('NSBM_DB_PORT') ?: '3306';
 
     if ($host === false || $database === false || $username === false) {
