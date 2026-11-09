@@ -622,36 +622,38 @@ input:focus-visible {
     color: #c2d0c5;
 }
 
-.site-footer__brand .social {
+.site-footer > .social {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 20px;
+    width: min(100% - 64px, var(--content-width));
+    margin: 0 auto;
+    align-items: center;
+    gap: 1rem;
 }
 
-.site-footer__brand .social a {
+.site-footer > .social a {
     display: grid;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 3rem;
+    height: 3rem;
     place-items: center;
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 50%;
     color: var(--medal);
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     text-decoration: none;
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.site-footer__brand .social a:hover {
+.site-footer > .social a:hover {
     border-color: #9ca3af;
     background: rgba(255, 255, 255, 0.12);
     color: #9ca3af;
 }
 
-.site-footer__brand .social a:focus-visible {
+.site-footer > .social a:focus-visible {
     outline: 3px solid #9ca3af;
     outline-offset: 3px;
 }
+
 .club-dialog {
     border-color: var(--line);
     border-radius: 8px;
@@ -705,15 +707,11 @@ input:focus-visible {
         font-size: 1.1rem;
     }
 
-   .site-header nav {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 8px;
+    .site-header nav {
         width: 100%;
+        justify-content: flex-start;
+        gap: 0.15rem;
     }
-}
 
     .theme-switch {
         align-self: flex-end;
@@ -753,7 +751,10 @@ input:focus-visible {
         right: 20px;
     }
 
-  
+    .site-footer > .social {
+     margin-top: -15px;
+    }
+}
 
 @media (max-width: 380px) {
     .club-card {
@@ -832,11 +833,11 @@ input:focus-visible {
     background: var(--paper);
 }
 
-@media (max-width: 760px) {
-       .site-header {
-        padding: 12px 4%;
-        gap: 10px;
+@media (max-width: 900px) {
+    .site-header {
+        gap: 0.7rem;
     }
+
     .theme-switch {
         gap: 0.25rem;
     }

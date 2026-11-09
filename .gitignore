@@ -1,0 +1,4 @@
+backend/config/mail-config.php
+backend/vendor/
+.env
+*.log

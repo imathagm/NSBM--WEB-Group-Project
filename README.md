@@ -1,61 +1,27 @@
-# NSBM Sports Hub
+# NSBM--WEB-Group-Project
+ NSBM web Group -28  ,-----"sports hub management system"
 
-## Account portal
+## Forgot / Reset Password Feature
 
-The account portal is kept in `frontend/login/`; the existing club site remains
-in place. The home page links to student sign-in/registration and the separate
-administrator sign-in page. PHP endpoints use the shared database and session
-helpers in `backend/config/`.
+### What was added
+- Forgot password page: user enters their email, and a reset link is sent to it
+- Reset password page: user opens the link from the email and sets a new password
+- Email sending with PHPMailer (installed via Composer), using Gmail SMTP
+- Database: nsbm_sportshub (reset token handling)
 
-### Local setup
+### Files
+- backend/api/forgot-password.php: handles the reset request and sends the email
+- backend/config/mail-config.php: SMTP settings (NOT pushed to GitHub)
+- backend/composer.json and composer.lock: PHPMailer dependency (v6.12.0)
+- backend/vendor/: installed packages (NOT pushed to GitHub)
 
-1. Install PHP with `pdo_mysql` enabled, MySQL, and a web server capable of
-   executing PHP. From the repository root, import the schema. On PowerShell:
+### Setup for this feature
+1. Run composer install inside the backend folder
+2. Create backend/config/mail-config.php with your own Gmail address and
+   App Password (the file is in .gitignore)
+3. Make sure Apache and MySQL are running in XAMPP
+4. Test at http://localhost/NSBM--WEB-Group-Project/frontend/pages/
 
-   ```powershell
-   Get-Content .\backend\database\schema.sql | mysql -u root -p
-   ```
-
-2. Configure these environment variables for the PHP/web-server process. The
-   database password belongs only in the server environment, never in frontend
-   files:
-
-   ```powershell
-   $env:NSBM_DB_HOST = "127.0.0.1"
-   $env:NSBM_DB_NAME = "nsbm_sports_hub"
-   $env:NSBM_DB_USER = "your_mysql_user"
-   $env:NSBM_DB_PASSWORD = "your_mysql_password"
-   $env:NSBM_APP_BASE_URL = "http://localhost:8000"
-   ```
-
-   `NSBM_APP_BASE_URL` must be the externally reachable base URL of the site;
-   use HTTPS in production. Password recovery sends email through PHP's
-   configured `mail()` transport. Configure and test that transport before
-   enabling account recovery in a deployed environment.
-
-3. Configure the web document root as `frontend/`. For local development, set
-   the environment variables in the same terminal session and run:
-
-   ```powershell
-   php -S localhost:8000 -t .\frontend
-   ```
-
-   Open `http://localhost:8000/index.html`. PHP must be available through a
-   PHP-enabled web server; opening the files directly or using a static-only
-   server will not run authentication.
-
-4. Create the first administrator from a terminal in the repository root:
-
-   ```powershell
-   php .\backend\database\create_admin.php
-   ```
-
-   This CLI-only script stores only a `password_hash()` result and rejects
-   duplicate administrator email addresses. Create additional administrators
-   through the same controlled process.
-
-The portal includes server-side student registration and login, a 30-day
-remember-me token stored only as a hash, separate administrator sessions,
-CSRF protection, protected dashboards, and one-hour single-use password reset
-tokens. Reset requests intentionally return the same response whether or not
-an email address is registered.
+### Notes
+- mail-config.php and vendor/ are ignored by Git, so every member must set them up locally
+- A separate project-only Gmail account is used for sending emails

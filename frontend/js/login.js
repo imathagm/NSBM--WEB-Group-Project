@@ -1,6 +1,6 @@
 
 const forms = {
-    login: document.getElementById("studentLogin"),
+    login: document.getElementById("studentLogin") || document.getElementById("loginForm"),
     register: document.getElementById("studentRegister"),
     admin: document.getElementById("adminLogin"),
     forgot: document.getElementById("forgotPassword")
@@ -33,6 +33,7 @@ const descriptions = {
 let currentView = "login";
 
 function showNotice(message, type = "success") {
+    if (!notice) return;
     notice.textContent = message;
     notice.className = "notice";
 
@@ -44,6 +45,7 @@ function showNotice(message, type = "success") {
 }
 
 function hideNotice() {
+    if (!notice) return;
     notice.hidden = true;
     notice.textContent = "";
     notice.className = "notice";
@@ -56,11 +58,11 @@ function showView(view) {
     hideNotice();
 
     Object.entries(forms).forEach(([name, form]) => {
-        form.hidden = name !== view;
+        if (form) form.hidden = name !== view;
     });
 
-    pageTitle.textContent = descriptions[view][0];
-    pageDescription.textContent = descriptions[view][1];
+    if (pageTitle) pageTitle.textContent = descriptions[view][0];
+    if (pageDescription) pageDescription.textContent = descriptions[view][1];
 
     tabs.forEach(tab => {
         const active =
@@ -95,7 +97,7 @@ document.querySelectorAll(".show-password").forEach(button => {
 });
 
 // Student login: frontend interface only.
-forms.login.addEventListener("submit", event => {
+if (forms.login) forms.login.addEventListener("submit", event => {
     event.preventDefault();
 
     showNotice(
@@ -106,7 +108,7 @@ forms.login.addEventListener("submit", event => {
 });
 
 // Student registration: validate input without storing credentials.
-forms.register.addEventListener("submit", event => {
+if (forms.register) forms.register.addEventListener("submit", event => {
     event.preventDefault();
 
     const password = document.getElementById("registerPassword").value;
@@ -137,7 +139,7 @@ forms.register.addEventListener("submit", event => {
 });
 
 // Admin login: real authorization must happen on the server.
-forms.admin.addEventListener("submit", event => {
+if (forms.admin) forms.admin.addEventListener("submit", event => {
     event.preventDefault();
 
     showNotice(
@@ -148,7 +150,7 @@ forms.admin.addEventListener("submit", event => {
 });
 
 // Password recovery: no email is sent by this frontend.
-forms.forgot.addEventListener("submit", event => {
+if (forms.forgot) forms.forgot.addEventListener("submit", event => {
     event.preventDefault();
 
     showNotice(
