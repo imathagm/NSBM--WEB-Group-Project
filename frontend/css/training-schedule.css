@@ -1,0 +1,695 @@
+/* =========================================
+   TRAINING SCHEDULE PAGE
+========================================= */
+
+:root {
+  --training-green: #70c21f;
+  --training-green-dark: #4f9415;
+  --training-text: #26352b;
+  --training-muted: #7b887f;
+  --training-border: #e5ece7;
+  --training-card: #ffffff;
+  --training-background: #f5f8f6;
+}
+
+
+/* PAGE INTRODUCTION */
+
+.page-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.page-intro h1 {
+  margin: 8px 0;
+  font-family: "Sora", sans-serif;
+  font-size: 30px;
+  color: var(--training-text);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--training-green-dark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.eyebrow-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--training-green);
+}
+
+.intro-copy {
+  max-width: 600px;
+  color: var(--training-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.season-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 16px;
+  border: 1px solid var(--training-border);
+  border-radius: 30px;
+  background: var(--training-card);
+  color: var(--training-text);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.season-chip i {
+  color: var(--training-green-dark);
+}
+
+
+/* SUMMARY CARDS */
+
+.nt-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.nt-stat {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 100px;
+  padding: 20px;
+  border: 1px solid var(--training-border);
+  border-radius: 15px;
+  background: var(--training-card);
+}
+
+.nt-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  font-size: 19px;
+}
+
+.nt-stat--green .nt-stat-icon {
+  background: #edf8e5;
+  color: #5caa1b;
+}
+
+.nt-stat--amber .nt-stat-icon {
+  background: #fff5df;
+  color: #d69a22;
+}
+
+.nt-stat--blue .nt-stat-icon {
+  background: #eaf3ff;
+  color: #4d8edb;
+}
+
+.nt-stat strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--training-text);
+  font-family: "Sora", sans-serif;
+  font-size: 23px;
+}
+
+.nt-stat div span {
+  color: var(--training-muted);
+  font-size: 12px;
+}
+
+
+/* FILTER PANEL */
+
+.filter-panel {
+  display: flex;
+  align-items: end;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding: 20px;
+  border: 1px solid var(--training-border);
+  border-radius: 15px;
+  background: var(--training-card);
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  align-self: center;
+  margin-right: auto;
+  color: var(--training-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.filter-title i {
+  color: var(--training-green-dark);
+}
+
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 155px;
+}
+
+.filter-control span {
+  color: var(--training-muted);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.filter-control select {
+  min-width: 155px;
+  padding: 11px 13px;
+  border: 1px solid var(--training-border);
+  border-radius: 9px;
+  outline: none;
+  background: var(--training-background);
+  color: var(--training-text);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter-control select:focus {
+  border-color: var(--training-green);
+}
+
+.reset-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 15px;
+  border: 1px solid var(--training-border);
+  border-radius: 9px;
+  background: var(--training-card);
+  color: var(--training-text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reset-filters:hover {
+  border-color: var(--training-green);
+  color: var(--training-green-dark);
+}
+
+
+/* SECTION HEADING */
+
+.dashboard-section {
+  margin-bottom: 28px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.section-overline {
+  margin-bottom: 5px;
+  color: var(--training-green-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  color: var(--training-text);
+  font-family: "Sora", sans-serif;
+  font-size: 20px;
+}
+
+.section-count {
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: #edf8e5;
+  color: var(--training-green-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+
+
+/* TRAINING SESSION CARDS */
+
+.training-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.training-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid var(--training-border);
+  border-radius: 15px;
+  background: var(--training-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.training-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(30, 60, 40, 0.07);
+}
+
+.training-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 65px;
+  height: 75px;
+  border-radius: 12px;
+  background: #edf8e5;
+  color: var(--training-green-dark);
+}
+
+.training-date span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.training-date strong {
+  margin: 2px 0;
+  font-family: "Sora", sans-serif;
+  font-size: 22px;
+}
+
+.training-date small {
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.training-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.training-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.sport-tag,
+.session-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.badminton-tag {
+  background: #eaf4ff;
+  color: #397bbd;
+}
+
+.basketball-tag {
+  background: #fff1e5;
+  color: #d47a2b;
+}
+
+.football-tag {
+  background: #eaf7eb;
+  color: #3b914b;
+}
+
+.cricket-tag {
+  background: #f1ebff;
+  color: #7956b5;
+}
+
+.session-status {
+  background: #edf8e5;
+  color: #4f9415;
+}
+
+.training-details h3 {
+  margin: 0 0 10px;
+  color: var(--training-text);
+  font-family: "Sora", sans-serif;
+  font-size: 15px;
+}
+
+.training-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.training-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--training-muted);
+  font-size: 11px;
+}
+
+.training-meta i {
+  color: var(--training-green-dark);
+}
+
+.training-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  font-size: 21px;
+}
+
+.badminton-icon {
+  background: #eaf4ff;
+  color: #397bbd;
+}
+
+.basketball-icon {
+  background: #fff1e5;
+  color: #d47a2b;
+}
+
+.football-icon {
+  background: #eaf7eb;
+  color: #3b914b;
+}
+
+.cricket-icon {
+  background: #f1ebff;
+  color: #7956b5;
+}
+
+
+/* EMPTY STATE */
+
+.empty-state {
+  padding: 45px 20px;
+  border: 1px dashed var(--training-border);
+  border-radius: 15px;
+  background: var(--training-card);
+  text-align: center;
+}
+
+.empty-state[hidden] {
+  display: none;
+}
+
+.empty-state > i {
+  margin-bottom: 13px;
+  color: var(--training-muted);
+  font-size: 30px;
+}
+
+.empty-state h3 {
+  margin-bottom: 7px;
+  color: var(--training-text);
+  font-family: "Sora", sans-serif;
+  font-size: 16px;
+}
+
+.empty-state p {
+  color: var(--training-muted);
+  font-size: 13px;
+}
+
+
+/* TRAINING REMINDER */
+
+.training-reminder {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 28px 0;
+  padding: 20px;
+  border: 1px solid #e2eed9;
+  border-radius: 14px;
+  background: #f2f8ed;
+}
+
+.reminder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e2f1d6;
+  color: var(--training-green-dark);
+}
+
+.training-reminder h3 {
+  margin-bottom: 6px;
+  color: var(--training-text);
+  font-family: "Sora", sans-serif;
+  font-size: 14px;
+}
+
+.training-reminder p {
+  margin: 0;
+  color: #68796d;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+
+/* FOOTER */
+
+.portal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 35px;
+  padding: 20px 0;
+  border-top: 1px solid var(--training-border);
+  color: var(--training-muted);
+  font-size: 11px;
+}
+
+.footer-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 7px 2px;
+  border-radius: 50%;
+  background: var(--training-green);
+}
+
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 900px) {
+
+  .nt-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filter-title {
+    width: 100%;
+  }
+
+  .filter-control {
+    flex: 1;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .page-intro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-intro h1 {
+    font-size: 24px;
+  }
+
+  .nt-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .nt-stat {
+    min-height: 80px;
+  }
+
+  .filter-panel {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .filter-control,
+  .filter-control select {
+    width: 100%;
+  }
+
+  .reset-filters {
+    justify-content: center;
+  }
+
+  .training-card {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .training-date {
+    width: 52px;
+    height: 65px;
+  }
+
+  .training-date strong {
+    font-size: 18px;
+  }
+
+  .training-details h3 {
+    font-size: 13px;
+  }
+
+  .training-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .training-icon {
+    display: none;
+  }
+
+  .section-heading h2 {
+    font-size: 17px;
+  }
+
+  .portal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+
+/* DARK THEME */
+
+html[data-theme="dark"] {
+  --training-text: #e8f0e9;
+  --training-muted: #a3b2a7;
+  --training-border: #34443a;
+  --training-card: #202d25;
+  --training-background: #18221c;
+}
+
+html[data-theme="dark"] .page-intro h1,
+html[data-theme="dark"] .section-heading h2,
+html[data-theme="dark"] .training-details h3,
+html[data-theme="dark"] .nt-stat strong,
+html[data-theme="dark"] .training-reminder h3,
+html[data-theme="dark"] .empty-state h3 {
+  color: var(--training-text);
+}
+
+html[data-theme="dark"] .season-chip,
+html[data-theme="dark"] .filter-panel,
+html[data-theme="dark"] .training-card,
+html[data-theme="dark"] .empty-state {
+  background: var(--training-card);
+  border-color: var(--training-border);
+}
+
+html[data-theme="dark"] .filter-control select {
+  background: var(--training-background);
+  border-color: var(--training-border);
+  color: var(--training-text);
+}
+
+html[data-theme="dark"] .reset-filters {
+  background: var(--training-card);
+  border-color: var(--training-border);
+  color: var(--training-text);
+}
+
+html[data-theme="dark"] .training-reminder {
+  background: #26372a;
+  border-color: #3c5940;
+}
+
+html[data-theme="dark"] .training-reminder p {
+  color: #bdcdbf;
+}
+
+html[data-theme="dark"] .nt-stat--green .nt-stat-icon {
+  background: #2b432b;
+}
+
+html[data-theme="dark"] .nt-stat--amber .nt-stat-icon {
+  background: #493d27;
+}
+
+html[data-theme="dark"] .nt-stat--blue .nt-stat-icon {
+  background: #293d50;
+}
+
+html[data-theme="dark"] .training-date {
+  background: #2b432b;
+}
+
+html[data-theme="dark"] .section-count,
+html[data-theme="dark"] .session-status {
+  background: #2b432b;
+  color: #a7df7b;
+}
+
+html[data-theme="dark"] .badminton-tag,
+html[data-theme="dark"] .badminton-icon {
+  background: #263b50;
+}
+
+html[data-theme="dark"] .basketball-tag,
+html[data-theme="dark"] .basketball-icon {
+  background: #493628;
+}
+
+html[data-theme="dark"] .football-tag,
+html[data-theme="dark"] .football-icon {
+  background: #293f2c;
+}
+
+html[data-theme="dark"] .cricket-tag,
+html[data-theme="dark"] .cricket-icon {
+  background: #3a3150;
+}
