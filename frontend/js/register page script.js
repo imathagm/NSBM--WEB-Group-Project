@@ -1,4 +1,4 @@
-/* NSBM SportsHub - Club Registration (browser-only assignment demo) */
+
 
 "use strict";
 
