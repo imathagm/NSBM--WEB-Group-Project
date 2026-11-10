@@ -1,0 +1,198 @@
+
+/* =================================
+   NSBM SPORTS HUB
+   RESPONSIVE DESIGN
+================================= */
+
+/* Tablet and smaller screens */
+@media (max-width: 1024px) {
+
+    .section {
+        padding: 3rem 4vw;
+    }
+
+    .hero {
+        padding: 3rem 4vw;
+    }
+
+    .two-col {
+        gap: 2rem;
+    }
+
+}
+
+/* Mobile screens */
+@media (max-width: 760px) {
+
+    /* Header */
+    .site-header {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .brand-text {
+        font-size: 1.3rem;
+    }
+
+    .brand-logo {
+        width: 3rem;
+        height: 3rem;
+    }
+
+   .site-header nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+}
+
+    /* Hero */
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero-word {
+        font-size: 20vw;
+    }
+
+    /* Layouts */
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .club-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Buttons */
+    .hero-actions {
+        flex-wrap: wrap;
+        gap: 0.7rem;
+    }
+
+    /* Sections */
+    .section,
+    .cta {
+        padding: 2.5rem 5vw;
+    }
+
+    /* Footer */
+    .site-footer {
+        padding: 1.5rem 5vw;
+    }
+
+}
+/* Mobile Navigation */
+@media (max-width: 760px) {
+
+    .site-header {
+        padding: 12px 4%;
+        gap: 10px;
+    }
+
+    .brand-text {
+        font-size: 1.1rem;
+    }
+
+    .brand-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .site-header nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .site-header nav a:not(.btn) {
+        font-size: 13px;
+        padding: 5px 8px;
+    }
+
+    .site-header nav .btn {
+        font-size: 13px;
+        padding: 5px 12px;
+    }
+}
+
+/* Shared public-site mobile safeguards */
+@media (max-width: 760px) {
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    img, video, canvas, svg {
+        max-width: 100%;
+    }
+
+    .site-header {
+        min-width: 0;
+        height: auto;
+        padding: 0.65rem 4%;
+    }
+
+    .site-header .brand {
+        min-width: 0;
+        gap: 0.45rem;
+    }
+
+    .site-header .brand-text {
+        overflow: hidden;
+        max-width: calc(100vw - 5rem);
+        font-size: clamp(0.82rem, 4vw, 1.05rem);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .site-header nav {
+        order: 3;
+        min-width: 0;
+        max-width: 100%;
+        padding-top: 0.1rem;
+    }
+
+    .site-header nav a {
+        min-width: 0;
+        text-align: center;
+    }
+
+    .theme-switch {
+        margin-left: auto;
+    }
+
+    .section,
+    .cta,
+    .hero {
+        padding-inline: 4vw;
+    }
+
+    .two-col,
+    .club-grid,
+    .steps {
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .fixtures li {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    input, select, textarea {
+        min-width: 0;
+        max-width: 100%;
+    }
+}

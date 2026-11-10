@@ -752,7 +752,7 @@ input:focus-visible {
     }
 
     .site-footer > .social {
-        width: calc(100% - 40px);
+     margin-top: -15px;
     }
 }
 

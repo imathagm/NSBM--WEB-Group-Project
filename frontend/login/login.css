@@ -1,0 +1,373 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #101b1a;
+    min-height: 100vh;
+}
+
+.page-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* LEFT WELCOME SECTION */
+
+.welcome-section {
+    width: 48%;
+    background:
+        linear-gradient(rgba(7, 25, 20, 0.88), rgba(7, 25, 20, 0.93)),
+        url("https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=85");
+
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+    padding: 45px 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 35px;
+}
+
+.logo h2 {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.logo h2 span {
+    color: #70e0a1;
+}
+
+.welcome-content {
+    max-width: 500px;
+}
+
+.small-heading {
+    color: #70e0a1;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.welcome-content h1 {
+    font-size: clamp(38px, 5vw, 62px);
+    line-height: 1.15;
+    margin-bottom: 22px;
+}
+
+.welcome-content h1 span {
+    color: #70e0a1;
+}
+
+.welcome-description {
+    color: #c6d5ce;
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 430px;
+}
+
+.sports-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.sports-list span {
+    padding: 11px 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 25px;
+    background: rgba(255,255,255,0.08);
+    font-size: 13px;
+}
+
+.welcome-footer {
+    color: #9baea4;
+    font-size: 12px;
+}
+
+
+/* RIGHT FORM SECTION */
+
+.form-section {
+    width: 52%;
+    background: #f5f8f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.form-heading {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.form-heading h2 {
+    color: #14251d;
+    font-size: 29px;
+    margin-bottom: 10px;
+}
+
+.form-heading p {
+    color: #77847d;
+    font-size: 14px;
+}
+
+
+/* TABS */
+
+.tabs {
+    display: flex;
+    background: #e8eeea;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 28px;
+}
+
+.tab {
+    width: 50%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #637168;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: #176b43;
+    color: white;
+}
+
+
+/* FORMS */
+
+.portal-form h3 {
+    font-size: 23px;
+    color: #172a20;
+    margin-bottom: 8px;
+}
+
+.form-description {
+    color: #7d8981;
+    font-size: 13px;
+    margin-bottom: 23px;
+    line-height: 1.6;
+}
+
+.portal-form label {
+    display: block;
+    color: #34443a;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+.portal-form input,
+.portal-form select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dce4de;
+    border-radius: 8px;
+    background: white;
+    outline: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: #24352b;
+}
+
+.portal-form input:focus,
+.portal-form select:focus {
+    border-color: #258858;
+    box-shadow: 0 0 0 3px rgba(37,136,88,0.10);
+}
+
+
+/* PASSWORD */
+
+.password-box {
+    display: flex;
+    position: relative;
+}
+
+.password-box input {
+    padding-right: 65px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #176b43;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+
+/* FORM OPTIONS */
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 17px 0 23px;
+    gap: 10px;
+}
+
+.form-options .remember {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.remember input {
+    width: auto;
+}
+
+.form-options a,
+.bottom-text a {
+    color: #176b43;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+
+/* BUTTON */
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #176b43;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 22px;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background: #105333;
+    transform: translateY(-2px);
+}
+
+.bottom-text {
+    text-align: center;
+    margin-top: 23px;
+    color: #78847c;
+    font-size: 12px;
+}
+
+.security-note {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #6a796f;
+}
+
+.message {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 13px;
+    color: #176b43;
+    line-height: 1.5;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* MOBILE RESPONSIVE DESIGN */
+
+@media (max-width: 850px) {
+
+    .page-container {
+        flex-direction: column;
+    }
+
+    .welcome-section {
+        width: 100%;
+        min-height: 350px;
+        padding: 30px;
+    }
+
+    .welcome-content {
+        margin: 55px 0 35px;
+    }
+
+    .welcome-content h1 {
+        font-size: 42px;
+    }
+
+    .welcome-footer {
+        margin-top: 20px;
+    }
+
+    .form-section {
+        width: 100%;
+        padding: 45px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .welcome-section {
+        min-height: 320px;
+        padding: 25px;
+    }
+
+    .welcome-content h1 {
+        font-size: 36px;
+    }
+
+    .form-heading h2 {
+        font-size: 25px;
+    }
+
+    .sports-list {
+        gap: 8px;
+    }
+
+    .sports-list span {
+        font-size: 11px;
+        padding: 9px 12px;
+    }
+}
