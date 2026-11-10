@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Profile | NSBM SportsHub</title>
+  <script>
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem('sportshub-theme'); } catch (error) {}
+      if (!theme) theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="dashboard.css?v=2">
+  <link rel="stylesheet" href="profile.css?v=2">
+</head>
+<body class="profile-standalone">
+  <header class="topbar profile-topbar">
+    <a class="brand" href="dashboard.html"><i class="fas fa-graduation-cap" aria-hidden="true"></i> NSBM SPORTS HUB</a>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark theme">
+        <i class="fas fa-moon" aria-hidden="true"></i>
+      </button>
+      <a class="profile-back-link" href="dashboard.html"><i class="fas fa-arrow-left" aria-hidden="true"></i> Dashboard</a>
+    </div>
+  </header>
+
+  <main class="profile-standalone-main">
+    <nav class="profile-breadcrumbs" aria-label="Breadcrumb">
+      <a href="dashboard.html">Dashboard</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <span aria-current="page">My profile</span>
+    </nav>
+
+    <div class="profile-page-head">
+      <div>
+        <span class="profile-eyebrow">MY ACCOUNT</span>
+        <h1>Student Profile</h1>
+        <p>Manage your student information and sports interests.</p>
+      </div>
+      <span class="profile-page-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
+    </div>
+
+    <p class="profile-demo-note"><i class="fas fa-circle-info" aria-hidden="true"></i> Preview profile: sample details and edits are saved in this browser only, not to a student account database.</p>
+
+    <section class="profile-component" aria-labelledby="profile-card-heading">
+      <div class="profile-card">
+        <div class="profile-top">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar" id="profileAvatar" aria-hidden="true">S</div>
+            <img class="profile-photo" id="profilePhoto" alt="Student profile photo" hidden>
+            <label class="profile-photo-control" for="profilePhotoInput">Change photo</label>
+            <input class="profile-photo-input" type="file" id="profilePhotoInput" accept="image/png,image/jpeg,image/webp" aria-label="Upload a profile photo">
+          </div>
+          <div class="profile-identity">
+            <h2 id="profileDisplayName">Student Name</h2>
+            <p><i class="fas fa-graduation-cap" aria-hidden="true"></i> NSBM Green University</p>
+            <span class="profile-status"><i class="fas fa-circle-check" aria-hidden="true"></i> Active Member</span>
+          </div>
+          <button class="profile-edit-button" type="button" id="profileEditButton"><i class="fas fa-pen" aria-hidden="true"></i> Edit Profile</button>
+        </div>
+
+        <form class="profile-form" id="profileForm">
+          <div class="profile-form-heading">
+            <div class="profile-section-icon" aria-hidden="true"><i class="fas fa-address-card"></i></div>
+            <div>
+              <h2 id="profile-card-heading">Student information</h2>
+              <p>Personal and academic details associated with your profile.</p>
+            </div>
+          </div>
+
+          <div class="profile-form-grid">
+            <section class="profile-form-section" aria-labelledby="profile-personal-heading">
+              <h3 id="profile-personal-heading"><i class="fas fa-user" aria-hidden="true"></i> Personal details</h3>
+              <div class="profile-section-grid">
+                <div class="profile-field">
+                  <label for="profileFullName">Full Name</label>
+                  <input type="text" id="profileFullName" name="fullName" value="Student Name" maxlength="120" autocomplete="name" disabled required>
+                </div>
+                <div class="profile-field">
+                  <label for="profileStudentId">Student ID</label>
+                  <input type="text" id="profileStudentId" value="NSBM0001" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileEmail">Email Address</label>
+                  <input type="email" id="profileEmail" name="email" value="student@nsbm.ac.lk" maxlength="254" autocomplete="email" disabled required>
+                </div>
+                <div class="profile-field">
+                  <label for="profileContact">Contact Number</label>
+                  <input type="tel" id="profileContact" name="contact" value="0771234567" maxlength="30" autocomplete="tel" inputmode="tel" disabled required>
+                </div>
+              </div>
+            </section>
+
+            <section class="profile-form-section" aria-labelledby="profile-academic-heading">
+              <h3 id="profile-academic-heading"><i class="fas fa-book-open" aria-hidden="true"></i> Academic &amp; sports</h3>
+              <div class="profile-section-grid">
+                <div class="profile-field">
+                  <label for="profileFaculty">Faculty</label>
+                  <input type="text" id="profileFaculty" value="Computing" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileDegree">Degree Programme</label>
+                  <input type="text" id="profileDegree" value="BSc (Hons) in Computing" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileAcademicYear">Academic Year</label>
+                  <input type="text" id="profileAcademicYear" value="Year 1" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileSport">Sport of Interest</label>
+                  <select id="profileSport" name="sport" disabled>
+                    <option>Football</option>
+                    <option>Cricket</option>
+                    <option>Basketball</option>
+                    <option>Volleyball</option>
+                    <option>Badminton</option>
+                    <option>Swimming</option>
+                    <option>Athletics</option>
+                  </select>
+                </div>
+                <div class="profile-field">
+                  <label for="profileMembershipType">Membership Type</label>
+                  <input type="text" id="profileMembershipType" value="Student Member" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileMembershipStatus">Membership Status</label>
+                  <input type="text" id="profileMembershipStatus" value="Active" disabled readonly>
+                </div>
+                <div class="profile-field">
+                  <label for="profileRegistrationDate">Registration Date</label>
+                  <input type="text" id="profileRegistrationDate" value="01 January 2026" disabled readonly>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="profile-form-actions">
+            <button class="profile-save-button" type="submit" id="profileSaveButton" hidden><i class="fas fa-check" aria-hidden="true"></i> Save Changes</button>
+            <button class="profile-cancel-button" type="button" id="profileCancelButton" hidden>Cancel</button>
+          </div>
+          <p class="profile-message" id="profileMessage" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="profile-standalone-footer">© 2026 NSBM SportsHub <span>·</span> Student portal</footer>
+  <script src="profile.js?v=2"></script>
+</body>
+</html>
