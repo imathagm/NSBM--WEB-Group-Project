@@ -2,7 +2,8 @@
 
 This folder contains nine standalone Admin Portal entry pages. They share the
 same header, sidebar, theme, responsive layout, and page interactions through
-`admin.css` and `admin.js`.
+[`../app.css`](../app.css) and `admin.js`. The Admin Portal styles are scoped
+under the `data-css-page="admin-portal"` page group in the shared stylesheet.
 
 ## Pages
 

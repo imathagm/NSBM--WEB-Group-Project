@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-css-page="student-training">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,10 +14,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Shared student portal styles -->
-  <link rel="stylesheet" href="../css/notifications.css">
+  <link rel="stylesheet" href="../app.css">
 
   <!-- Training schedule styles -->
-  <link rel="stylesheet" href="../css/training-schedule.css">
+
 </head>
 
 <body>
@@ -54,7 +54,7 @@
     </a>
 
     <a class="icon-btn profile-button"
-      href="profile.html" aria-label="My profile">
+      href="dashboard.html#profile" aria-label="My profile">
       <i class="fa-solid fa-circle-user"></i>
     </a>
 
@@ -80,17 +80,17 @@
         <span>Dashboard</span>
       </a>
 
-      <a href="profile.html" class="sidebar-link">
+      <a href="dashboard.html#profile" class="sidebar-link">
         <i class="fa-regular fa-user"></i>
         <span>My Profile</span>
       </a>
 
-      <a href="join-club.html" class="sidebar-link">
+      <a href="dashboard.html#join-club" class="sidebar-link">
         <i class="fa-solid fa-circle-plus"></i>
         <span>Join a Club</span>
       </a>
 
-      <a href="my-applications.html" class="sidebar-link">
+      <a href="dashboard.html#applications" class="sidebar-link">
         <i class="fa-regular fa-rectangle-list"></i>
         <span>My Applications</span>
       </a>
@@ -529,6 +529,8 @@
 
 
 <!-- Shared portal JavaScript -->
+<script src="../js/auth-api.js" defer></script>
+<script src="auth.js" defer></script>
 <script src="../js/notifications.js" defer></script>
 
 <!-- Training schedule JavaScript -->

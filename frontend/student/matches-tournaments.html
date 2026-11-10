@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-css-page="student-matches">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../app.css">
 </head>
 <body>
   <header class="portal-header">
@@ -22,6 +22,7 @@
       <img src="../assets/nsbm.jpg" alt="">
       <span>NSBM <strong>SPORTSHUB</strong><small>STUDENT PORTAL</small></span>
     </a>
+    <span class="header-title">STUDENT PORTAL</span>
     <div class="header-student">
       <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
         <i class="fa-solid fa-moon" aria-hidden="true"></i>
@@ -29,9 +30,9 @@
       <a class="icon-btn notification-button" href="notifications.html" aria-label="Notifications">
         <i class="fa-solid fa-bell" aria-hidden="true"></i>
       </a>
-      <button class="icon-btn profile-button" type="button" aria-label="My profile" data-portal-link>
+      <a class="icon-btn profile-button" href="dashboard.html#profile" aria-label="My profile">
         <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
-      </button>
+      </a>
     </div>
   </header>
 
@@ -40,11 +41,11 @@
     <aside class="portal-sidebar" id="portal-sidebar" aria-label="Student portal navigation">
       <div class="sidebar-heading">STUDENT PORTAL</div>
       <nav class="sidebar-nav">
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-house" aria-hidden="true"></i><span>Dashboard</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-user" aria-hidden="true"></i><span>My Profile</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span>Join a Club</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span>My Applications</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><span>Training Schedule</span></a>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Dashboard</span></a>
+        <a href="dashboard.html#profile" class="sidebar-link"><i class="fa-regular fa-user" aria-hidden="true"></i><span>My Profile</span></a>
+        <a href="dashboard.html#join-club" class="sidebar-link"><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span>Join a Club</span></a>
+        <a href="dashboard.html#applications" class="sidebar-link"><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span>My Applications</span></a>
+        <a href="training-schedule.html" class="sidebar-link"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><span>Training Schedule</span></a>
         <a href="notifications.html" class="sidebar-link"><i class="fa-regular fa-bell" aria-hidden="true"></i><span>Notifications</span></a>
         <a href="#matches" class="sidebar-link is-active" aria-current="page"><i class="fa-solid fa-trophy" aria-hidden="true"></i><span>Matches &amp; Tournaments</span></a>
       </nav>
@@ -284,7 +285,7 @@
                 <div><dt>Player of the Tournament</dt><dd>Amoda Vidanapathirana</dd></div>
                 <div><dt>Event date / venue</dt><dd>Not published</dd></div>
               </dl>
-              
+
             </article>
             <article class="research-card pdf-match-card">
               <div class="card-topline"><span class="sport-tag"><img class="sport-photo-icon" src="../assets/cricket.jpg" alt=""> Cricket · completed</span><span class="status-tag status-completed"><i class="fa-solid fa-check" aria-hidden="true"></i> Final</span></div>
@@ -296,7 +297,7 @@
                 <div><dt>Bowling highlights</dt><dd>Dumindu: 2/14; Yashmitha: 2/20</dd></div>
                 <div><dt>Event date / venue</dt><dd>Not published</dd></div>
               </dl>
-              
+
             </article>
           </div>
           <p class="research-note pdf-date-note">Match dates, starting times and venues have not been published.</p>
@@ -350,7 +351,7 @@
               <div><dt>Event status</dt><dd>Date passed; completion and results not verified</dd></div>
             </dl>
             <p class="research-note">No registration deadline, match draw, final score or tournament result was found. The past event date does not establish that the event took place.</p>
-            
+
           </article>
           <article class="research-card" data-event-id="nsbm-sports-fiesta-2026" data-event-type="campus-sports-event" data-sport="unspecified" data-publication-date="2026-03-30">
             <span class="research-card-icon"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></span>
@@ -362,7 +363,7 @@
               <div><dt>Event status</dt><dd>Not determined</dd></div>
             </dl>
             <p class="research-note">The sports played, event date, venue and results have not been published.</p>
-            
+
           </article>
           </div>
         </section>
@@ -379,7 +380,7 @@
               <p class="sport-caption">BADMINTON · 2025</p>
               <h3>Colombo Shuttle Saga</h3>
               <p class="achievement-copy">NSBM finished runners-up at Colombo Shuttle Saga 2025.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
@@ -393,35 +394,35 @@
                 <li>SMASHES 2022 and APIIT Extravaganza 2022 (mixed): second runners-up</li>
                 <li>GSF 2019 (Green Shuttle Fiest, as named in the NSBM listing): champions</li>
               </ul>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
               <p class="sport-caption">TABLE TENNIS · USPORTS 2022</p>
               <h3>Mixed-team champions</h3>
               <p class="achievement-copy">NSBM’s mixed team were champions, with the men’s and women’s teams finishing second at USports 2022.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
               <p class="sport-caption">NETBALL · UNIVERSITY COMPETITIONS</p>
               <h3>Inter-university podium finishes</h3>
               <p class="achievement-copy">NSBM finished second at USports 2022, runners-up at the KDU Leaders Trophy in 2017 and 2018, and second runners-up at CIMA 2017.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
               <p class="sport-caption">SWIMMING · 2017</p>
               <h3>Interuniversity Swimming Championship</h3>
               <p class="achievement-copy">NSBM won the Interuniversity Swimming Championship / USPORTS 2017.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
               <p class="sport-caption">RUGBY · NSBM CLUB REPORTED RESULTS</p>
               <h3>Inter-university tournament wins</h3>
               <p class="achievement-copy">NSBM won Mora 7s, ICBT 7s, KDU 10s and UiTM International, and finished runners-up in the UiTM cup stage. Exact event dates are not available.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
@@ -434,7 +435,7 @@
                 <li>Peter Gimo Super Cup: 5 gold, 2 silver and 1 bronze medals</li>
               </ul>
               <p class="achievement-copy">Dates for the last three results have not been published.</p>
-              
+
             </article>
             <article class="research-card">
               <span class="research-card-icon"><i class="fa-solid fa-chess" aria-hidden="true"></i></span>
@@ -445,7 +446,7 @@
                 <li>NSBM U-Sports 2019: girls’ champions; boys’ first runners-up</li>
                 <li>2022–2023 season: Sabra Chess Championship title and a first-runners-up finish; the specific event for the latter is unclear</li>
               </ul>
-              
+
             </article>
           </div>
         </section>
@@ -470,6 +471,8 @@
   </dialog>
   <div class="toast-message" id="toast-message" role="status" aria-live="polite"></div>
 
+  <script src="../js/auth-api.js" defer></script>
+  <script src="auth.js" defer></script>
   <script src="script.js" defer></script>
 </body>
 </html>

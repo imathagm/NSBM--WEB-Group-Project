@@ -36,6 +36,15 @@ function showForm(view) {
     else if (view === "forgot") {
         forgotPassword.classList.remove("hidden");
     }
+
+    tabs.forEach(tab => {
+        tab.classList.toggle(
+            "active",
+            tab.dataset.mode === (view === "admin" ? "admin" : "student")
+        );
+    });
+
+    message.style.color = "";
 }
 
 
@@ -107,41 +116,56 @@ document.querySelectorAll(".toggle-password").forEach(button => {
 });
 
 
-// STUDENT LOGIN
-
-studentLogin.addEventListener("submit", event => {
-
+// Student accounts are verified by the PHP session API.
+studentLogin.addEventListener("submit", async event => {
     event.preventDefault();
-
-    message.textContent =
-        "Student login form submitted. Connect this form to your PHP authentication system.";
-
+    const button = studentLogin.querySelector('button[type="submit"]');
+    button.disabled = true;
+    message.textContent = "";
+    try {
+        await window.sportshubAuth.post("login", {
+            identifier: document.getElementById("studentEmail").value.trim(),
+            password: document.getElementById("studentPassword").value,
+            remember: document.getElementById("rememberMe").checked
+        });
+        window.location.assign("../student/dashboard.html");
+    } catch (error) {
+        message.style.color = "red";
+        message.textContent = error.message;
+    } finally {
+        button.disabled = false;
+    }
 });
 
-
-// STUDENT REGISTRATION
-
-studentRegister.addEventListener("submit", event => {
-
+studentRegister.addEventListener("submit", async event => {
     event.preventDefault();
-
     const password = document.getElementById("registerPassword").value;
-
     const confirmPassword = document.getElementById("confirmPassword").value;
-
     if (password !== confirmPassword) {
-
         message.textContent = "Passwords do not match!";
         message.style.color = "red";
-
         return;
     }
 
-    message.style.color = "#176b43";
-
-    message.textContent =
-        "Registration form submitted. Connect this form to your PHP registration system.";
-
+    const button = studentRegister.querySelector('button[type="submit"]');
+    button.disabled = true;
+    message.textContent = "";
+    try {
+        await window.sportshubAuth.post("register", {
+            fullName: document.getElementById("fullName").value.trim(),
+            studentId: document.getElementById("registerStudentID").value.trim(),
+            email: document.getElementById("registerEmail").value.trim(),
+            contactNumber: document.getElementById("contactNumber").value.trim(),
+            sportOfInterest: document.getElementById("sport").value,
+            password: password
+        });
+        window.location.assign("../student/dashboard.html");
+    } catch (error) {
+        message.style.color = "red";
+        message.textContent = error.message;
+    } finally {
+        button.disabled = false;
+    }
 });
 
 
@@ -151,23 +175,47 @@ adminLogin.addEventListener("submit", event => {
 
     event.preventDefault();
 
-    message.style.color = "#176b43";
-
     message.textContent =
-        "Admin login form submitted. Connect this form to server-side admin authentication.";
+        "Administrator sign-in is not connected yet. Use a student account or contact the project administrator.";
+    message.style.color = "red";
 
 });
 
 
 // FORGOT PASSWORD
 
-forgotPassword.addEventListener("submit", event => {
-
+forgotPassword.addEventListener("submit", async event => {
     event.preventDefault();
+    const button = forgotPassword.querySelector('button[type="submit"]');
+    button.disabled = true;
+    message.textContent = "";
 
-    message.style.color = "#176b43";
+    try {
+        const response = await fetch("../../backend/api/forgot-password.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: document.getElementById("resetEmail").value.trim()
+            })
+        });
+        const data = await response.json();
+        message.textContent = data.message || "Password recovery request failed.";
+        if (!response.ok) message.style.color = "red";
+    } catch (error) {
+        message.style.color = "red";
+        message.textContent = "Unable to connect to the password recovery service.";
+    } finally {
+        button.disabled = false;
+    }
+});
 
-    message.textContent =
-        "Password reset request submitted. Connect this form to your PHP password recovery system.";
+const initialView = window.location.hash.slice(1);
+if (["login", "register", "admin", "forgot"].includes(initialView)) {
+    showForm(initialView);
+}
 
+window.sportshubAuth.session().then(function (session) {
+    if (session.authenticated) window.location.replace("../student/dashboard.html");
+}).catch(function (error) {
+    console.error("Unable to check the existing student session.", error);
 });
