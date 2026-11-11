@@ -1,0 +1,24 @@
+USE nsbm_sportshub;
+
+CREATE TABLE IF NOT EXISTS administrators (
+  admin_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(120) NOT NULL,
+  email VARCHAR(254) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS student_remember_tokens (
+  token_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  token_hash CHAR(64) NOT NULL UNIQUE,
+  expires_at DATETIME NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_student_remember_user_expiry (user_id, expires_at),
+  CONSTRAINT fk_student_remember_user
+    FOREIGN KEY (user_id)
+    REFERENCES sportshub_users(user_id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB;

@@ -96,15 +96,25 @@ document.querySelectorAll(".show-password").forEach(button => {
     });
 });
 
-// Student login: frontend interface only.
-if (forms.login) forms.login.addEventListener("submit", event => {
+// Student sign-in uses the same server session as the student portal.
+if (forms.login) forms.login.addEventListener("submit", async event => {
     event.preventDefault();
-
-    showNotice(
-        "The login interface is ready, but account verification is not connected. " +
-        "Connect a backend and database before signing in.",
-        "error"
-    );
+    const submit = forms.login.querySelector('button[type="submit"]');
+    const remember = forms.login.querySelector('input[type="checkbox"]');
+    submit.disabled = true;
+    hideNotice();
+    try {
+        await window.sportshubAuth.post("login", {
+            identifier: document.getElementById("loginEmail").value.trim(),
+            password: document.getElementById("loginPassword").value,
+            remember: Boolean(remember && remember.checked)
+        });
+        window.location.assign("../student/dashboard.html");
+    } catch (error) {
+        showNotice(error.message, "error");
+    } finally {
+        submit.disabled = false;
+    }
 });
 
 // Student registration: validate input without storing credentials.
@@ -143,21 +153,14 @@ if (forms.admin) forms.admin.addEventListener("submit", event => {
     event.preventDefault();
 
     showNotice(
-        "Administrator authentication is not connected. A server must verify " +
-        "your credentials and admin role before granting access.",
+        "Administrator authentication is not implemented yet.",
         "error"
     );
 });
 
-// Password recovery: no email is sent by this frontend.
-if (forms.forgot) forms.forgot.addEventListener("submit", event => {
+if (forms.forgot) forms.forgot.addEventListener("submit", async event => {
     event.preventDefault();
-
-    showNotice(
-        "Password recovery is not connected yet. A backend must generate an " +
-        "expiring reset token and send a reset link.",
-        "error"
-    );
+    showNotice("Password recovery is available from the forgot-password page.", "error");
 });
 
 // Start on the student login page.

@@ -39,7 +39,7 @@ if ($passwordCharacters === false || $passwordCharacters < 12 || strlen($passwor
 }
 
 try {
-    $insert = database()->prepare(
+    $insert = sportshubDatabaseConnection()->prepare(
         'INSERT INTO administrators (full_name, email, password_hash)
          VALUES (:name, :email, :password_hash)'
     );

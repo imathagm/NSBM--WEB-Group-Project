@@ -46,7 +46,7 @@
       <span class="profile-page-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
     </div>
 
-    <p class="profile-demo-note"><i class="fas fa-circle-info" aria-hidden="true"></i> Preview profile: sample details and edits are saved in this browser only, not to a student account database.</p>
+    <p class="profile-demo-note"><i class="fas fa-circle-info" aria-hidden="true"></i> Profile details are loaded from and saved to your SportsHub account.</p>
 
     <section class="profile-component" aria-labelledby="profile-card-heading">
       <div class="profile-card">
@@ -58,7 +58,7 @@
             <input class="profile-photo-input" type="file" id="profilePhotoInput" accept="image/png,image/jpeg,image/webp" aria-label="Upload a profile photo">
           </div>
           <div class="profile-identity">
-            <h2 id="profileDisplayName">Student Name</h2>
+            <h2 id="profileDisplayName">Student</h2>
             <p><i class="fas fa-graduation-cap" aria-hidden="true"></i> NSBM Green University</p>
             <span class="profile-status"><i class="fas fa-circle-check" aria-hidden="true"></i> Active Member</span>
           </div>
@@ -80,19 +80,19 @@
               <div class="profile-section-grid">
                 <div class="profile-field">
                   <label for="profileFullName">Full Name</label>
-                  <input type="text" id="profileFullName" name="fullName" value="Student Name" maxlength="120" autocomplete="name" disabled required>
+                  <input type="text" id="profileFullName" name="fullName" maxlength="120" autocomplete="name" disabled required>
                 </div>
                 <div class="profile-field">
                   <label for="profileStudentId">Student ID</label>
-                  <input type="text" id="profileStudentId" value="NSBM0001" disabled readonly>
+                  <input type="text" id="profileStudentId" disabled readonly>
                 </div>
                 <div class="profile-field">
                   <label for="profileEmail">Email Address</label>
-                  <input type="email" id="profileEmail" name="email" value="student@nsbm.ac.lk" maxlength="254" autocomplete="email" disabled required>
+                  <input type="email" id="profileEmail" name="email" maxlength="254" autocomplete="email" disabled required>
                 </div>
                 <div class="profile-field">
                   <label for="profileContact">Contact Number</label>
-                  <input type="tel" id="profileContact" name="contact" value="0771234567" maxlength="30" autocomplete="tel" inputmode="tel" disabled required>
+                  <input type="tel" id="profileContact" name="contact" maxlength="24" autocomplete="tel" inputmode="tel" disabled required>
                 </div>
               </div>
             </section>
@@ -102,19 +102,20 @@
               <div class="profile-section-grid">
                 <div class="profile-field">
                   <label for="profileFaculty">Faculty</label>
-                  <input type="text" id="profileFaculty" value="Computing" disabled readonly>
+                  <input type="text" id="profileFaculty" maxlength="120" disabled>
                 </div>
                 <div class="profile-field">
                   <label for="profileDegree">Degree Programme</label>
-                  <input type="text" id="profileDegree" value="BSc (Hons) in Computing" disabled readonly>
+                  <input type="text" id="profileDegree" maxlength="160" disabled>
                 </div>
                 <div class="profile-field">
                   <label for="profileAcademicYear">Academic Year</label>
-                  <input type="text" id="profileAcademicYear" value="Year 1" disabled readonly>
+                  <input type="text" id="profileAcademicYear" maxlength="40" disabled>
                 </div>
                 <div class="profile-field">
                   <label for="profileSport">Sport of Interest</label>
                   <select id="profileSport" name="sport" disabled>
+                    <option value="">Select sport</option>
                     <option>Football</option>
                     <option>Cricket</option>
                     <option>Basketball</option>
@@ -122,19 +123,11 @@
                     <option>Badminton</option>
                     <option>Swimming</option>
                     <option>Athletics</option>
+                    <option>Netball</option>
+                    <option>Table Tennis</option>
+                    <option>Karate</option>
+                    <option>Other</option>
                   </select>
-                </div>
-                <div class="profile-field">
-                  <label for="profileMembershipType">Membership Type</label>
-                  <input type="text" id="profileMembershipType" value="Student Member" disabled readonly>
-                </div>
-                <div class="profile-field">
-                  <label for="profileMembershipStatus">Membership Status</label>
-                  <input type="text" id="profileMembershipStatus" value="Active" disabled readonly>
-                </div>
-                <div class="profile-field">
-                  <label for="profileRegistrationDate">Registration Date</label>
-                  <input type="text" id="profileRegistrationDate" value="01 January 2026" disabled readonly>
                 </div>
               </div>
             </section>
@@ -151,6 +144,7 @@
   </main>
 
   <footer class="profile-standalone-footer">© 2026 NSBM SportsHub <span>·</span> Student portal</footer>
-  <script src="profile.js?v=2"></script>
+  <script src="../js/auth-api.js"></script>
+  <script src="profile.js?v=3"></script>
 </body>
 </html>

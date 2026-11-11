@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function setMenu(open) {
     sidebar.classList.toggle('is-open', open);
     scrim.classList.toggle('is-open', open);
+    document.body.classList.toggle('sidebar-open', open);
     menuToggle.setAttribute('aria-expanded', String(open));
   }
 
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.btn-view-club').forEach((button) => {
     button.addEventListener('click', () => {
       const club = button.closest('.club-card').dataset.club;
-      window.location.href = 'club-details.html?club=' + encodeURIComponent(club); // change to your real page
+      window.location.href = '../sports-club-directory%20and%20Details-Page(Arshi)/details-page.html?id=' + encodeURIComponent(club);
     });
   });
 });

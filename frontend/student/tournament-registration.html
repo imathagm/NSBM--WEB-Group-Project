@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-css-page="student-tournament-registration">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="registration.css">
+  <link rel="stylesheet" href="../app.css">
+
 </head>
 <body>
   <header class="portal-header">
@@ -23,16 +23,17 @@
       <img src="../assets/nsbm.jpg" alt="">
       <span>NSBM <strong>SPORTSHUB</strong><small>STUDENT PORTAL</small></span>
     </a>
+    <span class="header-title">STUDENT PORTAL</span>
     <div class="header-student">
       <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme">
         <i class="fa-solid fa-moon" aria-hidden="true"></i>
       </button>
-      <button class="icon-btn notification-button" type="button" aria-label="Notifications" data-portal-link>
+      <a class="icon-btn notification-button" href="notifications.html" aria-label="Notifications">
         <i class="fa-solid fa-bell" aria-hidden="true"></i>
-      </button>
-      <button class="icon-btn profile-button" type="button" aria-label="My profile" data-portal-link>
+      </a>
+      <a class="icon-btn profile-button" href="dashboard.html#profile" aria-label="My profile">
         <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
-      </button>
+      </a>
     </div>
   </header>
 
@@ -42,11 +43,11 @@
       <div class="sidebar-heading">STUDENT PORTAL</div>
       <nav class="sidebar-nav">
         <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-house" aria-hidden="true"></i><span>Dashboard</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-user" aria-hidden="true"></i><span>My Profile</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span>Join a Club</span></a>
+        <a href="dashboard.html#profile" class="sidebar-link"><i class="fa-regular fa-user" aria-hidden="true"></i><span>My Profile</span></a>
+        <a href="dashboard.html#join-club" class="sidebar-link"><i class="fa-solid fa-circle-plus" aria-hidden="true"></i><span>Join a Club</span></a>
         <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-rectangle-list" aria-hidden="true"></i><span>My Applications</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><span>Training Schedule</span></a>
-        <a href="#" class="sidebar-link" data-portal-link><i class="fa-regular fa-bell" aria-hidden="true"></i><span>Notifications</span></a>
+        <a href="training-schedule.html" class="sidebar-link"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i><span>Training Schedule</span></a>
+        <a href="notifications.html" class="sidebar-link"><i class="fa-regular fa-bell" aria-hidden="true"></i><span>Notifications</span></a>
         <a href="matches-tournaments.html#tournaments-section" class="sidebar-link is-active" aria-current="page"><i class="fa-solid fa-trophy" aria-hidden="true"></i><span>Matches &amp; Tournaments</span></a>
       </nav>
       <div class="sidebar-bottom">
@@ -140,7 +141,7 @@
                   <option>2026</option>
                 </select>
               </label>
-              <p class="privacy-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Registration records are stored in this browser only. No information is sent to a server.</p>
+              <p class="privacy-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Sign in is required; registrations are saved to the SportsHub database.</p>
               <button class="submit-registration" id="submit-registration" type="submit">Submit Registration <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
             </form>
           </section>
@@ -151,6 +152,8 @@
   </div>
 
   <div class="toast-message" id="toast-message" role="status" aria-live="polite"></div>
+  <script src="../js/auth-api.js" defer></script>
+  <script src="auth.js" defer></script>
   <script src="registration.js" defer></script>
 </body>
 </html>

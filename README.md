@@ -1,6 +1,15 @@
 # NSBM--WEB-Group-Project
  NSBM web Group -28  ,-----"sports hub management system"
 
+## Frontend styles
+
+All local frontend styles are consolidated in [`frontend/app.css`](./frontend/app.css).
+Styled pages load this bundle and use a `data-css-page` value on the root
+`<html>` element to keep each page's rules isolated from other portal layouts.
+Add page-specific rules under the matching `[data-css-page="..."]` scope rather
+than creating another stylesheet. External icon and font stylesheets remain
+separate dependencies.
+
 ## Forgot / Reset Password Feature
 
 ### What was added

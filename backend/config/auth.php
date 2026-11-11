@@ -88,12 +88,12 @@ function restore_student_session(PDO $pdo): void
 
     $hash = hash('sha256', $remember);
     $query = $pdo->prepare(
-        'SELECT student_id FROM student_remember_tokens
+        'SELECT user_id FROM student_remember_tokens
          WHERE token_hash = :token_hash AND expires_at > UTC_TIMESTAMP()'
     );
     $query->execute(['token_hash' => $hash]);
-    $studentId = $query->fetchColumn();
-    if ($studentId === false) {
+    $userId = $query->fetchColumn();
+    if ($userId === false) {
         set_portal_cookie('nsbm_remember', '', time() - 3600);
         return;
     }
@@ -108,15 +108,22 @@ function restore_student_session(PDO $pdo): void
         'new_hash' => hash('sha256', $replacement),
         'old_hash' => $hash,
     ]);
+    if ($update->rowCount() !== 1) {
+        set_portal_cookie('nsbm_remember', '', time() - 3600);
+        return;
+    }
+
     session_regenerate_id(true);
-    $_SESSION['student_id'] = (int) $studentId;
+    $_SESSION['student_id'] = (int) $userId;
     set_portal_cookie('nsbm_remember', $replacement, time() + 60 * 60 * 24 * 30);
 }
 
 function require_student(): void
 {
     start_portal_session();
-    restore_student_session(database());
+    if (!empty($_COOKIE['nsbm_remember'])) {
+        restore_student_session(sportshubDatabaseConnection());
+    }
 
     if (empty($_SESSION['student_id'])) {
         header('Location: login.php');

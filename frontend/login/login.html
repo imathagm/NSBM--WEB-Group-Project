@@ -1,14 +1,17 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-css-page="standalone-login">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>NSBM Sports Hub | Account Portal</title>
 
-    <link rel="stylesheet" href="login.css">
-    <script src="login.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="../app.css">
+    <script src="../js/auth-api.js" defer></script>
 </head>
 
 <body>
@@ -112,7 +115,7 @@
                     <div class="form-options">
 
                         <label class="remember">
-                            <input type="checkbox">
+                            <input type="checkbox" id="rememberMe">
                             Remember me
                         </label>
 
@@ -173,14 +176,14 @@
                     <label for="registerPassword">Password</label>
                     <div class="password-box">
                         <input type="password" id="registerPassword"
-                            placeholder="Create a password" required>
+                                placeholder="Create a password" maxlength="72" required>
                         <button type="button" class="toggle-password"
                             data-target="registerPassword">Show</button>
                     </div>
 
                     <label for="confirmPassword">Confirm Password</label>
                     <input type="password" id="confirmPassword"
-                        placeholder="Confirm your password" required>
+                        placeholder="Confirm your password" maxlength="72" required>
 
                     <button type="submit" class="submit-btn">
                         Create Account
@@ -262,5 +265,6 @@
 
     </div>
 
+    <script src="login.js" defer></script>
 </body>
 </html>
