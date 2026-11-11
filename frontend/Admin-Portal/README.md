@@ -1,37 +1,31 @@
 # NSBM SportsHub Admin Portal
 
-This folder contains nine standalone Admin Portal entry pages. They share the
-same header, sidebar, theme, responsive layout, and page interactions through
-[`../app.css`](../app.css) and `admin.js`. The Admin Portal styles are scoped
-under the `data-css-page="admin-portal"` page group in the shared stylesheet.
+The nine Admin Portal pages share the interface in `admin.js` and the shared
+`frontend/app.css` stylesheet. The portal uses the PHP session APIs and
+database-backed management APIs in `backend/api/admin/`.
 
 ## Pages
 
-- `dashboard.html` — administrative overview and quick actions
+- `dashboard.html` — administrative overview and recent activity
 - `students.html` — student directory and membership pathways
 - `clubs.html` — sports club records and related members/schedules
 - `applications.html` — membership application review
 - `training.html` — training schedule management
-- `matches-tournaments.html` — matches, tournaments, fixtures, and results
-- `announcements.html` — draft, preview, and publication workflow
-- `facilities.html` — facility/equipment booking requests and session-only booking overview
-- `reports.html` — derived counts and CSV export
+- `matches-tournaments.html` — event management and student tournament entries
+- `announcements.html` — draft, preview, publication, and maintenance
+- `facilities.html` — facility/equipment booking requests and decisions
+- `reports.html` — database-derived counts and CSV export
 
-## Current implementation boundary
+## Requirements
 
-The inspected project database does not currently define the student, club,
-membership, training, announcement, or booking data needed by these pages.
-Consequently, there are no seeded records and the displayed counts start at
-zero. Records entered in this prototype are held in browser `sessionStorage`
-for the current tab session only. Do not enter real student or confidential
-information.
+Import `backend/database/schema.sql` (or apply the backend migrations to an
+existing database), configure the PHP database environment variables, and
+create an administrator with `php database/create_admin.php` from the
+`backend/` directory. Serve the repository root through PHP and sign in at
+`frontend/login/login.html?view=admin#admin`. Directly opening an HTML file or
+using Live Server alone will not run the APIs.
 
-This frontend is **not an authenticated admin system**. The project needs
-server-side sign-in, role authorization on every management endpoint, and
-appropriate database tables/API behavior before using real data or deploying
-administrative operations. Hiding or showing navigation in the browser is not
-access control.
-
-Serve the `frontend` directory using a local web server and open
-`Admin-Portal/dashboard.html`. The portal uses the shared `frontend/assets`
-NSBM logo and remote Google Fonts/Font Awesome resources.
+The student directory can include registered student accounts and
+directory-only records. Directory-only entries do not have account credentials.
+All management mutations are validated and authorized by the server; session
+storage is used only for the visual theme preference.

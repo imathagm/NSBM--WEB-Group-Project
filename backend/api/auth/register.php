@@ -37,6 +37,7 @@ if (!password_meets_policy($password)) {
 
 try {
     $pdo = sportshubDatabaseConnection();
+    $pdo->beginTransaction();
     $insert = $pdo->prepare(
         'INSERT INTO sportshub_users
          (full_name, student_id, email, contact_number, sport_of_interest, password_hash)
@@ -56,6 +57,38 @@ try {
         throw new RuntimeException('New student account could not be reloaded.');
     }
 
+    $existingDirectoryRecord = $pdo->prepare(
+        'SELECT id FROM admin_students WHERE student_id = :student_id LIMIT 1'
+    );
+    $existingDirectoryRecord->execute(['student_id' => $studentId]);
+    $directoryId = $existingDirectoryRecord->fetchColumn();
+    if ($directoryId === false) {
+        $directory = $pdo->prepare(
+            'INSERT INTO admin_students (id, user_id, name, student_id, email)
+             VALUES (:id, :user_id, :name, :student_id, :email)'
+        );
+        $directory->execute([
+            'id' => auth_uuid(),
+            'user_id' => $user['user_id'],
+            'name' => $fullName,
+            'student_id' => $studentId,
+            'email' => $email,
+        ]);
+    } else {
+        $directory = $pdo->prepare(
+            'UPDATE admin_students
+             SET user_id = :user_id, name = :name, email = :email
+             WHERE id = :id'
+        );
+        $directory->execute([
+            'user_id' => $user['user_id'],
+            'name' => $fullName,
+            'email' => $email,
+            'id' => $directoryId,
+        ]);
+    }
+    $pdo->commit();
+
     auth_create_student_session($pdo, $user, false);
     auth_respond(201, [
         'success' => true,
@@ -65,6 +98,9 @@ try {
         'user' => auth_public_user($user),
     ]);
 } catch (PDOException $error) {
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     if ($error->getCode() === '23000') {
         auth_respond(409, [
             'success' => false,
@@ -74,6 +110,9 @@ try {
     error_log('Student registration failed: ' . $error->getMessage());
     auth_respond(503, ['success' => false, 'message' => 'Registration is temporarily unavailable.']);
 } catch (Throwable $error) {
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     error_log('Student registration failed: ' . $error->getMessage());
     auth_respond(500, ['success' => false, 'message' => 'Registration could not be completed.']);
 }

@@ -1,4 +1,6 @@
 (function () {
+  var scriptUrl = document.currentScript.src;
+  var registrationEndpoint = new URL("../../backend/api/tournament-registration.php", scriptUrl);
   var tournaments = {
     "nsbm-t20": {
       name: "NSBM T20 League",
@@ -82,6 +84,21 @@
   var formPanelHeading = document.querySelector(".form-panel-heading");
   var statusTag = document.querySelector(".summary-tag");
   var deadlineNote = document.getElementById("deadline-note");
+  var csrfToken = "";
+  var authSessionPromise = window.sportshubAuth.session().then(function (session) {
+    if (!session.authenticated) {
+      window.location.replace("../login/login.html");
+      throw new Error("Student sign-in is required.");
+    }
+    csrfToken = session.csrfToken;
+    document.getElementById("full-name").value = session.user.fullName || "";
+    document.getElementById("student-id").value = session.user.studentId || "";
+    document.getElementById("student-email").value = session.user.email || "";
+    return session;
+  }).catch(function (error) {
+    showFormError(error.message || "The account service is unavailable.");
+    return null;
+  });
 
   function formatDate(dateString) {
     var date = new Date(dateString + "T00:00:00");
@@ -171,22 +188,7 @@
     });
   });
 
-  function getRegistrations() {
-    var stored = window.localStorage.getItem("nsbm-tournament-registrations");
-    if (!stored) return [];
-
-    var parsed = JSON.parse(stored);
-    if (!Array.isArray(parsed) || !parsed.every(function (registration) {
-      return registration &&
-        typeof registration.tournamentId === "string" &&
-        typeof registration.studentId === "string";
-    })) {
-      throw new Error("Saved registration data is invalid.");
-    }
-    return parsed;
-  }
-
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
     clearFormError();
     idInput.setCustomValidity("");
@@ -226,47 +228,48 @@
       return;
     }
 
-    var registrations;
     try {
-      registrations = getRegistrations();
+      var session = await authSessionPromise;
+      if (!session) return;
     } catch (error) {
-      console.error("Unable to read saved tournament registrations.", error);
-      showFormError("Saved registrations could not be read. Clear this site's local storage and try again.");
       return;
     }
 
-    var normalizedId = studentId.toLowerCase();
-    var alreadyRegistered = registrations.some(function (registration) {
-      return registration.tournamentId === tournamentId && registration.studentId === normalizedId;
-    });
-    if (alreadyRegistered) {
-      showFormError("This student ID is already registered for this tournament in this browser.");
-      idInput.setAttribute("aria-invalid", "true");
-      idInput.focus();
-      return;
-    }
-
-    registrations.push({
-      tournamentId: tournamentId,
-      studentId: normalizedId,
-      registeredAt: new Date().toISOString()
-    });
-
+    var submitButton = document.getElementById("submit-registration");
+    submitButton.disabled = true;
     try {
-      window.localStorage.setItem("nsbm-tournament-registrations", JSON.stringify(registrations));
+      var response = await fetch(registrationEndpoint, {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken
+        },
+        body: JSON.stringify({
+          tournamentId: tournamentId,
+          fullName: document.getElementById("full-name").value.trim(),
+          studentId: studentId,
+          email: emailInput.value.trim()
+        })
+      });
+      var result = await response.json();
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.message || "Your registration could not be submitted.");
+      }
+      var studentName = document.getElementById("full-name").value.trim();
+      document.getElementById("success-copy").textContent =
+        studentName + ", " + result.message;
+      form.hidden = true;
+      formPanelHeading.hidden = true;
+      successPanel.hidden = false;
+      successPanel.focus();
     } catch (error) {
-      console.error("Unable to save the tournament registration.", error);
-      showFormError("Your registration could not be saved in this browser. Check storage availability and try again.");
-      return;
+      showFormError(error.message || "Unable to connect to the server.");
+    } finally {
+      submitButton.disabled = false;
     }
-
-    var studentName = document.getElementById("full-name").value.trim();
-    var confirmation = document.getElementById("success-copy");
-    confirmation.textContent = studentName + ", your registration for " + tournament.name + " has been recorded in this browser.";
-    form.hidden = true;
-    formPanelHeading.hidden = true;
-    successPanel.hidden = false;
-    successPanel.focus();
   });
 
   var menuToggle = document.getElementById("menu-toggle");

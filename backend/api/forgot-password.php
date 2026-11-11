@@ -14,6 +14,27 @@ function respond(int $status, array $data): never
     exit;
 }
 
+function read_request_payload(): array
+{
+    $raw = file_get_contents('php://input');
+
+    if (is_string($raw) && $raw !== '') {
+        $decoded = json_decode($raw, true);
+
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        parse_str($raw, $parsed);
+
+        if (is_array($parsed)) {
+            return $parsed;
+        }
+    }
+
+    return [];
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
     header('Allow: POST');
@@ -24,14 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ]);
 }
 
-$input = json_decode(
-    file_get_contents('php://input'),
-    true
-);
-
-$email = is_array($input)
-    ? trim((string)($input['email'] ?? ''))
-    : '';
+$input = read_request_payload();
+$email = strtolower(trim((string)($input['email'] ?? $input['identifier'] ?? '')));
 
 if (
     !filter_var($email, FILTER_VALIDATE_EMAIL)
@@ -45,6 +60,27 @@ if (
 
 try {
 
+    $mailConfigPath = __DIR__ . '/../config/mail-config.php';
+    $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+    if (!is_file($mailConfigPath) || !is_file($autoloadPath)) {
+        throw new RuntimeException('Password recovery mail is not configured.');
+    }
+
+    $mailConfig = require $mailConfigPath;
+    if (!is_array($mailConfig)) {
+        throw new RuntimeException('Password recovery mail configuration is invalid.');
+    }
+    foreach (['app_base_url', 'host', 'username', 'password', 'from_email', 'from_name', 'port'] as $key) {
+        if (!isset($mailConfig[$key]) || trim((string) $mailConfig[$key]) === '') {
+            throw new RuntimeException('Password recovery mail configuration is incomplete.');
+        }
+    }
+    $baseUrl = rtrim((string) $mailConfig['app_base_url'], '/');
+    if (!filter_var($baseUrl, FILTER_VALIDATE_URL)) {
+        throw new RuntimeException('Password recovery URL is invalid.');
+    }
+    require_once $autoloadPath;
+
     require_once __DIR__ . '/../config/database.php';
 
     $pdo = sportshubDatabaseConnection();
@@ -52,12 +88,12 @@ try {
     $stmt = $pdo->prepare(
         'SELECT user_id, email
          FROM sportshub_users
-         WHERE email = :email
+         WHERE LOWER(email) = :email
          LIMIT 1'
     );
 
     $stmt->execute([
-        'email' => strtolower($email)
+        'email' => $email
     ]);
 
     $user = $stmt->fetch();
@@ -83,7 +119,7 @@ try {
 
     $invalidate = $pdo->prepare(
         'UPDATE password_reset_tokens
-         SET used_at = NOW()
+         SET used_at = UTC_TIMESTAMP()
          WHERE user_id = :user_id
          AND used_at IS NULL'
     );
@@ -96,7 +132,7 @@ try {
         'INSERT INTO password_reset_tokens
          (user_id, token_hash, expires_at)
          VALUES (:user_id, :token_hash,
-             DATE_ADD(NOW(),INTERVAL 30 MINUTE))'
+             DATE_ADD(UTC_TIMESTAMP(), INTERVAL 30 MINUTE))'
     );
 
     $insert->execute([
@@ -106,44 +142,10 @@ try {
 
     $pdo->commit();
 
-    $mailConfigPath =
-        __DIR__ . '/../config/mail-config.php';
-
-    $autoloadPath =
-        __DIR__ . '/../vendor/autoload.php';
-
-    if (
-        !is_file($mailConfigPath)
-        || !is_file($autoloadPath)
-    ) {
-        error_log('Password recovery email is not configured.');
-
-        respond(500, [
-            'success' => false,
-            'message' => 'Email service is not configured.'
-        ]);
-    }
-
-    $mailConfig = require $mailConfigPath;
-
-    $baseUrl = rtrim(
-        (string)($mailConfig['app_base_url'] ?? ''),
-        '/'
-    );
-
-    if ($baseUrl === '') {
-        respond(500, [
-            'success' => false,
-            'message' => 'Reset URL is not configured.'
-        ]);
-    }
-
     $resetUrl =
         $baseUrl
         . '/frontend/pages/reset-password.html?token='
         . rawurlencode($rawToken);
-
-    require_once $autoloadPath;
 
     $mailer = new PHPMailer\PHPMailer\PHPMailer(true);
 

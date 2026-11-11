@@ -20,10 +20,10 @@ function auth_require_method(string $method): void
     }
 }
 
-function auth_read_json(): array
+function auth_read_json(int $maximumBytes = 16384): array
 {
     $raw = file_get_contents('php://input');
-    if ($raw === false || strlen($raw) > 16384) {
+    if ($raw === false || strlen($raw) > $maximumBytes) {
         auth_respond(400, ['success' => false, 'message' => 'Invalid request body.']);
     }
 
@@ -72,6 +72,13 @@ function auth_public_user(array $user): array
         'contactNumber' => $user['contact_number'],
         'sportOfInterest' => $user['sport_of_interest'],
     ];
+}
+
+function auth_uuid(): string
+{
+    $hex = bin2hex(random_bytes(16));
+    return substr($hex, 0, 8) . '-' . substr($hex, 8, 4) . '-' . substr($hex, 12, 4)
+        . '-' . substr($hex, 16, 4) . '-' . substr($hex, 20);
 }
 
 function auth_create_student_session(PDO $pdo, array $user, bool $remember): void

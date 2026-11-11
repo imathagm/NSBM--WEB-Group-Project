@@ -1,14 +1,26 @@
-# SportsHub fixture database
+# SportsHub backend
 
-The Matches & Tournaments page loads match dates, times, venues, and scheduled opponents from `api/fixtures.php`.
+The backend is PHP 8.1+ with PDO MySQL and a MySQL/MariaDB database. Serve the
+repository root through PHP or Apache; opening the HTML files directly or using
+VS Code Live Server alone will not execute the APIs.
 
 ## Database setup
 
-1. Run `database/schema.sql` with a MySQL account that can create the `nsbm_sportshub` database and table.
-   For an existing installation, run `database/migrations/20261031_update_scheduled_demo_opponents.sql` to add the SLIIT and KDU demonstration opponents while leaving the netball opponent unannounced.
-   The schema includes account, password-reset, remember-session, and administrator tables. For an existing installation, apply `database/migrations/20261104_password_recovery.sql`, `database/migrations/20261109_account_tables.sql`, and `database/migrations/20261110_student_auth_profile.sql` in that order.
-2. Configure the PHP process environment with `NSBM_DB_HOST`, `NSBM_DB_NAME`, and `NSBM_DB_USER`. Set `NSBM_DB_PASSWORD` and optionally `NSBM_DB_PORT` as needed. Do not put credentials in the repository.
-3. Use a PHP installation with PDO MySQL enabled and serve the repository root through PHP or a web server configured to execute PHP. With XAMPP, start MySQL, import `database/schema.sql` in phpMyAdmin, then run this from PowerShell in the repository root (replace the password placeholder with your local MySQL password):
+1. For a fresh database, import `database/schema.sql`. For an existing database,
+   apply any migrations that have not already been run, in order:
+   `20261031_update_scheduled_demo_opponents.sql`,
+   `20261104_password_recovery.sql`,
+   `20261109_account_tables.sql`,
+   `20261110_student_auth_profile.sql`, and
+   `20261111_backend_integration.sql`. If the existing database already has
+   migrations through `20261110`, apply only `20261111_backend_integration.sql`.
+   Do not rerun an already-applied `ALTER TABLE` migration.
+2. Configure `NSBM_DB_HOST`, `NSBM_DB_NAME`, `NSBM_DB_USER`, and
+   `NSBM_DB_PASSWORD` in the PHP process environment. `NSBM_DB_PORT` is
+   optional. The default database name is `nsbm_sportshub`. Do not commit
+   database or mail credentials.
+3. Ensure PDO MySQL is enabled. With XAMPP, start Apache and MySQL, then run
+   this in PowerShell from the repository root (replace the password locally):
 
    ```powershell
    $env:NSBM_DB_HOST = "127.0.0.1"
@@ -18,9 +30,43 @@ The Matches & Tournaments page loads match dates, times, venues, and scheduled o
    & "C:\xampp\php\php.exe" -S localhost:8000 -t .
    ```
 
-   Keep that PowerShell window open. The PHP server runs the APIs; VS Code Live Server alone cannot run PHP.
-4. Open `http://localhost:8000/frontend/student/matches-tournaments.html` to use the fixtures API. Opening HTML directly as a `file://` URL cannot access the API.
-5. Student registration and sign-in use `api/auth/register.php`, `api/auth/login.php`, `api/auth/session.php`, and `api/auth/logout.php`. Open `http://localhost:8000/frontend/login/login.html` or `http://localhost:8000/frontend/pages/login.html`. Student portal pages require a valid PHP session; the “Remember me” option uses a rotating, HTTP-only cookie.
-6. Create an administrator from the command line with `php database/create_admin.php`. This creates an administrator credential record only; server-side administrator sign-in and management APIs are not implemented.
+   Keep the terminal open while using the app. Open pages under
+   `http://localhost:8000/`.
 
-The seeded Upcoming Matches deliberately have null dates, times, and venues because no verified values were available. They display as “To Be Announced” until updated in MySQL. Scheduled event dates, times, and venues retain the proposed values supplied for the page. A subset of opponent pairings is flagged as demonstration data and is not an officially confirmed fixture.
+## Accounts and administration
+
+- Student registration and sign-in use `api/auth/register.php` and
+  `api/auth/login.php`. Student session checks and sign-out use
+  `api/auth/session.php` and `api/auth/logout.php`. Authenticated students can
+  update their profile and photo through `api/auth/profile.php`.
+- Password recovery uses `api/forgot-password.php` and
+  `api/reset-password.php`. Install the locked PHP dependencies with Composer
+  from `backend/`, then create `config/mail-config.php` using
+  `config/mail-config.example.php` as a template and set valid SMTP credentials
+  and the app base URL. Without SMTP configuration, recovery reports that the
+  service is unavailable rather than creating unusable reset links.
+
+  ```powershell
+  Set-Location backend
+  composer install
+  Copy-Item config\mail-config.example.php config\mail-config.php
+  ```
+- Create an administrator from a terminal in `backend/` with
+  `php database/create_admin.php`. Use the administrator tab at
+  `frontend/login/login.html?view=admin#admin`. Admin pages require a PHP
+  session; all management API requests also check authorization and CSRF.
+- Admin-managed student directory records, clubs, membership applications,
+  training sessions, events, announcements, and facility bookings are stored
+  in MySQL. Student accounts created through the registration form appear in
+  the student directory; deleting a linked account from that directory also
+  deletes its login account and tournament entries. Directory-only records do
+  not create login accounts.
+- Tournament entry submissions require a signed-in student and are saved in
+  MySQL. Administrators can review them in the Admin Portal's Matches &
+  Tournaments page.
+- `api/fixtures.php` serves the seeded fixtures used by the student matches
+  page. Unconfirmed demonstration pairings are marked as such in the database.
+
+The seeded Upcoming Matches deliberately have null dates, times, and venues
+because no verified values were available. They display as “To Be Announced”
+until updated in MySQL.

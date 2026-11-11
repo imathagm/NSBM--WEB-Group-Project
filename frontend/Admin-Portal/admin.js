@@ -2,7 +2,7 @@
   "use strict";
 
   var pageDefinitions = {
-    dashboard: { title: "Admin Dashboard", crumb: "Overview", icon: "fa-gauge-high", description: "A clear overview of SportsHub administration. Counts and activity are based only on records entered in this browser session." },
+    dashboard: { title: "Admin Dashboard", crumb: "Overview", icon: "fa-gauge-high", description: "A clear overview of SportsHub administration, based on saved server records." },
     students: { title: "Student Management", crumb: "People", icon: "fa-user-graduate", description: "Manage student records and follow their club memberships." },
     clubs: { title: "Sports Club Management", crumb: "Clubs", icon: "fa-people-group", description: "Maintain club information and review related members, schedules, and applications." },
     applications: { title: "Membership Applications", crumb: "Memberships", icon: "fa-file-lines", description: "Review requests, inspect the related student, and record an application decision." },
@@ -10,7 +10,7 @@
     events: { title: "Matches & Tournaments", crumb: "Competitions", icon: "fa-trophy", description: "Manage matches, tournaments, participating clubs, fixtures, and results." },
     announcements: { title: "Announcement Management", crumb: "Communication", icon: "fa-bullhorn", description: "Draft, preview, publish, and maintain announcements for selected audiences." },
     facilities: { title: "Facilities & Equipment", crumb: "Resources", icon: "fa-building", description: "Review facility and equipment booking requests and record decisions." },
-    reports: { title: "Reports & Statistics", crumb: "Insights", icon: "fa-chart-line", description: "Review summaries calculated from available browser-session records and export the current report." }
+    reports: { title: "Reports & Statistics", crumb: "Insights", icon: "fa-chart-line", description: "Review summaries calculated from saved SportsHub records and export the current report." }
   };
 
   var navigation = [
@@ -117,15 +117,16 @@
     }
   };
 
-  var storageKey = "sportshub-admin-prototype-v1";
   var state = emptyState();
+  var adminApiBase = new URL("../../backend/api/admin/", document.currentScript.src);
+  var csrfToken = "";
   var page = document.body.getAttribute("data-page");
   if (!pageDefinitions[page]) page = "dashboard";
   var visibleRows = [];
   var toastTimer;
 
   function emptyState() {
-    return { students: [], clubs: [], applications: [], training: [], events: [], announcements: [], facilities: [], activity: [] };
+    return { students: [], clubs: [], applications: [], training: [], events: [], announcements: [], facilities: [], activity: [], tournamentRegistrations: [] };
   }
 
   function escapeHtml(value) {
@@ -134,30 +135,69 @@
     });
   }
 
-  function loadState() {
-    try {
-      var saved = window.sessionStorage.getItem(storageKey);
-      if (!saved) return;
-      var parsed = JSON.parse(saved);
-      Object.keys(state).forEach(function (key) {
-        if (Array.isArray(parsed[key])) state[key] = parsed[key];
-      });
-    } catch (error) {
-      console.error("Unable to load Admin Portal prototype data.", error);
-      window.setTimeout(function () { notify("Browser session data could not be loaded. Changes may not be retained."); }, 0);
+  async function adminRequest(path, method, payload) {
+    var options = {
+      method: method || "GET",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: { "Accept": "application/json" }
+    };
+    if (payload) {
+      options.headers["Content-Type"] = "application/json";
+      options.headers["X-CSRF-Token"] = csrfToken;
+      options.body = JSON.stringify(payload);
     }
+    var response = await fetch(new URL(path, adminApiBase), options);
+    var result;
+    try {
+      result = await response.json();
+    } catch (error) {
+      throw new Error("The administration service returned an invalid response.");
+    }
+    if (!response.ok || result.success !== true) {
+      throw new Error(result.message || "The administration request could not be completed.");
+    }
+    if (typeof result.csrfToken === "string") csrfToken = result.csrfToken;
+    return result;
   }
 
-  function saveState() {
-    try {
-      window.sessionStorage.setItem(storageKey, JSON.stringify(state));
-      refreshNotificationCount();
-      return true;
-    } catch (error) {
-      console.error("Unable to save Admin Portal prototype data.", error);
-      notify("Changes could not be saved in this browser session.");
+  async function loadState() {
+    var session = await adminRequest("session.php");
+    if (!session.authenticated) {
+      var returnTo = window.location.pathname.split("/").pop() + window.location.search;
+      window.location.replace("../login/login.html?view=admin&return=" + encodeURIComponent(returnTo) + "#admin");
       return false;
     }
+    csrfToken = session.csrfToken;
+    var result = await adminRequest("records.php?entity=all");
+    Object.keys(state).forEach(function (key) {
+      if (Array.isArray(result.records[key])) state[key] = result.records[key];
+    });
+    return true;
+  }
+
+  async function saveRecord(entity, record, id) {
+    var data = {};
+    datasets[entity].fields.forEach(function (field) {
+      if (Object.prototype.hasOwnProperty.call(record, field.key)) data[field.key] = record[field.key];
+    });
+    var result = await adminRequest("records.php", id ? "PUT" : "POST", {
+      entity: entity,
+      id: id || undefined,
+      data: data
+    });
+    return result.record;
+  }
+
+  async function deleteRecord(entity, id) {
+    await adminRequest("records.php", "DELETE", { entity: entity, id: id });
+  }
+
+  function showStartupError(error) {
+    console.error("Unable to start Admin Portal.", error);
+    var app = document.getElementById("app");
+    app.innerHTML = '<section class="empty-state"><strong>Admin Portal unavailable</strong><p id="startup-error"></p><a class="btn" href="../login/login.html?view=admin#admin">Administrator sign in</a></section>';
+    document.getElementById("startup-error").textContent = error.message || "The administration service could not be reached.";
   }
 
   function refreshNotificationCount() {
@@ -176,10 +216,6 @@
       badge.textContent = String(count);
       badge.hidden = count === 0;
     }
-  }
-
-  function snapshotState() {
-    return JSON.parse(JSON.stringify(state));
   }
 
   function applyTheme(theme, save) {
@@ -312,7 +348,7 @@
       '<aside class="portal-sidebar" id="portal-sidebar" aria-label="Admin portal navigation"><div class="sidebar-heading">ADMINISTRATION</div><nav class="sidebar-nav" aria-label="Admin menu">' +
       navigation.map(function (item) {
         return '<a href="' + item[3] + '" class="sidebar-link' + (page === item[0] ? " is-active" : "") + '"' + (page === item[0] ? ' aria-current="page"' : "") + '><i class="fa-solid ' + item[2] + '" aria-hidden="true"></i><span>' + item[1] + "</span></a>";
-      }).join("") + '</nav><div class="sidebar-bottom"><button class="sidebar-link sidebar-logout" type="button" id="logout-button"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Logout</span></button><div class="sidebar-version"><span class="status-pulse"></span><span>Prototype only. Server authentication is not configured.</span></div></div></aside>' +
+      }).join("") + '</nav><div class="sidebar-bottom"><button class="sidebar-link sidebar-logout" type="button" id="logout-button"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Logout</span></button><div class="sidebar-version"><span class="status-pulse"></span><span>Administrator session active</span></div></div></aside>' +
       '<main class="portal-main" id="main-content"><div class="main-inner">' + renderPage(current) +
       '<footer class="portal-footer"><strong>NSBM SportsHub</strong><span>Admin Portal <i class="footer-dot"></i> ' + escapeHtml(current.crumb) + "</span></footer></div></main></div>" +
       '<dialog class="admin-dialog" id="record-dialog" aria-labelledby="dialog-title"></dialog><dialog class="admin-dialog" id="notifications-dialog" aria-labelledby="notifications-title"></dialog><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>';
@@ -321,15 +357,16 @@
   function renderPage(definition) {
     return '<nav class="breadcrumb" aria-label="Breadcrumb"><a href="dashboard.html">Home</a><i class="fa-solid fa-chevron-right" aria-hidden="true"></i><span aria-current="page">' + escapeHtml(definition.crumb) + '</span></nav>' +
       '<section class="page-intro"><div><p class="eyebrow"><span class="eyebrow-mark"></span> NSBM SPORTSHUB ADMINISTRATION</p><h1>' + escapeHtml(definition.title) + '</h1><p class="intro-copy">' + escapeHtml(definition.description) + '</p></div><div class="season-chip"><i class="fa-solid ' + definition.icon + '" aria-hidden="true"></i> Admin workspace</div></section>' +
-      '<div class="prototype-note"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span><strong>Frontend prototype:</strong> records are entered in this browser session only. They are not database-backed. Do not enter real student or confidential information. Server-side sign-in and authorization are not implemented.</span></div>' +
-      (page === "dashboard" ? renderDashboard() : page === "reports" ? renderReports() : renderManager(page));
+      '<div class="prototype-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>Administrator workspace:</strong> changes are stored in the SportsHub database and require an administrator account.</span></div>' +
+      (page === "dashboard" ? renderDashboard() : page === "reports" ? renderReports() :
+        page === "events" ? renderManager(page) + renderTournamentRegistrations() : renderManager(page));
   }
 
   function renderDashboard() {
     var upcomingTraining = state.training.filter(function (item) { return item.date >= today() && item.status !== "Cancelled"; });
     var upcomingEvents = state.events.filter(function (item) { return item.date >= today() && item.status !== "Cancelled"; });
     var pendingApplications = state.applications.filter(function (item) { return item.status === "Pending"; }).slice(0, 5);
-    var recent = state.activity.slice(-5).reverse();
+    var recent = state.activity.slice(0, 5);
     return '<section class="stats-grid" aria-label="Administrative overview">' +
       statCard("fa-user-graduate", state.students.length, "Students", "students.html") +
       statCard("fa-people-group", state.clubs.length, "Sports clubs", "clubs.html") +
@@ -354,8 +391,8 @@
   }
 
   function activityMarkup(items) {
-    if (!items.length) return '<div class="empty-state"><i class="fa-regular fa-clock" aria-hidden="true"></i><strong>No recent activity</strong><p>Actions recorded in this browser session will appear here.</p></div>';
-    return '<div class="activity-list">' + items.map(function (item) {
+    if (!items.length) return '<div class="empty-state"><i class="fa-regular fa-clock" aria-hidden="true"></i><strong>No recent activity</strong><p>Saved administration changes will appear here.</p></div>';
+    return '<div class="activity-list">' + items.slice(0, 5).map(function (item) {
       return '<div class="activity-row"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><div>' + escapeHtml(item.text) + '<time>' + escapeHtml(item.time) + "</time></div></div>";
     }).join("") + "</div>";
   }
@@ -366,7 +403,7 @@
     }).concat(sessions.map(function (item) {
       return { title: item.title, type: "Training", date: item.date, time: item.time, place: item.venue, link: "training.html" };
     })).sort(function (a, b) { return (a.date || "").localeCompare(b.date || ""); }).slice(0, 8);
-    if (!rows.length) return '<div class="empty-state"><i class="fa-regular fa-calendar" aria-hidden="true"></i><strong>No upcoming activities</strong><p>There are no upcoming matches or sessions in the current browser session.</p></div>';
+    if (!rows.length) return '<div class="empty-state"><i class="fa-regular fa-calendar" aria-hidden="true"></i><strong>No upcoming activities</strong><p>There are no upcoming matches or sessions in the database.</p></div>';
     return '<div class="table-wrap"><table class="admin-table"><thead><tr><th>Activity</th><th>Type</th><th>Date</th><th>Time</th><th>Location</th></tr></thead><tbody>' +
       rows.map(function (item) { return "<tr><td><a class=\"table-link\" href=\"" + item.link + "\">" + escapeHtml(item.title) + "</a></td><td>" + escapeHtml(item.type) + "</td><td>" + escapeHtml(item.date || "—") + "</td><td>" + escapeHtml(item.time || "—") + "</td><td>" + escapeHtml(item.place || "—") + "</td></tr>"; }).join("") +
       "</tbody></table></div>";
@@ -399,8 +436,23 @@
       ? '<div class="table-wrap"><table class="admin-table"><thead><tr><th>Resource</th><th>Date</th><th>Time</th><th>Booking status</th></tr></thead><tbody>' +
         rows.map(function (item) { return "<tr><td><strong>" + escapeHtml(item.resource) + "</strong></td><td>" + escapeHtml(item.date) + "</td><td>" + escapeHtml(item.startTime || "—") + (item.endTime ? "–" + escapeHtml(item.endTime) : "") + "</td><td>" + statusBadge(item.status) + "</td></tr>"; }).join("") +
         "</tbody></table></div>"
-      : '<div class="empty-state"><i class="fa-solid fa-building-circle-check" aria-hidden="true"></i><strong>No resource availability data</strong><p>Availability can only be summarized for resources and booking dates entered in this browser session.</p></div>';
-    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">SESSION DATA ONLY</p><h2>Booking availability</h2></div></div><p class="intro-copy" style="margin-bottom:.8rem">This is a view of entered booking requests, not a complete resource inventory or authoritative availability calendar.</p>' + content + "</section>";
+      : '<div class="empty-state"><i class="fa-solid fa-building-circle-check" aria-hidden="true"></i><strong>No resource availability data</strong><p>Availability will appear when booking records are added.</p></div>';
+    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">DATABASE RECORDS</p><h2>Booking availability</h2></div></div><p class="intro-copy" style="margin-bottom:.8rem">Availability summarizes the saved booking requests; it is not a complete resource inventory or authoritative calendar.</p>' + content + "</section>";
+  }
+
+  function renderTournamentRegistrations() {
+    var rows = state.tournamentRegistrations;
+    if (!rows.length) {
+      return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>Tournament registrations</h2></div></div><div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><strong>No tournament registrations</strong><p>Student submissions will appear here after they are received.</p></div></section>';
+    }
+    var body = rows.map(function (item) {
+      return "<tr><td>" + escapeHtml(item.tournament) + "</td><td>" + escapeHtml(item.studentName) +
+        "</td><td>" + escapeHtml(item.studentId) + "</td><td>" + escapeHtml(item.email) +
+        "</td><td>" + escapeHtml(item.faculty || "—") + "</td><td>" +
+        escapeHtml(item.yearOfStudy || "—") + "</td><td>" + escapeHtml(item.submittedAt) + "</td></tr>";
+    }).join("");
+    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>Tournament registrations</h2></div><span class="section-count">' + escapeHtml(rows.length) + "</span></div>" +
+      '<div class="table-wrap"><table class="admin-table"><thead><tr><th>Tournament</th><th>Student</th><th>Student ID</th><th>Email</th><th>Faculty</th><th>Year</th><th>Submitted</th></tr></thead><tbody>' + body + "</tbody></table></div></section>";
   }
 
   function uniqueOptions(entity, key) {
@@ -439,11 +491,6 @@
   function today() {
     var date = new Date();
     return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
-  }
-
-  function recordActivity(text) {
-    state.activity.push({ text: text, time: new Date().toLocaleString() });
-    if (state.activity.length > 30) state.activity.shift();
   }
 
   function notify(message) {
@@ -608,25 +655,27 @@
     if (action === "approve" || action === "reject" || action === "publish") {
       var nextStatus = action === "approve" ? "Approved" : action === "reject" ? "Rejected" : "Published";
       if (!window.confirm("Change this " + datasets[entity].label + " status to " + nextStatus + "?")) return;
-      var beforeDecision = snapshotState();
+      var previousStatus = item.status;
       item.status = nextStatus;
-      recordActivity(nextStatus + " " + (item.name || item.title || item.studentName || item.resource || datasets[entity].label));
-      if (!saveState()) {
-        state = beforeDecision;
-        return;
-      }
-      window.location.reload();
+      saveRecord(entity, item, item.id).then(function (saved) {
+        state[entity] = state[entity].map(function (record) { return record.id === saved.id ? saved : record; });
+        window.location.reload();
+      }).catch(function (error) {
+        item.status = previousStatus;
+        notify(error.message);
+      });
     }
     if (action === "delete") {
-      if (!window.confirm("Delete this " + datasets[entity].label + "? This cannot be undone in this session.")) return;
-      var beforeDelete = snapshotState();
-      state[entity] = state[entity].filter(function (record) { return record.id !== item.id; });
-      recordActivity("Deleted " + (item.name || item.title || item.studentName || item.resource || datasets[entity].label));
-      if (!saveState()) {
-        state = beforeDelete;
-        return;
-      }
-      window.location.reload();
+      var deleteWarning = entity === "students" && item.hasAccount
+        ? "Delete this student and their login account and tournament registrations? This cannot be undone."
+        : "Delete this " + datasets[entity].label + "? This cannot be undone.";
+      if (!window.confirm(deleteWarning)) return;
+      deleteRecord(entity, item.id).then(function () {
+        state[entity] = state[entity].filter(function (record) { return record.id !== item.id; });
+        window.location.reload();
+      }).catch(function (error) {
+        notify(error.message);
+      });
     }
   }
 
@@ -648,8 +697,13 @@
     document.getElementById("notifications-button").addEventListener("click", function () {
       showNotifications();
     });
-    document.getElementById("logout-button").addEventListener("click", function () {
-      window.alert("No authenticated session is configured, so there is no server session to log out of.");
+    document.getElementById("logout-button").addEventListener("click", async function () {
+      try {
+        await adminRequest("logout.php", "POST", {});
+        window.location.assign("../login/login.html?view=admin#admin");
+      } catch (error) {
+        notify(error.message);
+      }
     });
     var profileToggle = document.getElementById("profile-toggle");
     var profileMenu = document.getElementById("profile-menu");
@@ -669,7 +723,7 @@
       } else if (option.dataset.profileAction === "preferences") {
         notify("Use the adjacent theme button to switch between light and dark appearance.");
       } else if (option.dataset.profileAction === "logout") {
-        window.alert("No authenticated session is configured, so there is no server session to sign out of.");
+        document.getElementById("logout-button").click();
       }
     });
     document.addEventListener("click", function (event) {
@@ -725,28 +779,35 @@
     });
 
     document.getElementById("app").addEventListener("click", handleAction);
-    document.getElementById("app").addEventListener("submit", function (event) {
+    document.getElementById("app").addEventListener("submit", async function (event) {
       var form = event.target.closest("#record-form");
       if (!form) return;
       event.preventDefault();
       var entity = form.getAttribute("data-entity");
       var id = form.getAttribute("data-id");
       var existing = id ? state[entity].find(function (record) { return record.id === id; }) : null;
-      var beforeSave = snapshotState();
-      var record = existing || { id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Date.now()) };
+      var record = existing ? Object.assign({}, existing) :
+        { id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Date.now()) };
+      var submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
       new FormData(form).forEach(function (value, key) { record[key] = String(value).trim(); });
       if (!record.status && datasets[entity].fields.some(function (field) { return field.key === "status"; })) {
         record.status = entity === "announcements" ? "Draft" : entity === "clubs" ? "Active" : entity === "training" ? "Scheduled" : entity === "events" ? "Draft" : "Pending";
       }
-      if (!existing) state[entity].push(record);
-      var description = (existing ? "Updated " : "Added ") + (record.name || record.title || record.studentName || record.resource || datasets[entity].label);
-      recordActivity(description);
-      if (!saveState()) {
-        state = beforeSave;
+      try {
+        var savedRecord = await saveRecord(entity, record, existing ? id : null);
+        if (existing) {
+          state[entity] = state[entity].map(function (item) { return item.id === savedRecord.id ? savedRecord : item; });
+        } else {
+          state[entity].unshift(savedRecord);
+        }
+      } catch (error) {
+        notify(error.message);
+        submitButton.disabled = false;
         return;
       }
       document.getElementById("record-dialog").close();
-      notify("Record " + (existing ? "updated" : "created") + " in this browser session.");
+      notify("Record " + (existing ? "updated" : "created") + ".");
       if (page === "dashboard") window.location.reload();
       else applyFilters();
     });
@@ -764,12 +825,15 @@
     }
   }
 
-  function start() {
-    loadState();
+  async function start() {
     initTheme();
+    document.getElementById("app").textContent = "Loading administration data…";
+    if (!await loadState()) return;
     document.getElementById("app").innerHTML = renderHeader();
     bindEvents();
   }
 
-  document.addEventListener("DOMContentLoaded", start);
+  document.addEventListener("DOMContentLoaded", function () {
+    start().catch(showStartupError);
+  });
 })();

@@ -14,6 +14,27 @@ function respond(int $status, array $data): never
     exit;
 }
 
+function read_request_payload(): array
+{
+    $raw = file_get_contents('php://input');
+
+    if (is_string($raw) && $raw !== '') {
+        $decoded = json_decode($raw, true);
+
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        parse_str($raw, $parsed);
+
+        if (is_array($parsed)) {
+            return $parsed;
+        }
+    }
+
+    return [];
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
     header('Allow: POST');
@@ -24,18 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     ]);
 }
 
-$input = json_decode(
-    file_get_contents('php://input'),
-    true
-);
+$input = read_request_payload();
 
-$token = is_array($input)
-    ? (string)($input['token'] ?? '')
-    : '';
-
-$password = is_array($input)
-    ? (string)($input['password'] ?? '')
-    : '';
+$token = strtolower(trim((string)($input['token'] ?? '')));
+$password = (string)($input['password'] ?? '');
 
 if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
 
@@ -45,11 +58,11 @@ if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
     ]);
 }
 
-if (strlen($password) < 8 || strlen($password) > 128) {
+if (!preg_match('/.{8,}/us', $password) || strlen($password) > 72) {
 
     respond(400, [
         'success' => false,
-        'message' => 'Password must be 8–128 characters.'
+        'message' => 'Password must contain at least 8 characters and no more than 72 bytes.'
     ]);
 }
 
@@ -66,7 +79,7 @@ try {
          FROM password_reset_tokens
          WHERE token_hash = :token_hash
          AND used_at IS NULL
-         AND expires_at > NOW()
+         AND expires_at > UTC_TIMESTAMP()
          LIMIT 1
          FOR UPDATE'
     );
@@ -103,9 +116,16 @@ try {
         'user_id' => $reset['user_id']
     ]);
 
+    $deleteRememberTokens = $pdo->prepare(
+        'DELETE FROM student_remember_tokens WHERE user_id = :user_id'
+    );
+    $deleteRememberTokens->execute([
+        'user_id' => $reset['user_id']
+    ]);
+
     $useToken = $pdo->prepare(
         'UPDATE password_reset_tokens
-         SET used_at = NOW()
+         SET used_at = UTC_TIMESTAMP()
          WHERE reset_id = :reset_id'
     );
 
@@ -115,7 +135,7 @@ try {
 
     $invalidateOthers = $pdo->prepare(
         'UPDATE password_reset_tokens
-         SET used_at = NOW()
+         SET used_at = UTC_TIMESTAMP()
          WHERE user_id = :user_id
          AND used_at IS NULL'
     );
