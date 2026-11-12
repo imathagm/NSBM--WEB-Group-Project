@@ -63,6 +63,7 @@ $entities = [
             'venue' => ['column' => 'venue', 'type' => 'text', 'max' => 180],
             'homeClub' => ['column' => 'home_team', 'type' => 'text', 'required' => true, 'max' => 120],
             'opponent' => ['column' => 'opponent_name', 'type' => 'text', 'max' => 160],
+            'registrationDeadline' => ['column' => 'registration_deadline', 'type' => 'date'],
             'status' => ['column' => 'status', 'type' => 'enum', 'options' => ['Draft', 'Scheduled', 'Completed', 'Cancelled'], 'default' => 'Scheduled'],
             'result' => ['column' => 'result', 'type' => 'text', 'max' => 180],
         ],

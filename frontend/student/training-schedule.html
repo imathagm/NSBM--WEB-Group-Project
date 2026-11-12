@@ -171,7 +171,7 @@
           </span>
 
           <div>
-            <strong id="total-sessions">4</strong>
+            <strong id="total-sessions">0</strong>
             <span>Weekly Sessions</span>
           </div>
         </article>
@@ -182,8 +182,8 @@
           </span>
 
           <div>
-            <strong id="total-hours">6.5 hrs</strong>
-            <span>Training Hours</span>
+            <strong id="total-clubs">0</strong>
+            <span>Clubs</span>
           </div>
         </article>
 
@@ -193,7 +193,7 @@
           </span>
 
           <div>
-            <strong id="total-days">4</strong>
+            <strong id="total-days">0</strong>
             <span>Training Days</span>
           </div>
         </article>
@@ -213,28 +213,13 @@
         <label class="filter-control">
           <span>Sport</span>
 
-          <select id="sport-filter">
-            <option value="all">All Sports</option>
-            <option value="badminton">Badminton</option>
-            <option value="basketball">Basketball</option>
-            <option value="football">Football</option>
-            <option value="cricket">Cricket</option>
-          </select>
+          <select id="sport-filter"><option value="all">All Sports</option></select>
         </label>
 
         <label class="filter-control">
           <span>Day</span>
 
-          <select id="day-filter">
-            <option value="all">All Days</option>
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="friday">Friday</option>
-            <option value="saturday">Saturday</option>
-            <option value="sunday">Sunday</option>
-          </select>
+          <select id="day-filter"><option value="all">All Days</option></select>
         </label>
 
         <button class="reset-filters" id="reset-filters"
@@ -257,217 +242,12 @@
             <h2>Upcoming Sessions</h2>
           </div>
 
-          <span class="section-count" id="session-count">
-            4 SESSIONS
-          </span>
+          <span class="section-count" id="session-count">0 SESSIONS</span>
 
         </div>
 
 
-        <div class="training-list" id="training-list">
-
-
-          <!-- BADMINTON -->
-
-          <article class="training-card"
-            data-sport="badminton"
-            data-day="monday"
-            data-duration="1.5">
-
-            <div class="training-date">
-              <span>MON</span>
-              <strong>01</strong>
-              <small>DAY</small>
-            </div>
-
-            <div class="training-details">
-
-              <div class="training-top">
-                <span class="sport-tag badminton-tag">Badminton</span>
-                <span class="session-status">Scheduled</span>
-              </div>
-
-              <h3>Badminton Practice</h3>
-
-              <div class="training-meta">
-
-                <span>
-                  <i class="fa-regular fa-clock"></i>
-                  4:00 PM – 5:30 PM
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-location-dot"></i>
-                  Indoor Sports Complex
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-user"></i>
-                  Coach: Sports Department
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="training-icon badminton-icon">
-              <i class="fa-solid fa-table-tennis-paddle-ball"></i>
-            </div>
-
-          </article>
-
-
-          <!-- BASKETBALL -->
-
-          <article class="training-card"
-            data-sport="basketball"
-            data-day="wednesday"
-            data-duration="1.5">
-
-            <div class="training-date">
-              <span>WED</span>
-              <strong>03</strong>
-              <small>DAY</small>
-            </div>
-
-            <div class="training-details">
-
-              <div class="training-top">
-                <span class="sport-tag basketball-tag">Basketball</span>
-                <span class="session-status">Scheduled</span>
-              </div>
-
-              <h3>Basketball Team Training</h3>
-
-              <div class="training-meta">
-
-                <span>
-                  <i class="fa-regular fa-clock"></i>
-                  3:00 PM – 4:30 PM
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-location-dot"></i>
-                  Outdoor Basketball Court
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-user"></i>
-                  Coach: Sports Department
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="training-icon basketball-icon">
-              <i class="fa-solid fa-basketball"></i>
-            </div>
-
-          </article>
-
-
-          <!-- FOOTBALL -->
-
-          <article class="training-card"
-            data-sport="football"
-            data-day="friday"
-            data-duration="1.5">
-
-            <div class="training-date">
-              <span>FRI</span>
-              <strong>05</strong>
-              <small>DAY</small>
-            </div>
-
-            <div class="training-details">
-
-              <div class="training-top">
-                <span class="sport-tag football-tag">Football</span>
-                <span class="session-status">Scheduled</span>
-              </div>
-
-              <h3>Football Team Practice</h3>
-
-              <div class="training-meta">
-
-                <span>
-                  <i class="fa-regular fa-clock"></i>
-                  4:00 PM – 5:30 PM
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-location-dot"></i>
-                  University Football Ground
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-user"></i>
-                  Coach: Sports Department
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="training-icon football-icon">
-              <i class="fa-solid fa-futbol"></i>
-            </div>
-
-          </article>
-
-
-          <!-- CRICKET -->
-
-          <article class="training-card"
-            data-sport="cricket"
-            data-day="saturday"
-            data-duration="2">
-
-            <div class="training-date">
-              <span>SAT</span>
-              <strong>06</strong>
-              <small>DAY</small>
-            </div>
-
-            <div class="training-details">
-
-              <div class="training-top">
-                <span class="sport-tag cricket-tag">Cricket</span>
-                <span class="session-status">Scheduled</span>
-              </div>
-
-              <h3>Cricket Team Practice</h3>
-
-              <div class="training-meta">
-
-                <span>
-                  <i class="fa-regular fa-clock"></i>
-                  8:00 AM – 10:00 AM
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-location-dot"></i>
-                  University Cricket Ground
-                </span>
-
-                <span>
-                  <i class="fa-solid fa-user"></i>
-                  Coach: Sports Department
-                </span>
-
-              </div>
-
-            </div>
-
-            <div class="training-icon cricket-icon">
-              <i class="fa-solid fa-baseball-bat-ball"></i>
-            </div>
-
-          </article>
-
-        </div>
-
+        <div class="training-list" id="training-list"></div>
 
         <!-- EMPTY FILTER RESULT -->
 
@@ -488,23 +268,7 @@
 
       <!-- TRAINING REMINDER -->
 
-      <section class="training-reminder">
 
-        <div class="reminder-icon">
-          <i class="fa-solid fa-circle-info"></i>
-        </div>
-
-        <div>
-          <h3>Training Reminder</h3>
-
-          <p>
-            Please arrive at least 15 minutes before your scheduled
-            training session. Bring your student ID and necessary
-            sports equipment.
-          </p>
-        </div>
-
-      </section>
 
 
       <!-- FOOTER -->
@@ -531,7 +295,7 @@
 <!-- Shared portal JavaScript -->
 <script src="../js/auth-api.js" defer></script>
 <script src="auth.js" defer></script>
-<script src="../js/notifications.js" defer></script>
+
 
 <!-- Training schedule JavaScript -->
 <script src="../js/training-schedule.js" defer></script>

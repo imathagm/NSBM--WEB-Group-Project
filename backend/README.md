@@ -12,8 +12,9 @@ VS Code Live Server alone will not execute the APIs.
    `20261104_password_recovery.sql`,
    `20261109_account_tables.sql`,
    `20261110_student_auth_profile.sql`, and
-   `20261111_backend_integration.sql`. If the existing database already has
-   migrations through `20261110`, apply only `20261111_backend_integration.sql`.
+   `20261111_backend_integration.sql`, and
+   `20261112_admin_managed_content.sql`. If the existing database already has
+   migrations through `20261111`, apply only `20261112_admin_managed_content.sql`.
    Do not rerun an already-applied `ALTER TABLE` migration.
 2. Configure `NSBM_DB_HOST`, `NSBM_DB_NAME`, `NSBM_DB_USER`, and
    `NSBM_DB_PASSWORD` in the PHP process environment. `NSBM_DB_PORT` is
@@ -39,6 +40,13 @@ VS Code Live Server alone will not execute the APIs.
   `api/auth/login.php`. Student session checks and sign-out use
   `api/auth/session.php` and `api/auth/logout.php`. Authenticated students can
   update their profile and photo through `api/auth/profile.php`.
+- Published announcements for the signed-in student are served by
+  `api/announcements.php`. Drafts, future-dated announcements, and
+  administrator-only announcements are not shown in the student portal;
+  club-member announcements are shown to students with an approved membership.
+- Public club, training, event, and all-student announcement listings are served
+  from active database records by `api/public-content.php`; the student dashboard
+  and listings do not preload sample records.
 - Password recovery uses `api/forgot-password.php` and
   `api/reset-password.php`. Install the locked PHP dependencies with Composer
   from `backend/`, then create `config/mail-config.php` using
@@ -64,9 +72,6 @@ VS Code Live Server alone will not execute the APIs.
 - Tournament entry submissions require a signed-in student and are saved in
   MySQL. Administrators can review them in the Admin Portal's Matches &
   Tournaments page.
-- `api/fixtures.php` serves the seeded fixtures used by the student matches
-  page. Unconfirmed demonstration pairings are marked as such in the database.
-
-The seeded Upcoming Matches deliberately have null dates, times, and venues
-because no verified values were available. They display as “To Be Announced”
-until updated in MySQL.
+- `api/fixtures.php` serves the administrator-managed fixtures used by the
+  student matches page. Fresh databases do not include sample fixtures; add
+  matches and tournaments through the Admin Portal.

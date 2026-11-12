@@ -60,7 +60,7 @@
                         <input id="club-search" name="clubs" type="search" placeholder="Search a sport or club..." autocomplete="off" aria-controls="club-grid">
                         <button class="search__clear" id="clear-search" type="button" aria-label="Clear search" hidden>Clear</button>
                     </form>
-                    <p class="hero__hint"><span aria-hidden="true">↳</span> Try “football”, “swimming” or “chess”</p>
+                    <p class="hero__hint"><span aria-hidden="true">↳</span> Search clubs and sports added by the administrator.</p>
                 </div>
 
             </div>
@@ -74,94 +74,14 @@
                     <h2 id="directory-title">Find your <span>people.</span></h2>
                     <p class="directory__intro">Explore the clubs, meet your team, and make room for more sport in your life.</p>
                 </div>
-                <div class="directory__count" id="results-count" aria-live="polite" aria-atomic="true">Showing 18 clubs</div>
+                <div class="directory__count" id="results-count" aria-live="polite" aria-atomic="true">Loading clubs…</div>
             </div>
 
-            <div class="filters" role="group" aria-label="Filter clubs by category">
-                <button class="filter-button is-active" type="button" data-category-filter="all" aria-pressed="true">All Clubs <span>18</span></button>
-                <button class="filter-button" type="button" data-category-filter="team" aria-pressed="false">Team Sports</button>
-                <button class="filter-button" type="button" data-category-filter="individual" aria-pressed="false">Individual Sports</button>
-                <button class="filter-button" type="button" data-category-filter="martial" aria-pressed="false">Martial Arts</button>
-                <button class="filter-button" type="button" data-category-filter="mind" aria-pressed="false">Mind Sports</button>
-            </div>
+            <div class="filters" id="club-filters" role="group" aria-label="Filter clubs by sport"></div>
 
-            <p class="directory__note">Club images are for project preview only and are not presented as official NSBM photography or logos.</p>
 
-            <div class="club-grid" id="club-grid">
-                <article class="club-card" data-club-name="Athletics" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/athletics.jpg" role="img" aria-label="Athletics visual fallback"><span>AT</span><i aria-hidden="true"></i></div><span class="club-card__index">01</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Athletics</h3><p class="club-card__description">Meet the community, explore athletics opportunities and view the club’s official profile information.</p>                    <a class="club-card__action" href="details-page.html?id=athletics" aria-label="View Athletics Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Badminton" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/badminton.jpg" role="img" aria-label="Badminton visual fallback"><span>BD</span><i aria-hidden="true"></i></div><span class="club-card__index">02</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Badminton</h3><p class="club-card__description">A welcoming club for beginners and competitive players, with local through international competition opportunities.</p><a class="club-card__action" href="details-page.html?id=badminton" aria-label="View Badminton Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Cricket" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/cricket.jpg" role="img" aria-label="Cricket visual fallback"><span>CR</span><i aria-hidden="true"></i></div><span class="club-card__index">03</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Cricket</h3><p class="club-card__description">An active university team with student and alumni members, competing in inter-university cricket.</p><a class="club-card__action" href="details-page.html?id=cricket" aria-label="View Cricket Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Football" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/football.jpg" role="img" aria-label="Football visual fallback"><span>FB</span><i aria-hidden="true"></i></div><span class="club-card__index">04</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Football</h3><p class="club-card__description">Find your position, play with purpose and be part of the beautiful game.</p><a class="club-card__action" href="details-page.html?id=football" aria-label="View Football Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Swimming" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/swimming.jpg" role="img" aria-label="Swimming visual fallback"><span>SW</span><i aria-hidden="true"></i></div><span class="club-card__index">05</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Swimming</h3><p class="club-card__description">A supportive club for experienced swimmers and beginners, with an international-level pool on campus.</p><a class="club-card__action" href="details-page.html?id=swimming" aria-label="View Swimming Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Basketball" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/basketball.jpg" role="img" aria-label="Basketball visual fallback"><span>BK</span><i aria-hidden="true"></i></div><span class="club-card__index">06</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Basketball</h3><p class="club-card__description">Make every pass count and enjoy the energy of the game together.</p><a class="club-card__action" href="details-page.html?id=basketball" aria-label="View Basketball Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Table Tennis" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/table-tennis.jpg" role="img" aria-label="Table Tennis visual fallback"><span>TT</span><i aria-hidden="true"></i></div><span class="club-card__index">07</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Table Tennis</h3><p class="club-card__description">An active club since 2017 that gives undergraduates opportunities to develop speed, coordination and alertness.</p><a class="club-card__action" href="details-page.html?id=table-tennis" aria-label="View Table Tennis Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Netball" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/netball.jpg" role="img" aria-label="Netball visual fallback"><span>NB</span><i aria-hidden="true"></i></div><span class="club-card__index">08</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Netball</h3><p class="club-card__description">Founded in 2016, the club welcomes undergraduates at all levels and supports university- and island-level competition.</p><a class="club-card__action" href="details-page.html?id=netball" aria-label="View Netball Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Rugby" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/rugby.jpg" role="img" aria-label="Rugby visual fallback"><span>RG</span><i aria-hidden="true"></i></div><span class="club-card__index">09</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Rugby</h3><p class="club-card__description">A competitive club emphasizing unity, discipline, determination and physical and mental endurance.</p><a class="club-card__action" href="details-page.html?id=rugby" aria-label="View Rugby Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Calisthenics" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/calisthenics.jpg" role="img" aria-label="Calisthenics visual fallback"><span>CA</span><i aria-hidden="true"></i></div><span class="club-card__index">10</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Calisthenics</h3><p class="club-card__description">Explore bodyweight movement, control and strength at your own pace.</p><a class="club-card__action" href="details-page.html?id=calisthenics" aria-label="View Calisthenics Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Hockey" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/hockey.jpg" role="img" aria-label="Hockey visual fallback"><span>HK</span><i aria-hidden="true"></i></div><span class="club-card__index">11</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Hockey</h3><p class="club-card__description">Combine quick footwork and sharp teamwork in this fast-paced field sport.</p><a class="club-card__action" href="details-page.html?id=hockey" aria-label="View Hockey Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Chess" data-category="mind">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/chess.jpg" role="img" aria-label="Chess visual fallback"><span>CH</span><i aria-hidden="true"></i></div><span class="club-card__index">12</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Mind sport</p><h3 class="club-card__title">Chess</h3><p class="club-card__description">An NSBM club with a competitive history dating back to 2017 and recorded university and inter-university results.</p><a class="club-card__action" href="details-page.html?id=chess" aria-label="View Chess Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Volleyball" data-category="team">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/volleyball.jpg" role="img" aria-label="Volleyball visual fallback"><span>VB</span><i aria-hidden="true"></i></div><span class="club-card__index">13</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Team sport</p><h3 class="club-card__title">Volleyball</h3><p class="club-card__description">Develop volleyball skills, sportsmanship, teamwork and personal growth in a safe environment.</p><a class="club-card__action" href="details-page.html?id=volleyball" aria-label="View Volleyball Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Archery" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/archery.jpg" role="img" aria-label="Archery visual fallback"><span>AR</span><i aria-hidden="true"></i></div><span class="club-card__index">14</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Archery</h3><p class="club-card__description">Practice patience, precision and steady focus in a target sport.</p><a class="club-card__action" href="details-page.html?id=archery" aria-label="View Archery Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Powerlifting" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/powerlifting.jpg" role="img" aria-label="Powerlifting visual fallback"><span>PL</span><i aria-hidden="true"></i></div><span class="club-card__index">15</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Powerlifting</h3><p class="club-card__description">Focus on strength, technique and personal progress in every lift.</p><a class="club-card__action" href="details-page.html?id=powerlifting" aria-label="View Powerlifting Club schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Tennis" data-category="individual">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/tennis.jpg" role="img" aria-label="Tennis visual fallback"><span>TN</span><i aria-hidden="true"></i></div><span class="club-card__index">16</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Individual sport</p><h3 class="club-card__title">Tennis</h3><p class="club-card__description">A 2023 initiative intended to give NSBM tennis players and enthusiasts a platform to showcase their skills.</p><a class="club-card__action" href="details-page.html?id=tennis" aria-label="View Tennis Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Martial Arts" data-category="martial">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/karate.jpg" role="img" aria-label="Martial Arts visual fallback"><span>MA</span><i aria-hidden="true"></i></div><span class="club-card__index">17</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Martial arts</p><h3 class="club-card__title">Martial Arts</h3><p class="club-card__description">The NSBM Martial Arts Club brings together Taekwondo and Karate training.</p><a class="club-card__action" href="details-page.html?id=martial-arts" aria-label="View Martial Arts Club details">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-                <article class="club-card" data-club-name="Taekwondo" data-category="martial">
-                    <div class="club-card__visual"><div class="club-emblem" data-image-path="images/taekwondo.jpg" role="img" aria-label="Taekwondo visual fallback"><span>TK</span><i aria-hidden="true"></i></div><span class="club-card__index">18</span></div>
-                    <div class="club-card__body"><p class="club-card__category">Martial art</p><h3 class="club-card__title">Taekwondo</h3><p class="club-card__description">Build balance, discipline and technique in a focused martial art.</p><a class="club-card__action" href="details-page.html?id=martial-arts" aria-label="View Taekwondo training schedule">View Club <span aria-hidden="true">↗</span></a></div>
-                </article>
-            </div>
-            <p class="empty-state" id="empty-state" role="status" hidden>No clubs match that search. Try another sport or clear your filters.</p>
+
+            <div class="club-grid" id="club-grid"></div><p class="empty-state" id="empty-state" role="status" hidden>No clubs match that search. Try another sport or clear your filters.</p>
         </section>
 
         <section class="join-cta" aria-labelledby="join-title">

@@ -22,7 +22,7 @@ try {
     $statement = $database->query(
         "SELECT fixture_id, section, sport, competition, home_team, opponent_name,
                 opponent_code, event_date, TIME_FORMAT(start_time, '%H:%i') AS start_time,
-                venue, is_demo, kind, status, result
+                registration_deadline, venue, is_demo, kind, status, result
          FROM sports_fixtures
          WHERE status NOT IN ('Draft', 'Cancelled')
          ORDER BY display_order, fixture_id"

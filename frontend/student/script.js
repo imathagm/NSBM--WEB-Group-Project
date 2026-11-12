@@ -1,144 +1,160 @@
 (function () {
+  var scriptUrl = document.currentScript.src;
+  var fixturesEndpoint = new URL("../../backend/api/fixtures.php", scriptUrl);
   var sportFilter = document.getElementById("sport-filter");
   var statusFilter = document.getElementById("status-filter");
   var dateFilter = document.getElementById("date-filter");
   var resetButton = document.getElementById("reset-filters");
-  var filterCards = Array.from(document.querySelectorAll(".filter-card"));
-  var sections = [
-    { element: document.getElementById("upcoming-section"), count: document.getElementById("upcoming-count"), id: "upcoming", kind: "match", label: "MATCHES" },
-    { element: document.getElementById("scheduled-section"), count: document.getElementById("scheduled-count"), id: "scheduled", kind: "match", label: "EVENTS" },
-    { element: document.getElementById("tournaments-section"), count: document.getElementById("tournaments-count"), id: "tournaments", kind: "tournament", label: "TOURNAMENTS" },
-    { element: document.getElementById("results-section"), count: null, id: "results", kind: "result", label: "" }
-  ];
-  function todayAsISO() {
-    var today = new Date();
-    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
-  }
+  var grids = {
+    upcoming: document.getElementById("upcoming-grid"),
+    scheduled: document.getElementById("scheduled-grid"),
+    tournaments: document.getElementById("tournaments-grid"),
+    results: document.getElementById("results-grid")
+  };
+  var counts = {
+    upcoming: document.getElementById("upcoming-count"),
+    scheduled: document.getElementById("scheduled-count"),
+    tournaments: document.getElementById("tournaments-count"),
+    results: document.getElementById("results-count")
+  };
+  var detailsDialog = document.getElementById("details-dialog");
+  var fixtures = [];
 
-  function updateTournamentRegistrationStates() {
-    var today = todayAsISO();
-    document.querySelectorAll('.tournament-card[data-status="open"]').forEach(function (card) {
-      if (today <= card.dataset.registrationDeadline) return;
-
-      card.dataset.status = "closed";
-      var badge = card.querySelector("[data-registration-badge]");
-      badge.classList.add("registration-closed");
-      badge.innerHTML = "<span></span>Registration Closed";
-
-      var registrationLink = card.querySelector("[data-registration-link]");
-      var closedButton = document.createElement("button");
-      closedButton.className = "register-button register-button--disabled";
-      closedButton.type = "button";
-      closedButton.disabled = true;
-      closedButton.setAttribute("aria-disabled", "true");
-      closedButton.textContent = "Registration Closed";
-      registrationLink.replaceWith(closedButton);
+  function escapeHtml(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
     });
   }
 
-  function displayDate(value, longMonth) {
+  function slug(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  function formatDate(value, longMonth) {
     if (!value) return "To Be Announced";
-    var parts = value.split("-");
-    var monthNames = longMonth
-      ? ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-      : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var monthIndex = Number(parts[1]) - 1;
-    if (parts.length !== 3 || monthIndex < 0 || monthIndex > 11) {
-      throw new Error("The fixture API returned an invalid event date.");
-    }
-    return Number(parts[2]) + " " + monthNames[monthIndex] + " " + parts[0];
+    var parts = value.slice(0, 10).split("-").map(Number);
+    return new Intl.DateTimeFormat(undefined, {
+      day: "numeric",
+      month: longMonth ? "long" : "short",
+      year: "numeric"
+    }).format(new Date(parts[0], parts[1] - 1, parts[2]));
   }
 
-  function displayTime(value) {
+  function formatTime(value) {
     if (!value) return "To Be Announced";
-    var parts = value.split(":");
-    if (parts.length < 2) throw new Error("The fixture API returned an invalid start time.");
-    var hour = Number(parts[0]);
-    var minute = Number(parts[1]);
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-      throw new Error("The fixture API returned an invalid start time.");
-    }
-    var suffix = hour >= 12 ? "PM" : "AM";
-    var displayHour = hour % 12 || 12;
-    return displayHour + ":" + String(minute).padStart(2, "0") + " " + suffix;
+    var parts = value.split(":").map(Number);
+    if (parts.length < 2 || parts[0] > 23 || parts[1] > 59) return "To Be Announced";
+    return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" })
+      .format(new Date(2000, 0, 1, parts[0], parts[1]));
   }
 
-  function renderFixture(fixture, card) {
-    if (!fixture || fixture.section !== card.dataset.section) {
-      throw new Error("The fixture API returned a record for the wrong section.");
-    }
-
-    var dateLabel = displayDate(fixture.event_date, false);
-    var fullDateLabel = displayDate(fixture.event_date, true);
-    var timeLabel = displayTime(fixture.start_time);
-    var venueLabel = fixture.venue || "Venue To Be Announced";
-    var detailButton = card.querySelector("[data-details]");
-
-    card.querySelector("[data-fixture-date]").textContent = dateLabel;
-    card.querySelector("[data-fixture-time]").textContent = timeLabel;
-    card.querySelector("[data-fixture-venue]").textContent = venueLabel;
-    if (fixture.event_date) card.dataset.date = fixture.event_date;
-    else delete card.dataset.date;
-
-    detailButton.dataset.title = fixture.competition;
-    detailButton.dataset.sportName = fixture.sport;
-    detailButton.dataset.dateLabel = fullDateLabel;
-    detailButton.dataset.time = timeLabel;
-    detailButton.dataset.venue = venueLabel;
-    detailButton.dataset.teamA = fixture.home_team;
-    detailButton.dataset.teamB = fixture.opponent_name || "Opponent To Be Announced";
-    detailButton.dataset.extra = fixture.competition;
-
-    if (card.dataset.section === "scheduled") {
-      var isDemo = fixture.is_demo === true;
-      var opponentName = card.querySelector("[data-opponent-name]");
-      var opponentCode = card.querySelector("[data-opponent-code]");
-      var statusBadge = card.querySelector(".status-tag");
-
-      opponentName.textContent = fixture.opponent_name || "Opponent\nTo Be Announced";
-      opponentCode.textContent = fixture.opponent_code || "TBA";
-      statusBadge.textContent = isDemo ? "Proposed · Demo" : "Proposed";
-      statusBadge.classList.toggle("status-demo", isDemo);
-      detailButton.dataset.statusLabel = isDemo
-        ? "Proposed schedule - demonstration opponent pairing, not confirmed"
-        : "Proposed schedule - not officially announced";
-    }
+  function isRegistrationOpen(fixture) {
+    return fixture.status === "Scheduled" && fixture.registration_deadline &&
+      new Date().toISOString().slice(0, 10) <= fixture.registration_deadline;
   }
 
-  function loadFixtureData() {
-    return fetch("../../backend/api/fixtures.php", {
-      headers: { Accept: "application/json" }
-    }).then(function (response) {
-      if (!response.ok) throw new Error("The fixture API returned HTTP " + response.status + ".");
-      return response.json();
-    }).then(function (payload) {
-      if (!payload || !Array.isArray(payload.fixtures)) {
-        throw new Error("The fixture API returned an invalid response.");
-      }
+  function sectionFor(fixture) {
+    if (fixture.status === "Completed") return "results";
+    if (fixture.kind === "Tournament") return "tournaments";
+    return fixture.section === "upcoming" ? "upcoming" : "scheduled";
+  }
 
-      var cards = Object.create(null);
-      document.querySelectorAll("[data-fixture-id]").forEach(function (card) {
-        cards[card.dataset.fixtureId] = card;
-      });
+  function createDetailsButton(fixture, label) {
+    return '<button class="details-button" type="button" data-details data-id="' + escapeHtml(fixture.fixture_id) +
+      '" data-title="' + escapeHtml(fixture.competition) + '" data-sport="' + escapeHtml(fixture.sport) +
+      '" data-date="' + escapeHtml(formatDate(fixture.event_date, true)) + '" data-time="' + escapeHtml(formatTime(fixture.start_time)) +
+      '" data-venue="' + escapeHtml(fixture.venue || "Venue To Be Announced") + '" data-team-a="' + escapeHtml(fixture.home_team) +
+      '" data-team-b="' + escapeHtml(fixture.opponent_name || "Opponent To Be Announced") +
+      '" data-status="' + escapeHtml(label) + '" data-extra="' + escapeHtml(fixture.result || fixture.competition) +
+      '">' + label + ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>';
+  }
 
-      var loaded = Object.create(null);
-      payload.fixtures.forEach(function (fixture) {
-        var card = fixture && cards[fixture.fixture_id];
-        if (!card || loaded[fixture.fixture_id]) {
-          throw new Error("The fixture API returned an unknown or duplicate fixture.");
-        }
-        renderFixture(fixture, card);
-        loaded[fixture.fixture_id] = true;
-      });
+  function renderMatch(fixture) {
+    var status = fixture.status === "Completed" ? "Completed" : "Scheduled";
+    return '<article class="match-card filter-card" data-sport="' + escapeHtml(slug(fixture.sport)) +
+      '" data-status="' + status.toLowerCase() + '" data-date="' + escapeHtml(fixture.event_date || "") + '">' +
+      '<div class="card-topline"><span class="sport-tag">' + escapeHtml(fixture.sport) +
+      '</span><span class="status-tag">' + status + '</span></div><p class="match-name">' +
+      escapeHtml(fixture.competition) + '</p><div class="versus"><div class="team"><strong>' +
+      escapeHtml(fixture.home_team) + '</strong></div><span class="versus-label">VS</span><div class="team team-right"><strong>' +
+      escapeHtml(fixture.opponent_name || "Opponent To Be Announced") + '</strong></div></div>' +
+      '<div class="card-divider"></div><div class="match-meta"><span><i class="fa-regular fa-calendar" aria-hidden="true"></i> ' +
+      escapeHtml(formatDate(fixture.event_date, false)) + '</span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> ' +
+      escapeHtml(formatTime(fixture.start_time)) + '</span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ' +
+      escapeHtml(fixture.venue || "Venue To Be Announced") + '</div>' +
+      createDetailsButton(fixture, status) + '</article>';
+  }
 
-      if (Object.keys(cards).length !== Object.keys(loaded).length) {
-        throw new Error("The fixture API did not return every fixture shown on this page.");
-      }
+  function renderTournament(fixture) {
+    var open = Boolean(isRegistrationOpen(fixture));
+    var status = open ? "open" : "closed";
+    var deadline = fixture.registration_deadline
+      ? "Registration deadline: " + formatDate(fixture.registration_deadline, true)
+      : "Registration deadline not published";
+    var registration = open
+      ? '<a class="register-button" href="tournament-registration.html?tournament=' +
+        encodeURIComponent(fixture.fixture_id) + '">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>'
+      : '<button class="register-button register-button--disabled" type="button" disabled>Registration unavailable</button>';
+    return '<article class="tournament-card filter-card" data-sport="' + escapeHtml(slug(fixture.sport)) +
+      '" data-status="' + status + '" data-date="' + escapeHtml(fixture.event_date || "") + '">' +
+      '<div class="tournament-visual"><span class="sport-tag">' + escapeHtml(fixture.sport) +
+      '</span><span class="status-tag">' + (open ? "Registration Open" : "Registration Closed") +
+      '</span></div><div class="tournament-content"><span class="sport-caption">' +
+      escapeHtml(fixture.sport) + '</span><h3>' + escapeHtml(fixture.competition) +
+      '</h3><p>' + escapeHtml(formatDate(fixture.event_date, true)) + '</p><p>' +
+      escapeHtml(fixture.venue || "Venue To Be Announced") + '</p><p>' + escapeHtml(deadline) +
+      '</p>' + registration + createDetailsButton(fixture, "View Details") + '</div></article>';
+  }
 
-      applyFilters();
-    }).catch(function (error) {
-      console.error("Unable to load fixture data from the database.", error);
+  function renderResult(fixture) {
+    return '<article class="research-card filter-card" data-sport="' + escapeHtml(slug(fixture.sport)) +
+      '" data-status="completed" data-date="' + escapeHtml(fixture.event_date || "") + '">' +
+      '<p class="sport-caption">' + escapeHtml(fixture.sport) + '</p><h3>' +
+      escapeHtml(fixture.competition) + '</h3><p>' + escapeHtml(fixture.result || "Result not published") +
+      '</p><p>' + escapeHtml(formatDate(fixture.event_date, true)) + ' · ' +
+      escapeHtml(fixture.venue || "Venue not published") + '</p>' +
+      createDetailsButton(fixture, "View Details") + '</article>';
+  }
+
+  function populateFilters() {
+    var sports = Array.from(new Set(fixtures.map(function (item) { return item.sport; }).filter(Boolean))).sort();
+    sports.forEach(function (sport) {
+      var option = document.createElement("option");
+      option.value = slug(sport);
+      option.textContent = sport;
+      sportFilter.appendChild(option);
     });
+    [
+      ["upcoming", "Upcoming"],
+      ["scheduled", "Scheduled"],
+      ["open", "Registration open"],
+      ["closed", "Registration closed"],
+      ["completed", "Completed"]
+    ].forEach(function (item) {
+      if (!fixtures.some(function (fixture) {
+        return item[0] === "completed" ? fixture.status === "Completed" :
+          item[0] === "open" ? isRegistrationOpen(fixture) :
+          item[0] === "closed" ? fixture.kind === "Tournament" && !isRegistrationOpen(fixture) :
+          fixture.status === "Scheduled" && sectionFor(fixture) === item[0];
+      })) return;
+      var option = document.createElement("option");
+      option.value = item[0];
+      option.textContent = item[1];
+      statusFilter.appendChild(option);
+    });
+  }
+
+  function renderFixtures() {
+    Object.keys(grids).forEach(function (section) {
+      var records = fixtures.filter(function (fixture) { return sectionFor(fixture) === section; });
+      grids[section].innerHTML = records.map(function (fixture) {
+        return section === "tournaments" ? renderTournament(fixture) :
+          section === "results" ? renderResult(fixture) : renderMatch(fixture);
+      }).join("");
+      counts[section].textContent = records.length + " " +
+        ({ upcoming: "MATCHES", scheduled: "EVENTS", tournaments: "TOURNAMENTS", results: "RESULTS" })[section];
+    });
+    applyFilters();
   }
 
   function applyFilters() {
@@ -146,36 +162,41 @@
     var selectedStatus = statusFilter.value;
     var selectedDate = dateFilter.value;
     var visibleTotal = 0;
-
-    sections.forEach(function (section) {
-      var cards = filterCards.filter(function (card) {
-        return card.dataset.kind === section.kind && card.dataset.section === section.id;
-      });
-      var visibleCount = 0;
-
-      cards.forEach(function (card) {
-        var matchesSport = selectedSport === "all" || card.dataset.sport === selectedSport;
-        var matchesStatus = selectedStatus === "all" || card.dataset.status === selectedStatus;
-        var matchesDate = !selectedDate || card.dataset.date === selectedDate;
-        var isVisible = matchesSport && matchesStatus && matchesDate;
-
-        card.hidden = !isVisible;
-        if (isVisible) visibleCount += 1;
-      });
-
-      section.element.hidden = visibleCount === 0 && section.element.dataset.keepVisible !== "true";
-      visibleTotal += visibleCount;
-
-      if (section.count) {
-        section.count.textContent = String(visibleCount).padStart(2, "0") + " " + section.label;
-      }
-
-      var emptyMessage = section.element.querySelector(".empty-message");
-      if (emptyMessage) emptyMessage.hidden = true;
+    document.querySelectorAll(".filter-card").forEach(function (card) {
+      var matchesSport = selectedSport === "all" || card.dataset.sport === selectedSport;
+      var matchesStatus = selectedStatus === "all" || card.dataset.status === selectedStatus;
+      var matchesDate = !selectedDate || card.dataset.date === selectedDate;
+      card.hidden = !(matchesSport && matchesStatus && matchesDate);
+      if (!card.hidden) visibleTotal += 1;
     });
-
     var globalEmpty = document.getElementById("global-empty");
-    if (globalEmpty) globalEmpty.hidden = visibleTotal > 0;
+    globalEmpty.textContent = fixtures.length
+      ? "No database records match the selected filters."
+      : "No match or tournament records have been added by an administrator yet.";
+    globalEmpty.hidden = visibleTotal > 0;
+  }
+
+  async function loadFixtures() {
+    var globalEmpty = document.getElementById("global-empty");
+    globalEmpty.textContent = "Loading schedule from the database…";
+    globalEmpty.hidden = false;
+    try {
+      var response = await fetch(fixturesEndpoint, {
+        headers: { Accept: "application/json" },
+        cache: "no-store"
+      });
+      var payload = await response.json();
+      if (!response.ok || !payload || !Array.isArray(payload.fixtures)) {
+        throw new Error(payload && payload.error ? payload.error : "The fixture service returned an invalid response.");
+      }
+      fixtures = payload.fixtures;
+      populateFilters();
+      renderFixtures();
+    } catch (error) {
+      console.error("Unable to load fixture data from the database.", error);
+      globalEmpty.textContent = "Match and tournament records are temporarily unavailable.";
+      globalEmpty.hidden = false;
+    }
   }
 
   sportFilter.addEventListener("change", applyFilters);
@@ -187,80 +208,45 @@
     dateFilter.value = "";
     applyFilters();
   });
-
-  var detailsDialog = document.getElementById("details-dialog");
-  var dialogTitle = document.getElementById("dialog-title");
-  var dialogSport = document.getElementById("dialog-sport");
-  var dialogStatus = document.getElementById("dialog-status");
-  var dialogTeams = document.getElementById("dialog-teams");
-  var dialogDate = document.getElementById("dialog-date");
-  var dialogTime = document.getElementById("dialog-time");
-  var dialogVenue = document.getElementById("dialog-venue");
-  var dialogExtraLabel = document.getElementById("dialog-extra-label");
-  var dialogExtra = document.getElementById("dialog-extra");
-
-  function openDetails(button) {
-    dialogTitle.textContent = button.dataset.title;
-    dialogSport.textContent = button.dataset.sportName.toUpperCase() + " DETAILS";
-    dialogStatus.textContent = button.dataset.statusLabel;
-    dialogTeams.replaceChildren();
-
-    [button.dataset.teamA, "VS", button.dataset.teamB].forEach(function (text, index) {
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-details]");
+    if (!button) return;
+    var fixture = fixtures.find(function (item) { return item.fixture_id === button.dataset.id; });
+    if (!fixture) return;
+    document.getElementById("dialog-title").textContent = fixture.competition;
+    document.getElementById("dialog-sport").textContent = fixture.sport.toUpperCase() + " DETAILS";
+    document.getElementById("dialog-status").textContent = fixture.status === "Completed"
+      ? fixture.result || "Result not published" : fixture.status;
+    var teams = document.getElementById("dialog-teams");
+    teams.replaceChildren();
+    [fixture.home_team, "VS", fixture.opponent_name || "Opponent To Be Announced"].forEach(function (text, index) {
       var item = document.createElement(index === 1 ? "span" : "strong");
       item.textContent = text;
-      dialogTeams.appendChild(item);
+      teams.appendChild(item);
     });
-
-    dialogDate.textContent = button.dataset.dateLabel;
-    dialogTime.textContent = button.dataset.time;
-    dialogVenue.textContent = button.dataset.venue;
-    dialogExtraLabel.textContent = button.dataset.extraLabel;
-    dialogExtra.textContent = button.dataset.extra;
+    document.getElementById("dialog-date").textContent = formatDate(fixture.event_date, true);
+    document.getElementById("dialog-time").textContent = formatTime(fixture.start_time);
+    document.getElementById("dialog-venue").textContent = fixture.venue || "Venue To Be Announced";
+    document.getElementById("dialog-extra-label").textContent = fixture.kind === "Tournament" ? "Registration deadline" : "Competition";
+    document.getElementById("dialog-extra").textContent = fixture.kind === "Tournament"
+      ? formatDate(fixture.registration_deadline, true) : fixture.result || fixture.competition;
     detailsDialog.showModal();
-  }
-
-  document.querySelectorAll("[data-details]").forEach(function (button) {
-    button.addEventListener("click", function () {
-      openDetails(button);
-    });
   });
 
   var menuToggle = document.getElementById("menu-toggle");
   var backdrop = document.getElementById("sidebar-backdrop");
-
   function setSidebarOpen(isOpen) {
     document.body.classList.toggle("sidebar-open", isOpen);
     menuToggle.setAttribute("aria-expanded", String(isOpen));
     menuToggle.setAttribute("aria-label", isOpen ? "Close student portal navigation" : "Open student portal navigation");
   }
-
   menuToggle.addEventListener("click", function () {
     setSidebarOpen(menuToggle.getAttribute("aria-expanded") !== "true");
   });
-  backdrop.addEventListener("click", function () {
-    setSidebarOpen(false);
-  });
-
+  backdrop.addEventListener("click", function () { setSidebarOpen(false); });
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") setSidebarOpen(false);
   });
 
-  var toast = document.getElementById("toast-message");
-  var toastTimer;
-  document.querySelectorAll("[data-portal-link]").forEach(function (link) {
-    link.addEventListener("click", function (event) {
-      event.preventDefault();
-      toast.textContent = (link.textContent.trim() || link.getAttribute("aria-label")) + " is outside this page preview.";
-      toast.classList.add("is-visible");
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(function () {
-        toast.classList.remove("is-visible");
-      }, 2400);
-      setSidebarOpen(false);
-    });
-  });
-
-  updateTournamentRegistrationStates();
-  applyFilters();
-  loadFixtureData();
+  loadFixtures();
 })();
