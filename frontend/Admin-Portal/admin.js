@@ -79,13 +79,14 @@
       fields: [
         { key: "kind", label: "Event type", type: "select", options: ["Match", "Tournament"] },
         { key: "title", label: "Name", required: true },
-        { key: "sport", label: "Sport" },
+        { key: "sport", label: "Sport", required: true },
         { key: "date", label: "Date", type: "date" },
         { key: "time", label: "Start time", type: "time" },
         { key: "venue", label: "Venue" },
-        { key: "homeClub", label: "NSBM club" },
+        { key: "homeClub", label: "NSBM club", required: true },
         { key: "opponent", label: "Opponent / participating clubs" },
-        { key: "status", label: "Status", type: "select", options: ["Draft", "Scheduled", "Completed", "Cancelled"] },
+        { key: "registrationDeadline", label: "Registration deadline", type: "date" },
+        { key: "status", label: "Status", type: "select", options: ["Scheduled", "Draft", "Completed", "Cancelled"] },
         { key: "result", label: "Result (if available)" }
       ],
       columns: [["kind", "Type"], ["title", "Event"], ["sport", "Sport"], ["date", "Date"], ["venue", "Venue"], ["status", "Status"], ["result", "Result"]]
@@ -96,7 +97,7 @@
         { key: "title", label: "Title", required: true },
         { key: "audience", label: "Audience", type: "select", options: ["All students", "Club members", "Administrators"] },
         { key: "status", label: "Status", type: "select", options: ["Draft", "Published"] },
-        { key: "publishDate", label: "Publish date", type: "date" },
+        { key: "publishDate", label: "Publish date (future date schedules it)", type: "date" },
         { key: "content", label: "Announcement content", type: "textarea", required: true, full: true }
       ],
       columns: [["title", "Announcement"], ["audience", "Audience"], ["publishDate", "Publish date"], ["status", "Status"]]
@@ -305,11 +306,18 @@
       buttons += '<button class="btn btn-small" type="button" data-action="approve" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Approve</button>' +
         '<button class="btn btn-danger btn-small" type="button" data-action="reject" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Reject</button>';
     }
-    if (entity === "announcements" && item.status === "Draft") {
-      buttons += '<button class="btn btn-small" type="button" data-action="publish" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Publish</button>';
+    if (entity === "announcements" &&
+        (item.status === "Draft" || (item.publishDate && item.publishDate > todayDate()))) {
+      buttons += '<button class="btn btn-small" type="button" data-action="publish" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Publish now</button>';
     }
     buttons += '<button class="btn btn-danger btn-small" type="button" data-action="delete" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Delete</button>';
     return '<div class="row-actions">' + buttons + "</div>";
+  }
+
+  function todayDate() {
+    var today = new Date();
+    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" +
+      String(today.getDate()).padStart(2, "0");
   }
 
   function tableMarkup(entity, rows) {
@@ -654,14 +662,20 @@
     if (action === "edit") renderForm(entity, item);
     if (action === "approve" || action === "reject" || action === "publish") {
       var nextStatus = action === "approve" ? "Approved" : action === "reject" ? "Rejected" : "Published";
-      if (!window.confirm("Change this " + datasets[entity].label + " status to " + nextStatus + "?")) return;
+      var confirmation = action === "publish"
+        ? "Publish this announcement now so students can see it immediately?"
+        : "Change this " + datasets[entity].label + " status to " + nextStatus + "?";
+      if (!window.confirm(confirmation)) return;
       var previousStatus = item.status;
+      var previousPublishDate = item.publishDate;
       item.status = nextStatus;
+      if (action === "publish") item.publishDate = todayDate();
       saveRecord(entity, item, item.id).then(function (saved) {
         state[entity] = state[entity].map(function (record) { return record.id === saved.id ? saved : record; });
         window.location.reload();
       }).catch(function (error) {
         item.status = previousStatus;
+        if (entity === "announcements") item.publishDate = previousPublishDate;
         notify(error.message);
       });
     }

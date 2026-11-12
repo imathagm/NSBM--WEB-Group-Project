@@ -1,351 +1,225 @@
-
 document.addEventListener("DOMContentLoaded", function () {
-    // ========================================
-    // STORY VIEWER
-    // ========================================
+  var scriptUrl = document.currentScript.src;
+  var contentEndpoint = new URL("../../backend/api/public-content.php", scriptUrl);
+  var eventSearch = document.getElementById("eventSearch");
+  var clearSearch = document.getElementById("clearSearch");
+  var filters = document.getElementById("eventFilters");
+  var eventsGrid = document.getElementById("eventsGrid");
+  var resultsLabel = document.getElementById("resultsLabel");
+  var noEvents = document.getElementById("noEvents");
+  var storiesTrack = document.getElementById("storiesTrack");
+  var featuredEvent = document.querySelector(".featured-event");
+  var events = [];
+  var announcements = [];
+  var selectedSport = "all";
 
-    const storyItems = Array.from(document.querySelectorAll(".story-item"));
-    const storyViewer = document.getElementById("storyViewer");
-    const viewerTitle = document.getElementById("viewerTitle");
-    const viewerCategory = document.getElementById("viewerCategory");
-    const viewerText = document.getElementById("viewerText");
-    const viewerTime = document.getElementById("viewerTime");
-    const viewerIcon = document.getElementById("viewerIcon");
-    const viewerCounter = document.getElementById("viewerCounter");
-    const viewerArt = document.getElementById("viewerArt");
-    const progressTrack = document.getElementById("storyProgressTrack");
-
-    const closeStoryViewer = document.getElementById("closeStoryViewer");
-    const storyBackdrop = document.getElementById("storyBackdrop");
-    const storyPrevious = document.getElementById("storyPrevious");
-    const storyNext = document.getElementById("storyNext");
-
-    let currentStoryIndex = 0;
-    let storyProgressTimer = null;
-
-    const storyIcons = {
-        trophy: "fa-trophy",
-        team: "fa-people-group",
-        football: "fa-futbol",
-        run: "fa-person-running",
-        bell: "fa-bell",
-        medal: "fa-medal"
-    };
-
-    function createStoryProgress() {
-        if (!progressTrack) return;
-
-        progressTrack.innerHTML = "";
-
-        storyItems.forEach(function () {
-            const segment = document.createElement("span");
-            segment.className = "story-progress-segment";
-
-            const fill = document.createElement("span");
-            fill.className = "story-progress-fill";
-
-            segment.appendChild(fill);
-            progressTrack.appendChild(segment);
-        });
-    }
-
-    function updateStoryProgress() {
-        if (!progressTrack) return;
-
-        const fills = progressTrack.querySelectorAll(".story-progress-fill");
-
-        fills.forEach(function (fill, index) {
-            fill.style.width = index < currentStoryIndex ? "100%" : "0%";
-        });
-    }
-
-    function openStory(index) {
-        if (!storyItems.length || !storyViewer) return;
-
-        currentStoryIndex = (index + storyItems.length) % storyItems.length;
-
-        const story = storyItems[currentStoryIndex];
-
-        const title = story.dataset.storyTitle || "Campus update";
-        const category = story.dataset.storyCategory || "SPORTSHUB UPDATE";
-        const description = story.dataset.storyText || "";
-        const type = story.dataset.storyType || "trophy";
-        const time = story.dataset.storyTime || "LATEST UPDATE";
-
-        if (viewerTitle) viewerTitle.textContent = title;
-        if (viewerCategory) viewerCategory.textContent = category;
-        if (viewerText) viewerText.textContent = description;
-        if (viewerTime) viewerTime.textContent = time;
-
-        if (viewerCounter) {
-            viewerCounter.textContent =
-                String(currentStoryIndex + 1).padStart(2, "0") +
-                " / " +
-                String(storyItems.length).padStart(2, "0");
-        }
-
-        if (viewerIcon) {
-            viewerIcon.className = "fa-solid " + (storyIcons[type] || "fa-trophy");
-        }
-
-        if (viewerArt) {
-            viewerArt.dataset.storyType = type;
-        }
-
-        updateStoryProgress();
-
-        storyViewer.classList.add("is-active");
-        storyViewer.setAttribute("aria-hidden", "false");
-        document.body.classList.add("story-open");
-
-        if (closeStoryViewer) closeStoryViewer.focus();
-    }
-
-    function closeStories() {
-        if (!storyViewer) return;
-
-        storyViewer.classList.remove("is-active");
-        storyViewer.setAttribute("aria-hidden", "true");
-        document.body.classList.remove("story-open");
-
-        if (storyProgressTimer) {
-            clearTimeout(storyProgressTimer);
-            storyProgressTimer = null;
-        }
-    }
-
-    storyItems.forEach(function (story, index) {
-        story.addEventListener("click", function () {
-            openStory(index);
-        });
+  function escapeHtml(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
     });
+  }
 
-    if (closeStoryViewer) {
-        closeStoryViewer.addEventListener("click", closeStories);
-    }
+  function slug(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
 
-    if (storyBackdrop) {
-        storyBackdrop.addEventListener("click", closeStories);
-    }
-
-    if (storyPrevious) {
-        storyPrevious.addEventListener("click", function () {
-            openStory(currentStoryIndex - 1);
-        });
-    }
-
-    if (storyNext) {
-        storyNext.addEventListener("click", function () {
-            openStory(currentStoryIndex + 1);
-        });
-    }
-
-    document.addEventListener("keydown", function (event) {
-        if (!storyViewer || !storyViewer.classList.contains("is-active")) return;
-
-        if (event.key === "Escape") {
-            closeStories();
-        } else if (event.key === "ArrowRight") {
-            openStory(currentStoryIndex + 1);
-        } else if (event.key === "ArrowLeft") {
-            openStory(currentStoryIndex - 1);
-        }
+  function displayDate(value) {
+    if (!value) return "Date to be announced";
+    var parts = value.slice(0, 10).split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]).toLocaleDateString(undefined, {
+      day: "numeric", month: "short", year: "numeric"
     });
+  }
 
-    createStoryProgress();
+  function renderEvent(event, index) {
+    var category = slug(event.sport);
+    var iconClass = event.kind === "Tournament" ? "fa-trophy" : "fa-calendar-days";
+    var description = [event.kind, event.homeClub, event.opponent && "vs " + event.opponent]
+      .filter(Boolean).join(" · ");
+    return '<article class="event-tile" data-category="' + escapeHtml(category) + '">' +
+      '<div class="tile-art tile-' + escapeHtml(category) + '"><span class="tile-number">' +
+      String(index + 1).padStart(2, "0") + '</span><span class="tile-type">' +
+      escapeHtml(event.kind || "EVENT") + '</span><i class="fa-solid ' + iconClass +
+      '" aria-hidden="true"></i><span class="tile-art-name">' + escapeHtml(event.sport) + '</span></div>' +
+      '<div class="tile-content"><div class="tile-meta"><span>' + escapeHtml(event.sport) +
+      '</span><span>' + escapeHtml(event.kind || "Event") + '</span></div><h3>' +
+      escapeHtml(event.title) + '</h3><p>' + escapeHtml(description) + '</p><div class="tile-footer">' +
+      '<span><i class="fa-regular fa-calendar" aria-hidden="true"></i> ' +
+      escapeHtml(displayDate(event.date)) + '</span><button type="button" class="tile-details" data-event-id="' +
+      escapeHtml(event.id) + '">Explore <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>' +
+      '</div></div></article>';
+  }
 
-    // ========================================
-    // EVENT SEARCH AND CATEGORY FILTERS
-    // ========================================
-
-    const eventSearch = document.getElementById("eventSearch");
-    const clearSearch = document.getElementById("clearSearch");
-    const filterButtons = Array.from(document.querySelectorAll(".filter-chip"));
-    const eventCards = Array.from(document.querySelectorAll(".event-tile"));
-    const resultsLabel = document.getElementById("resultsLabel");
-    const noEvents = document.getElementById("noEvents");
-    const resetFilters = document.getElementById("resetFilters");
-
-    let selectedCategory = "all";
-
-    function filterEvents() {
-        const searchText = eventSearch
-            ? eventSearch.value.trim().toLowerCase()
-            : "";
-
-        let visibleCount = 0;
-
-        eventCards.forEach(function (card) {
-            const category = (card.dataset.category || "").toLowerCase();
-            const searchableText = card.textContent.toLowerCase();
-
-            const matchesCategory =
-                selectedCategory === "all" ||
-                category === selectedCategory;
-
-            const matchesSearch = searchableText.includes(searchText);
-            const shouldShow = matchesCategory && matchesSearch;
-
-            card.hidden = !shouldShow;
-
-            if (shouldShow) visibleCount++;
-        });
-
-        if (resultsLabel) {
-            resultsLabel.textContent =
-                "Showing " + visibleCount +
-                (visibleCount === 1 ? " event" : " events");
-        }
-
-        if (noEvents) {
-            noEvents.hidden = visibleCount !== 0;
-        }
+  function renderFeatured() {
+    var event = events[0];
+    if (!event) {
+      featuredEvent.innerHTML = '<div class="featured-info"><span class="featured-tag">SPORTSHUB</span>' +
+        '<h3>No featured event</h3><p>Events created by administrators will appear here when available.</p></div>';
+      return;
     }
+    featuredEvent.innerHTML = '<div class="featured-art"><span class="featured-art-label">SPORTSHUB</span>' +
+      '<div class="featured-big-icon"><i class="fa-solid fa-trophy" aria-hidden="true"></i></div>' +
+      '<span class="featured-art-bottom">' + escapeHtml(event.kind || "EVENT") + '</span></div>' +
+      '<div class="featured-info"><span class="featured-tag"><span></span>' + escapeHtml(event.sport) +
+      '</span><h3>' + escapeHtml(event.title) + '</h3><p>' +
+      escapeHtml([event.homeClub, event.opponent && "vs " + event.opponent].filter(Boolean).join(" · ")) +
+      '</p><div class="featured-facts"><div><i class="fa-regular fa-calendar"></i><span><small>DATE</small>' +
+      escapeHtml(displayDate(event.date)) + '</span></div><div><i class="fa-solid fa-location-dot"></i><span><small>VENUE</small>' +
+      escapeHtml(event.venue || "Not published") + '</span></div></div><button class="featured-button" type="button" data-event-id="' +
+      escapeHtml(event.id) + '">View event <i class="fa-solid fa-arrow-right"></i></button></div>';
+  }
 
-    filterButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            selectedCategory = button.dataset.filter || "all";
-
-            filterButtons.forEach(function (item) {
-                const isActive = item === button;
-
-                item.classList.toggle("active", isActive);
-                item.setAttribute("aria-pressed", String(isActive));
-            });
-
-            filterEvents();
-        });
+  function renderFilters() {
+    var sports = Array.from(new Set(events.map(function (item) { return item.sport; }).filter(Boolean))).sort();
+    filters.replaceChildren();
+    var allButton = document.createElement("button");
+    allButton.type = "button";
+    allButton.className = "filter-chip active";
+    allButton.dataset.filter = "all";
+    allButton.setAttribute("aria-pressed", "true");
+    allButton.textContent = "Everything " + events.length;
+    filters.appendChild(allButton);
+    sports.forEach(function (sport) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "filter-chip";
+      button.dataset.filter = slug(sport);
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = sport;
+      filters.appendChild(button);
     });
+  }
 
-    if (eventSearch) {
-        eventSearch.addEventListener("input", filterEvents);
+  function filterEvents() {
+    var searchText = eventSearch.value.trim().toLowerCase();
+    var cards = Array.from(eventsGrid.querySelectorAll(".event-tile"));
+    var visibleCount = 0;
+    cards.forEach(function (card) {
+      var matchesSport = selectedSport === "all" || card.dataset.category === selectedSport;
+      var matchesSearch = card.textContent.toLowerCase().includes(searchText);
+      card.hidden = !(matchesSport && matchesSearch);
+      if (!card.hidden) visibleCount += 1;
+    });
+    resultsLabel.textContent = "Showing " + visibleCount + (visibleCount === 1 ? " event" : " events");
+    noEvents.hidden = visibleCount > 0;
+    clearSearch.hidden = eventSearch.value.length === 0;
+  }
+
+  function renderAnnouncements() {
+    if (!announcements.length) {
+      storiesTrack.innerHTML = '<p class="section-subtitle">No published student announcements.</p>';
+      return;
     }
+    storiesTrack.innerHTML = announcements.map(function (item, index) {
+      return '<button class="story-item" type="button" data-story-index="' + index +
+        '" data-story-title="' + escapeHtml(item.title) + '" data-story-category="ANNOUNCEMENT" ' +
+        'data-story-text="' + escapeHtml(item.content) + '" data-story-type="bell" data-story-time="' +
+        escapeHtml(displayDate(item.publishedDate)) + '"><span class="story-avatar story-green">' +
+        '<i class="fa-solid fa-bullhorn" aria-hidden="true"></i></span><span class="story-label">' +
+        escapeHtml(item.title) + '</span></button>';
+    }).join("");
+  }
 
-    if (clearSearch && eventSearch) {
-        clearSearch.addEventListener("click", function () {
-            eventSearch.value = "";
-            filterEvents();
-            eventSearch.focus();
-        });
+  async function fetchRecords(entity) {
+    var url = new URL(contentEndpoint);
+    url.searchParams.set("entity", entity);
+    var response = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-store" });
+    var payload = await response.json();
+    if (!response.ok || payload.success !== true || !Array.isArray(payload.records)) {
+      throw new Error(payload.message || "The " + entity + " request could not be completed.");
     }
+    return payload.records;
+  }
 
-    function resetEventFilters() {
-        selectedCategory = "all";
-
-        if (eventSearch) {
-            eventSearch.value = "";
-        }
-
-        filterButtons.forEach(function (button) {
-            const isAll = button.dataset.filter === "all";
-
-            button.classList.toggle("active", isAll);
-            button.setAttribute("aria-pressed", String(isAll));
-        });
-
-        filterEvents();
+  async function loadContent() {
+    var results = await Promise.allSettled([fetchRecords("events"), fetchRecords("announcements")]);
+    if (results[0].status === "fulfilled") {
+      events = results[0].value;
+      renderFilters();
+      eventsGrid.innerHTML = events.map(renderEvent).join("");
+      renderFeatured();
+      filterEvents();
+    } else {
+      console.error("Unable to load public event records.", results[0].reason);
+      eventsGrid.replaceChildren();
+      resultsLabel.textContent = "Events unavailable";
+      noEvents.hidden = false;
+      noEvents.textContent = "Event records are temporarily unavailable.";
+      renderFeatured();
     }
-
-    if (resetFilters) {
-        resetFilters.addEventListener("click", resetEventFilters);
+    if (results[1].status === "fulfilled") {
+      announcements = results[1].value;
+      renderAnnouncements();
+    } else {
+      console.error("Unable to load public announcements.", results[1].reason);
+      storiesTrack.textContent = "Announcements are temporarily unavailable.";
     }
+  }
 
+  filters.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-filter]");
+    if (!button) return;
+    selectedSport = button.dataset.filter;
+    filters.querySelectorAll("[data-filter]").forEach(function (item) {
+      var active = item === button;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-pressed", String(active));
+    });
     filterEvents();
+  });
+  eventSearch.addEventListener("input", filterEvents);
+  clearSearch.addEventListener("click", function () {
+    eventSearch.value = "";
+    filterEvents();
+    eventSearch.focus();
+  });
+  document.getElementById("resetFilters").addEventListener("click", function () {
+    selectedSport = "all";
+    eventSearch.value = "";
+    var allButton = filters.querySelector('[data-filter="all"]');
+    if (allButton) allButton.click();
+    filterEvents();
+  });
+  eventsGrid.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-event-id]");
+    if (!button) return;
+    var record = events.find(function (item) { return String(item.id) === button.dataset.eventId; });
+    if (!record) return;
+    document.getElementById("dialogCategory").textContent = (record.sport || "Event") + " · " + (record.kind || "Event");
+    document.getElementById("dialogTitle").textContent = record.title;
+    document.getElementById("dialogDescription").textContent =
+      [record.homeClub, record.opponent && "vs " + record.opponent, record.status, record.result]
+        .filter(Boolean).join(" · ");
+    document.getElementById("dialogDate").textContent = displayDate(record.date);
+    document.getElementById("dialogLocation").textContent = record.venue || "Venue not published";
+    document.getElementById("eventDialog").showModal();
+  });
+  document.getElementById("closeDialog").addEventListener("click", function () {
+    document.getElementById("eventDialog").close();
+  });
+  storiesTrack.addEventListener("click", function (event) {
+    var story = event.target.closest("[data-story-index]");
+    if (!story) return;
+    var index = Number(story.dataset.storyIndex);
+    document.getElementById("viewerTitle").textContent = announcements[index].title;
+    document.getElementById("viewerCategory").textContent = "ANNOUNCEMENT";
+    document.getElementById("viewerText").textContent = announcements[index].content;
+    document.getElementById("viewerTime").textContent = displayDate(announcements[index].publishedDate);
+    document.getElementById("viewerCounter").textContent = (index + 1) + " / " + announcements.length;
+    document.getElementById("storyViewer").classList.add("is-active");
+    document.getElementById("storyViewer").setAttribute("aria-hidden", "false");
+    document.body.classList.add("story-open");
+  });
+  function closeStories() {
+    document.getElementById("storyViewer").classList.remove("is-active");
+    document.getElementById("storyViewer").setAttribute("aria-hidden", "true");
+    document.body.classList.remove("story-open");
+  }
+  document.getElementById("closeStoryViewer").addEventListener("click", closeStories);
+  document.getElementById("storyBackdrop").addEventListener("click", closeStories);
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeStories();
+  });
 
-    // ========================================
-    // EVENT DETAILS DIALOG
-    // ========================================
-
-    const eventDialog = document.getElementById("eventDialog");
-    const closeDialog = document.getElementById("closeDialog");
-
-    const dialogTitle = document.getElementById("dialogTitle");
-    const dialogCategory = document.getElementById("dialogCategory");
-    const dialogDescription = document.getElementById("dialogDescription");
-    const dialogDate = document.getElementById("dialogDate");
-    const dialogLocation = document.getElementById("dialogLocation");
-
-    const detailButtons = document.querySelectorAll("[data-event-details]");
-
-    function openEventDetails(button) {
-        if (!eventDialog) return;
-
-        if (dialogTitle) {
-            dialogTitle.textContent =
-                button.dataset.title || "Event details";
-        }
-
-        if (dialogCategory) {
-            dialogCategory.textContent =
-                button.dataset.category || "EVENT DETAILS";
-        }
-
-        if (dialogDescription) {
-            dialogDescription.textContent =
-                button.dataset.description || "More information will be announced soon.";
-        }
-
-        if (dialogDate) {
-            dialogDate.textContent =
-                button.dataset.date || "To be announced";
-        }
-
-        if (dialogLocation) {
-            dialogLocation.textContent =
-                button.dataset.location || "To be confirmed";
-        }
-
-        if (typeof eventDialog.showModal === "function") {
-            if (!eventDialog.open) eventDialog.showModal();
-        } else {
-            eventDialog.setAttribute("open", "");
-        }
-    }
-
-    detailButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            openEventDetails(button);
-        });
-    });
-
-    function closeEventDetails() {
-        if (!eventDialog) return;
-
-        if (typeof eventDialog.close === "function" && eventDialog.open) {
-            eventDialog.close();
-        } else {
-            eventDialog.removeAttribute("open");
-        }
-    }
-
-    if (closeDialog) {
-        closeDialog.addEventListener("click", closeEventDetails);
-    }
-
-    if (eventDialog) {
-        eventDialog.addEventListener("click", function (event) {
-            if (event.target === eventDialog) {
-                closeEventDetails();
-            }
-        });
-    }
-
-    // ========================================
-    // THEME SWITCH BUTTONS
-    // ========================================
-    // The shared theme.js should manage the actual theme.
-    // This section only supports the buttons if that file
-    // does not already handle them.
-
-    const themeButtons = document.querySelectorAll("[data-theme-choice]");
-
-    themeButtons.forEach(function (button) {
-        button.addEventListener("click", function () {
-            const theme = button.dataset.themeChoice;
-
-            if (theme !== "light" && theme !== "dark") return;
-
-            document.documentElement.setAttribute("data-theme", theme);
-        });
-    });
+  loadContent();
 });
