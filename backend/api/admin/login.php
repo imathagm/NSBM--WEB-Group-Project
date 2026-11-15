@@ -37,6 +37,7 @@ try {
         ]);
     }
 
+    auth_clear_remember_cookie($pdo);
     session_regenerate_id(true);
     $_SESSION = [];
     $_SESSION['admin_id'] = (int) $admin['admin_id'];

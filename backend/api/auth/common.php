@@ -33,8 +33,14 @@ function auth_read_json(int $maximumBytes = 16384): array
         auth_respond(400, ['success' => false, 'message' => 'Invalid JSON request.']);
     }
 
-    if (!is_array($payload)) {
+    if (!is_array($payload) || !str_starts_with(ltrim($raw), '{')) {
         auth_respond(400, ['success' => false, 'message' => 'Invalid request body.']);
+    }
+
+    foreach ($payload as $key => $value) {
+        if (is_array($value) && $key !== 'data') {
+            auth_respond(400, ['success' => false, 'message' => 'Request fields must contain plain values.']);
+        }
     }
 
     return $payload;

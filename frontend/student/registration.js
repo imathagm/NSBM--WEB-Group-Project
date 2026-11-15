@@ -34,9 +34,7 @@
   }
 
   function todayAsISO() {
-    var today = new Date();
-    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   }
 
   function isDeadlinePassed() {
@@ -157,7 +155,18 @@
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken
         },
+
         body: JSON.stringify({ fixtureId: eventId })
+
+        body: JSON.stringify({
+          tournamentId: tournamentId,
+          fullName: fullNameInput.value.trim(),
+          studentId: studentId,
+          email: emailInput.value.trim(),
+          faculty: document.getElementById('faculty').value,
+          yearOfStudy: document.getElementById('batch').value
+        })
+
       });
       var result = await response.json();
       if (!response.ok || result.success !== true) {

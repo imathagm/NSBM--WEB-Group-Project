@@ -84,6 +84,7 @@ VS Code Live Server alone will not execute the APIs.
   the student directory; deleting a linked account from that directory also
   deletes its login account and event registrations. Directory-only records do
   not create login accounts.
+
 - Tournament and match entries require a signed-in student, are saved
   separately in `sportshub_tournament_registrations` and
   `sportshub_match_registrations`, and are linked to active `sports_fixtures`
@@ -92,6 +93,20 @@ VS Code Live Server alone will not execute the APIs.
 - The legacy `tournament_registrations`, `tournaments`, and `matches` tables use
   the separate legacy `users` accounts. The active student portal continues to
   use `sports_fixtures` and the `sportshub_*` registration tables.
+- Tournament entry submissions require a signed-in student and are saved in
+  MySQL. Administrators can review them in the Admin Portal's Matches &
+  Tournaments page.
+- Students submit club applications using `api/club-application.php` from
+  `frontend/pages/clubregister.html`. The server uses the signed-in student's
+  identity, checks that the club is active, and prevents duplicate applications.
+  Applications appear in both the student dashboard and the admin review page.
+- Renaming students or clubs keeps their related applications and schedules
+  connected. Deleting a student removes their applications and tournament entries;
+  deleting an event removes its entries. Clubs with applications or training
+  sessions must be marked Inactive or have those records removed before deletion.
+- Approved facility and equipment bookings cannot overlap for the same resource.
+  Both booking times may be blank for an all-day booking; otherwise both are
+  required, with the end time after the start time.
 - `api/fixtures.php` serves the administrator-managed fixtures used by the
   student matches page. Fresh databases do not include sample fixtures; add
   matches and tournaments through the Admin Portal.

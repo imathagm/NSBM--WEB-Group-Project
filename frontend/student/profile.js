@@ -41,8 +41,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const endpoint = new URL('../../backend/api/auth/profile.php', profileScriptUrl);
   let savedProfile = null;
   let pendingPhoto = '';
+
   const maxProfilePhotoBytes = 600 * 1024;
   const maxUploadBytes = 1.5 * 1024 * 1024;
+
+  let photoReader = null;
 
   function showMessage(text, type = '') {
     message.textContent = text;
@@ -157,6 +160,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return result;
   }
 
+  editButton.disabled = true;
+  setEditing(false);
   try {
     const session = await window.sportshubAuth.session();
     if (!session.authenticated) {
@@ -168,6 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     pendingPhoto = savedProfile.profilePhoto || '';
     renderProfile(savedProfile);
     setEditing(false);
+    editButton.disabled = false;
   } catch (error) {
     showMessage(error.message || 'The profile could not be loaded.', 'error');
     setEditing(false);
@@ -181,7 +187,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     fullName.focus();
   });
 
+
   photoInput.addEventListener('change', async () => {
+
+  photoInput.addEventListener('change', () => {
+    if (photoReader && photoReader.readyState === FileReader.LOADING) photoReader.abort();
+
     const file = photoInput.files[0];
     if (!file) return;
     const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -195,8 +206,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       showMessage('Profile photos must be 1.5 MB or smaller.', 'error');
       return;
     }
+
     try {
       pendingPhoto = await prepareProfilePhoto(file);
+
+    const reader = new FileReader();
+    photoReader = reader;
+    saveButton.disabled = true;
+    reader.addEventListener('loadend', () => { saveButton.disabled = false; });
+    reader.addEventListener('load', () => {
+      if (typeof reader.result !== 'string') {
+        showMessage('The selected photo could not be read.', 'error');
+        return;
+      }
+      pendingPhoto = reader.result;
+
       photo.src = pendingPhoto;
       photo.hidden = false;
       avatar.hidden = true;
@@ -218,41 +242,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     saveButton.disabled = true;
+    cancelButton.disabled = true;
+    photoInput.disabled = true;
+    const changes = {
+      fullName: fullName.value.trim(), email: email.value.trim(), contactNumber: contact.value.trim(),
+      faculty: faculty.value.trim(), degreeProgram: degree.value.trim(), academicYear: academicYear.value.trim(),
+      sportOfInterest: sport.value, profilePhoto: pendingPhoto
+    };
+    editableFields.forEach((field) => { field.disabled = true; });
     try {
       const session = await window.sportshubAuth.session();
-      const result = await requestProfile('PUT', {
-        fullName: fullName.value.trim(),
-        email: email.value.trim(),
-        contactNumber: contact.value.trim(),
-        faculty: faculty.value.trim(),
-        degreeProgram: degree.value.trim(),
-        academicYear: academicYear.value.trim(),
-        sportOfInterest: sport.value,
-        profilePhoto: pendingPhoto
-      }, session.csrfToken);
+      const result = await requestProfile('PUT', changes, session.csrfToken);
       if (!result.success) throw new Error(result.message || 'The profile could not be saved.');
       savedProfile = {
         ...savedProfile,
-        fullName: fullName.value.trim(),
-        email: email.value.trim(),
-        contactNumber: contact.value.trim(),
-        faculty: faculty.value.trim(),
-        degreeProgram: degree.value.trim(),
-        academicYear: academicYear.value.trim(),
-        sportOfInterest: sport.value,
-        profilePhoto: pendingPhoto
+        ...changes
       };
       renderProfile(savedProfile);
       setEditing(false);
       showMessage(result.message, 'success');
     } catch (error) {
+      setEditing(true);
       showMessage(error.message || 'The profile could not be saved.', 'error');
     } finally {
       saveButton.disabled = false;
+      cancelButton.disabled = false;
     }
   });
 
   cancelButton.addEventListener('click', () => {
+    if (photoReader && photoReader.readyState === FileReader.LOADING) photoReader.abort();
     if (!savedProfile) return;
     pendingPhoto = savedProfile.profilePhoto || '';
     photoInput.value = '';

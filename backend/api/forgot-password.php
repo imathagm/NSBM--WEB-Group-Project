@@ -46,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = read_request_payload();
+if (!is_string($input['email'] ?? $input['identifier'] ?? '')) {
+    respond(400, ['success' => false, 'message' => 'Enter a valid email address.']);
+}
 $email = strtolower(trim((string)($input['email'] ?? $input['identifier'] ?? '')));
 
 if (
@@ -140,8 +143,6 @@ try {
         'token_hash' => $tokenHash
     ]);
 
-    $pdo->commit();
-
     $resetUrl =
         $baseUrl
         . '/frontend/pages/reset-password.html?token='
@@ -150,6 +151,7 @@ try {
     $mailer = new PHPMailer\PHPMailer\PHPMailer(true);
 
     $mailer->isSMTP();
+    $mailer->Timeout = 15;
 
     $mailer->Host = $mailConfig['host'];
 
@@ -183,6 +185,7 @@ try {
         . "\n\nIf you did not request this, ignore this email.";
 
     $mailer->send();
+    $pdo->commit();
 
     respond(200, [
         'success' => true,
@@ -204,7 +207,7 @@ try {
         . $error->getMessage()
     );
 
-    respond(500, [
+    respond(503, [
         'success' => false,
         'message' => 'Password recovery is temporarily unavailable.'
     ]);

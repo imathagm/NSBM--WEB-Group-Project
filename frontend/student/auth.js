@@ -32,6 +32,7 @@
     });
   }
 
+  wireLogout();
   window.sportshubAuth.session().then(function (session) {
     if (!session.authenticated) {
       window.location.replace(loginUrl);
@@ -52,6 +53,5 @@
         profile.textContent = session.user.fullName + (details.length ? " · " + details.join(" · ") : "");
       }
     }
-    wireLogout();
   }).catch(showServiceError);
 })();

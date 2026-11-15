@@ -47,6 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = read_request_payload();
 
+if (!is_string($input['token'] ?? '') || !is_string($input['password'] ?? '')) {
+    respond(400, ['success' => false, 'message' => 'Enter a valid reset token and password.']);
+}
+
 $token = strtolower(trim((string)($input['token'] ?? '')));
 $password = (string)($input['password'] ?? '');
 

@@ -1,6 +1,5 @@
-
-
 "use strict";
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registration-form");
@@ -27,86 +26,87 @@ document.addEventListener("DOMContentLoaded", () => {
   const showMessage = (text, type) => {
     message.textContent = text; // textContent prevents injected HTML.
     message.className = `message ${type}`;
+    
+const clubApplicationEndpoint = new URL('../../backend/api/club-application.php', document.currentScript.src);
+const clubListEndpoint = new URL('../../backend/api/public-content.php?entity=clubs', document.currentScript.src);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const form = document.getElementById('registration-form');
+  const message = document.getElementById('registration-message');
+  const submit = form.querySelector('button[type="submit"]');
+  const clubs = document.getElementById('club-select');
+  let session;
+  const showMessage = (text, error = false) => {
+    message.textContent = text;
+    message.className = 'message ' + (error ? 'error' : 'success');
+
     message.hidden = false;
   };
-
-  const clearMessage = () => {
-    message.hidden = true;
-    message.textContent = "";
-    message.className = "message";
+  const fillStudent = () => {
+    document.getElementById('full-name').value = session.user.fullName || '';
+    document.getElementById('student-id').value = session.user.studentId || '';
+    document.getElementById('student-email').value = session.user.email || '';
   };
-
-  // Clear previous messages when the student edits the form.
-  form.addEventListener("input", (event) => {
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-      event.target.setCustomValidity("");
-    }
-    if (!message.hidden) clearMessage();
+  document.querySelectorAll('.current-year').forEach(element => {
+    element.textContent = new Date().getFullYear();
   });
-  form.addEventListener("change", clearMessage);
-  form.addEventListener("reset", clearMessage);
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    clearMessage();
-
-    const fullNameInput = document.getElementById("full-name");
-    const studentIdInput = document.getElementById("student-id");
-    const emailInput = document.getElementById("student-email");
-
-    // Prevent whitespace-only required values.
-    for (const input of [fullNameInput, studentIdInput, emailInput]) {
-      const trimmed = input.value.trim();
-      if (!trimmed) {
-        input.setCustomValidity("Please complete this field.");
-        input.reportValidity();
-        return;
-      }
-      input.value = trimmed;
+  submit.disabled = true;
+  clubs.replaceChildren(new Option('Loading clubs...', ''));
+  try {
+    session = await window.sportshubAuth.session();
+    if (!session.authenticated) {
+      window.location.replace('../login/login.html');
+      return;
     }
+    fillStudent();
+    const response = await fetch(clubListEndpoint, { cache: 'no-store' });
+    const result = await response.json();
+    if (!response.ok || result.success !== true || !Array.isArray(result.records)) {
+      throw new Error(result.message || 'Clubs could not be loaded.');
+    }
+    clubs.replaceChildren(new Option('Select a club', ''));
+    result.records.forEach(club => clubs.add(new Option(club.name, club.id)));
+    const requestedClub = new URLSearchParams(window.location.search).get('club');
+    if (result.records.some(club => club.id === requestedClub)) clubs.value = requestedClub;
+    if (!result.records.length) throw new Error('No active clubs are accepting applications yet.');
+    submit.disabled = false;
+  } catch (error) {
+    showMessage(error.message || 'Unable to connect to SportsHub.', true);
+  }
 
-    if (!form.reportValidity()) return;
-
-    const registration = {
-      fullName: fullNameInput.value,
-      studentId: studentIdInput.value,
-      email: emailInput.value.toLowerCase(),
-      faculty: document.getElementById("faculty").value,
-      year: document.getElementById("study-year").value,
-      club: document.getElementById("club-select").value,
-      experience: document.getElementById("experience").value,
-      notes: document.getElementById("notes").value.trim(),
-      submittedAt: new Date().toISOString()
-    };
-
+  form.addEventListener('reset', () => {
+    setTimeout(() => { if (session) fillStudent(); }, 0);
+    message.hidden = true;
+  });
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (!session || !form.reportValidity()) return;
+    submit.disabled = true;
     try {
-      const savedData = JSON.parse(localStorage.getItem(storageKey) || "[]");
-      const registrations = Array.isArray(savedData) ? savedData : [];
-
-      // Block accidental duplicate applications for the same club.
-      const alreadyRegistered = registrations.some((item) =>
-        String(item.studentId || "").toLowerCase() === registration.studentId.toLowerCase() &&
-        String(item.club || "").toLowerCase() === registration.club.toLowerCase()
-      );
-
-      if (alreadyRegistered) {
-        showMessage("This student ID already has a demo registration for the selected club.", "error");
+      const current = await window.sportshubAuth.session();
+      if (!current.authenticated) {
+        window.location.assign('../login/login.html');
         return;
       }
-
-      registrations.push(registration);
-      localStorage.setItem(storageKey, JSON.stringify(registrations));
-
-      // Reset only after data has been saved successfully.
+      const response = await fetch(clubApplicationEndpoint, {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': current.csrfToken },
+        body: JSON.stringify({
+          clubId: clubs.value,
+          faculty: document.getElementById('faculty').value,
+          academicYear: document.getElementById('study-year').value,
+          experience: document.getElementById('experience').value,
+          notes: document.getElementById('notes').value.trim()
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || result.success !== true) throw new Error(result.message || 'Your application could not be saved.');
       form.reset();
-      showMessage(
-        `Registration saved! Your demo application for ${registration.club} is stored in this browser only.`,
-        "success"
-      );
+      showMessage(result.message);
     } catch (error) {
-      // Private browsing, storage restrictions, or full storage can block saving.
-      console.error("Could not save club registration:", error);
-      showMessage("Unable to save the registration in this browser. Check your storage settings and try again.", "error");
+      showMessage(error.message || 'Unable to connect to SportsHub.', true);
+    } finally {
+      submit.disabled = false;
     }
   });
 });

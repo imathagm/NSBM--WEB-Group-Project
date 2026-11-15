@@ -121,14 +121,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (icon) icon.className = theme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
     themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
     try {
-      localStorage.setItem("sportsHubTheme", theme);
+      localStorage.setItem("sportshub-theme", theme);
     } catch (error) {
       console.warn("Could not save the selected theme.", error);
     }
   }
   let savedTheme = null;
   try {
-    savedTheme = localStorage.getItem("sportsHubTheme");
+    savedTheme = localStorage.getItem("sportshub-theme") || localStorage.getItem("sportsHubTheme");
   } catch (error) {
     console.warn("Could not read the saved theme.", error);
   }

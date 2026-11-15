@@ -1,6 +1,13 @@
 var notes = [];
 var announcementNotes = [];
 var announcementState = "loading";
+var readAnnouncementIds = new Set();
+var announcementStorageKey = '';
+
+function saveReadAnnouncements(){
+  announcementNotes.forEach(function(note){ if(note.read) readAnnouncementIds.add(String(note.id)); });
+  try { localStorage.setItem(announcementStorageKey, JSON.stringify(Array.from(readAnnouncementIds))); } catch(error) {}
+}
 var icons = {club:"fa-people-group",application:"fa-rectangle-list",match:"fa-trophy",training:"fa-calendar-days",announcement:"fa-bullhorn",system:"fa-circle-info"};
 var labels = {club:"Club",application:"Application",match:"Match",training:"Training",announcement:"Announcement",system:"System"};
 var f = {cat:"all",status:"all",q:""};
@@ -44,10 +51,10 @@ function card(n){
     '<span class="nt-date"><i class="fa-regular fa-clock" aria-hidden="true"></i> '+esc(n.ago)+'</span></div>'+
     '<p class="nt-msg">'+esc(n.msg)+'</p>'+
     '<div class="nt-foot"><span class="nt-tag nt-tag--'+n.cat+'">'+labels[n.cat]+'</span><span class="nt-full-date">'+esc(n.date)+'</span>'+
-    (n.isAnnouncement?'':'<span class="nt-actions">'+
+    '<span class="nt-actions">'+
       (n.read?'':'<button type="button" class="nt-btn" data-act="read"><i class="fa-solid fa-check" aria-hidden="true"></i> Mark read</button>')+
-      '<button type="button" class="nt-btn nt-btn--danger" data-act="delete" aria-label="Delete notification"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>'+
-    '</span>')+'</div></div></article>';
+      (n.isAnnouncement?'':'<button type="button" class="nt-btn nt-btn--danger" data-act="delete" aria-label="Delete notification"><i class="fa-regular fa-trash-can" aria-hidden="true"></i></button>')+
+    '</span></div></div></article>';
 }
 
 function fill(el, items, emptyText){
@@ -64,7 +71,7 @@ function render(){
   document.getElementById("ann-count").textContent = pad(ann.length)+" ITEMS";
   document.getElementById("recent-count").textContent = pad(rec.length)+" ITEMS";
   document.getElementById("stat-total").textContent = notes.length + announcementNotes.length;
-  document.getElementById("stat-unread").textContent = notes.filter(function(n){return !n.read;}).length;
+  document.getElementById("stat-unread").textContent = notes.concat(announcementNotes).filter(function(n){return !n.read;}).length;
   document.getElementById("stat-ann").textContent = announcementNotes.length;
 }
 
@@ -72,6 +79,11 @@ async function loadAnnouncements(){
   try {
     var session = await window.sportshubAuth.session();
     if(!session.authenticated) return;
+    announcementStorageKey = 'sportshub-read-announcements-' + session.user.id;
+    try {
+      var savedIds = JSON.parse(localStorage.getItem(announcementStorageKey) || '[]');
+      if(Array.isArray(savedIds)) readAnnouncementIds = new Set(savedIds.map(String));
+    } catch(error) {}
     if(!announcementsEndpoint) throw new Error("The announcements service could not be located.");
     var response = await fetch(announcementsEndpoint, {
       method:"GET",
@@ -100,7 +112,7 @@ async function loadAnnouncements(){
         msg:item.content,
         date:formatAnnouncementDate(item.publishedDate),
         ago:relativeAnnouncementDate(item.publishedDate),
-        read:true,
+        read:readAnnouncementIds.has(String(item.id)),
         isAnnouncement:true
       };
     });
@@ -116,16 +128,17 @@ function onAction(e){
   var btn = e.target.closest("[data-act]");
   var el = e.target.closest(".nt-item");
   if(!el) return;
-  var id = Number(el.dataset.id);
-  if(btn && btn.dataset.act==="delete"){ notes = notes.filter(function(n){return n.id!==id;}); }
-  else { notes.forEach(function(n){ if(n.id===id) n.read = true; }); }
+  var id = el.dataset.id;
+  if(btn && btn.dataset.act==="delete"){ notes = notes.filter(function(n){return String(n.id)!==id;}); }
+  else { notes.concat(announcementNotes).forEach(function(n){ if(String(n.id)===id) n.read = true; }); }
+  saveReadAnnouncements();
   render();
 }
 annEl.addEventListener("click", onAction);
 listEl.addEventListener("click", onAction);
 
 document.getElementById("nt-mark-all").addEventListener("click", function(){
-  notes.forEach(function(n){ n.read = true; }); render();
+  notes.concat(announcementNotes).forEach(function(n){ n.read = true; }); saveReadAnnouncements(); render();
 });
 document.getElementById("cat-filter").addEventListener("change", function(e){ f.cat = e.target.value; render(); });
 document.getElementById("status-filter").addEventListener("change", function(e){ f.status = e.target.value; render(); });
@@ -142,19 +155,7 @@ loadAnnouncements();
 
 // ===== Theme toggle and mobile menu =====
 var root = document.documentElement;
-var themeBtn = document.getElementById("theme-toggle");
-function setTheme(t){
-  root.setAttribute("data-theme", t);
-  themeBtn.innerHTML = '<i class="fa-solid ' + (t === "dark" ? "fa-sun" : "fa-moon") + '" aria-hidden="true"></i>';
-  themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
-  try { localStorage.setItem("sportshub-theme", t); } catch (e) {}
-}
-var saved = null;
-try { saved = localStorage.getItem("sportshub-theme"); } catch (e) {}
-setTheme(saved === "dark" ? "dark" : "light");
-themeBtn.addEventListener("click", function(){
-  setTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
-});
+// portal-theme.js applies the saved theme before paint and owns the toggle.
 
 var menuBtn = document.getElementById("menu-toggle");
 function setMenu(open){
@@ -170,3 +171,5 @@ menuBtn.addEventListener("click", function(){
   }
 });
 document.getElementById("sidebar-backdrop").addEventListener("click", function(){ setMenu(false); });
+
+document.addEventListener('keydown', function(event){ if(event.key === 'Escape') setMenu(false); });

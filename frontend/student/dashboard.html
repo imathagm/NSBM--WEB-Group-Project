@@ -40,7 +40,7 @@
       </button>
       <button class="icon-btn" id="bellBtn" type="button" aria-label="Notifications">
         <i class="fas fa-bell"></i>
-        <span class="count-badge" id="bellCount">2</span>
+        <span class="count-badge" id="bellCount" hidden>0</span>
       </button>
       <a class="icon-btn" href="profile.html" aria-label="My profile">
         <i class="fas fa-circle-user"></i>
@@ -87,6 +87,7 @@
           <div class="clubs-grid" id="dashboard-clubs"></div>
         </section>
       </section>
+
       <!-- ============ JOIN CLUB ============ -->
       <section class="view" id="join-club" hidden>
         <div class="page-head"><h1>Join a Club</h1><p>Explore active SportsHub clubs and apply without leaving your portal.</p></div>
@@ -100,6 +101,25 @@
         <p class="join-club-message" id="join-club-message" role="status" aria-live="polite"></p>
         <div class="join-club-grid" id="join-club-grid">
           <div class="panel empty"><i class="fas fa-people-group" aria-hidden="true"></i><p>Loading available clubs…</p></div>
+
+      <!-- ============ MY PROFILE ============ -->
+      <section class="view" id="profile" hidden>
+        <div class="page-head"><h1>My Profile</h1><p>Your details and participation history.</p></div>
+        <div class="panel empty">
+          <i class="fas fa-user"></i>
+          <p>View and update your student details.</p>
+          <a class="btn-primary" href="profile.html">Open my profile</a>
+        </div>
+      </section>
+
+      <!-- ============ JOIN CLUB ============ -->
+      <section class="view" id="join-club" hidden>
+        <div class="page-head"><h1>Join Club</h1><p>Find a club and send your application.</p></div>
+        <div class="panel empty">
+          <i class="fas fa-people-group"></i>
+          <p>Choose an active sports club and send your application for review.</p>
+          <a class="btn-primary" href="../pages/clubregister.html">Apply to a club</a>
+
         </div>
         <dialog class="club-application-dialog" id="club-application-dialog" aria-labelledby="club-application-title">
           <div class="club-application-dialog__head">
