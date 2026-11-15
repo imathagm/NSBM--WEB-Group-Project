@@ -88,7 +88,7 @@ if ($profilePhoto !== null && $profilePhoto !== '') {
         auth_respond(400, ['success' => false, 'message' => 'Choose a valid JPG, PNG, or WebP profile photo under 1.5 MB.']);
     }
     $image = base64_decode($parts[2], true);
-    $imageInfo = $image === false ? false : getimagesizefromstring($image);
+    $imageInfo = $image === false ? false : @getimagesizefromstring($image);
     $allowedMimeTypes = ['jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
     if ($image === false || strlen($image) > 1572864 || $imageInfo === false
         || ($imageInfo['mime'] ?? '') !== $allowedMimeTypes[$parts[1]]) {
@@ -131,6 +131,12 @@ try {
         'batch' => $academicYear === '' ? null : $academicYear,
         'user_id' => $userId,
     ]);
+    $applications = $pdo->prepare(
+        'UPDATE sportshub_membership_applications AS application
+         JOIN sportshub_users AS student ON student.student_id = application.student_id
+         SET application.student_name = :name WHERE student.user_id = :user_id'
+    );
+    $applications->execute(['name' => $fullName, 'user_id' => $userId]);
     $pdo->commit();
     auth_respond(200, ['success' => true, 'message' => 'Profile updated successfully.']);
 } catch (PDOException $error) {

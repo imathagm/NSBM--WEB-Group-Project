@@ -3,17 +3,13 @@ declare(strict_types=1);
 
 function sportshubDatabaseConnection(): PDO
 {
-    $host = getenv('NSBM_DB_HOST')?:'localhost';
-    $database = getenv('NSBM_DB_NAME')?:'nsbm_sportshub';
-    $username = getenv('NSBM_DB_USER')?:'root';
-    $password = getenv('NSBM_DB_PASSWORD')?:'';
+    $host = getenv('NSBM_DB_HOST') ?: 'localhost';
+    $database = getenv('NSBM_DB_NAME') ?: 'nsbm_sportshub';
+    $username = getenv('NSBM_DB_USER') ?: 'root';
+    $password = getenv('NSBM_DB_PASSWORD');
     $port = getenv('NSBM_DB_PORT') ?: '3306';
 
-    if ($host === false || $database === false || $username === false) {
-        throw new RuntimeException('NSBM_DB_HOST, NSBM_DB_NAME, and NSBM_DB_USER must be configured.');
-    }
-
-    return new PDO(
+    $pdo = new PDO(
         "mysql:host={$host};port={$port};dbname={$database};charset=utf8mb4",
         $username,
         $password === false ? '' : $password,
@@ -23,4 +19,7 @@ function sportshubDatabaseConnection(): PDO
             PDO::ATTR_EMULATE_PREPARES => false,
         ]
     );
+    // Schedules and publication dates follow Sri Lankan time on every server.
+    $pdo->exec("SET time_zone = '+05:30'");
+    return $pdo;
 }

@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
         escapeHtml(club.description || '') + '</p><div class="club-meta"><span>' + escapeHtml(club.sport) +
         '</span>' + (club.coach ? '<span>' + escapeHtml(club.coach) + '</span>' : '') +
         (club.venue ? '<span>' + escapeHtml(club.venue) + '</span>' : '') +
-        '</div><button class="btn-view-club" type="button">View directory</button></div></article>';
+        '</div><a class="btn-view-club" href="' + (joined ? '#applications' : '../pages/clubregister.html?club=' + encodeURIComponent(club.id)) + '">' +
+        (joined ? 'View application' : 'Apply to club') + '</a></div></article>';
     }).join('') : '<p class="panel empty">No active clubs have been added.</p>';
     dashboardClubList.querySelectorAll('.btn-view-club').forEach((button) => {
       button.addEventListener('click', () => {
@@ -210,6 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
   setEmpty(scheduleList, 'Loading records…');
   setEmpty(matchList, 'Loading records…');
   setEmpty(announcementList, 'Loading records…');
-  loadDashboard();
-  loadAnnouncements();
+  window.sportshubAuth.session().then((session) => {
+    if (session.authenticated) {
+      loadDashboard();
+      loadAnnouncements();
+    }
+  }).catch(() => setEmpty(dashboardActivityList, 'The account service is temporarily unavailable.'));
 });

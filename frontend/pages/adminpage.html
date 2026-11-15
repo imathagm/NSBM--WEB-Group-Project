@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0;url=../login/login.html?view=admin#admin">
+  <title>NSBM SportsHub</title>
+  <script>
+    var destination = new URL("../login/login.html?view=admin#admin", window.location.href);
+    if (!destination.search) destination.search = window.location.search;
+    if (!destination.hash) destination.hash = window.location.hash;
+    window.location.replace(destination.href);
+  </script>
+</head>
+<body>
+  <p>Opening SportsHub. <a href="../login/login.html?view=admin#admin">Continue</a>.</p>
+</body>
+</html>

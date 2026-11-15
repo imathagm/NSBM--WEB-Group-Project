@@ -1,12 +1,12 @@
-
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Club Registration | NSBM SportsHub</title>
-  <meta http-equiv="refresh" content="0;url=../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">
   <link rel="icon" href="../assets/nsbmlogo1.png">
   <link rel="stylesheet" href="../css/register%20page%20style.css">
+  <script src="../js/auth-api.js" defer></script>
   <script src="../js/register%20page%20script.js" defer></script>
 </head>
 <body>
@@ -17,7 +17,7 @@
         <img src="../assets/nsbmlogo1.png" alt="NSBM Green University" width="151" height="65">
         <span><b>SportsHub</b><small><b>Find your team.</b></small></span>
       </a>
-      <nav aria-label="Main navigation"><a class="nav-login" href="login.html">Login</a></nav>
+      <nav aria-label="Main navigation"><a class="nav-login" href="../student/dashboard.html">Dashboard</a></nav>
     </div>
   </header>
 
@@ -38,17 +38,17 @@
           <legend>01 / Student details</legend>
           <div class="form-grid">
             <div class="field">
-              <label for="full-name">Full name *</label><input id="full-name" name="fullName" autocomplete="name" minlength="2" maxlength="80" required>
+              <label for="full-name">Full name *</label><input id="full-name" name="fullName" autocomplete="name" maxlength="120" readonly required>
             </div>
             <div class="field">
-              <label for="student-id">Student ID *</label><input id="student-id" name="studentId" placeholder="e.g. 12345678" minlength="3" maxlength="30" required>
+              <label for="student-id">Student ID *</label><input id="student-id" name="studentId" maxlength="24" readonly required>
             </div>
             <div class="field span-two">
-              <label for="student-email">Email address *</label><input id="student-email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="you@example.com" required>
+              <label for="student-email">Email address *</label><input id="student-email" name="email" type="email" autocomplete="email" maxlength="254" readonly required>
             </div>
             <div class="field">
-              <label for="faculty">Faculty *</label>
-              <select id="faculty" name="faculty" required>
+              <label for="faculty">Faculty (optional)</label>
+              <select id="faculty" name="faculty">
               <option value="">Select faculty</option>
               <option>Computing</option>
               <option>Business</option>
@@ -57,8 +57,8 @@
               <option>Other</option></select>
             </div>
             <div class="field">
-              <label for="study-year">Study year *</label>
-              <select id="study-year" name="year" required>
+              <label for="study-year">Study year (optional)</label>
+              <select id="study-year" name="year">
                 <option value="">Select year</option>
                 <option>Year 1</option>
                 <option>Year 2</option>
@@ -113,12 +113,12 @@
         </fieldset>
         <label class="checkbox-label" for="confirmation">
           <input id="confirmation" name="confirmation" type="checkbox" required>
-          <span>I agreed terms and conditions *</span>
+          <span>I confirm that my details are correct and want to apply for this club. *</span>
         </label>
         <div class="button-row"><button class="button" type="submit">Submit registration <span aria-hidden="true">→</span></button><button class="button button-outline" type="reset">Clear form</button></div>
         <p id="registration-message" class="message" role="status" aria-live="polite" hidden></p>
       </form>
-      <p class="form-bottom">Already have an account? <a href="login.html">Go to login</a></p>
+      <p class="form-bottom"><a href="../student/dashboard.html#applications">View my applications</a></p>
       <noscript><p>Enable JavaScript to save a registration.</p></noscript>
     </section>
   </main>

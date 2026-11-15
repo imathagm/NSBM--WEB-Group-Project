@@ -49,8 +49,9 @@
   }
 
   function isRegistrationOpen(fixture) {
+    var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
     return fixture.status === "Scheduled" && fixture.registration_deadline &&
-      new Date().toISOString().slice(0, 10) <= fixture.registration_deadline;
+      (!fixture.event_date || fixture.event_date >= today) && today <= fixture.registration_deadline;
   }
 
   function sectionFor(fixture) {
@@ -70,7 +71,7 @@
   }
 
   function renderMatch(fixture) {
-    var status = fixture.status === "Completed" ? "Completed" : "Scheduled";
+    var status = fixture.section === "upcoming" ? "Upcoming" : "Scheduled";
     return '<article class="match-card filter-card" data-sport="' + escapeHtml(slug(fixture.sport)) +
       '" data-status="' + status.toLowerCase() + '" data-date="' + escapeHtml(fixture.event_date || "") + '">' +
       '<div class="card-topline"><span class="sport-tag">' + escapeHtml(fixture.sport) +

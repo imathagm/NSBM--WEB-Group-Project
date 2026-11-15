@@ -103,15 +103,15 @@
             <form id="registration-form" novalidate>
               <label class="form-field" for="full-name">
                 <span>Full Name <b>*</b></span>
-                <input id="full-name" name="fullName" type="text" autocomplete="name" placeholder="Enter your full name" minlength="2" maxlength="100" required>
+                <input id="full-name" name="fullName" type="text" autocomplete="name" maxlength="120" readonly required>
               </label>
               <label class="form-field" for="student-email">
                 <span>Student Email <b>*</b></span>
-                <input id="student-email" name="email" type="email" autocomplete="email" placeholder="e.g. name@student.nsbm.ac.lk" maxlength="254" required>
+                <input id="student-email" name="email" type="email" autocomplete="email" maxlength="254" readonly required>
               </label>
               <label class="form-field" for="student-id">
                 <span>Student ID <b>*</b></span>
-                <input id="student-id" name="studentId" type="text" autocomplete="off" placeholder="e.g. 2024/ICT/0123" minlength="5" maxlength="24" aria-describedby="student-id-help" required>
+                <input id="student-id" name="studentId" type="text" autocomplete="off" maxlength="24" aria-describedby="student-id-help" readonly required>
                 <small id="student-id-help">Use your university student ID (letters, numbers, / and -).</small>
               </label>
               <label class="form-field" for="faculty">
@@ -129,16 +129,14 @@
                 </select>
               </label>
               <label class="form-field" for="batch">
-                <span>Batch <b>*</b></span>
+                <span>Year of study <b>*</b></span>
                 <select id="batch" name="batch" required>
-                  <option value="">Select your batch</option>
-                  <option>2020</option>
-                  <option>2021</option>
-                  <option>2022</option>
-                  <option>2023</option>
-                  <option>2024</option>
-                  <option>2025</option>
-                  <option>2026</option>
+                  <option value="">Select your year of study</option>
+                  <option>Year 1</option>
+                  <option>Year 2</option>
+                  <option>Year 3</option>
+                  <option>Year 4</option>
+                  <option>Other</option>
                 </select>
               </label>
               <p class="privacy-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Sign in is required; registrations are saved to the SportsHub database.</p>

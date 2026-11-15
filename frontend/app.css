@@ -6197,6 +6197,7 @@
 [data-css-page="events"] .events-page .story-viewer.is-open{
     display: flex;
 }
+[data-css-page="events"] body.story-open{ overflow: hidden; }
 
 [data-css-page="events"] .events-page .story-viewer-backdrop{
     position: absolute;
@@ -13120,6 +13121,7 @@
 
 
 /* Page style group student-dashboard */
+[data-css-page="student-dashboard"] [hidden]{ display: none !important; }
 /* ===== Theme tokens ===== */
 [data-css-page="student-dashboard"]{
   --bg: #f1f6f3;
@@ -13352,12 +13354,14 @@
 
 [data-css-page="student-dashboard"] .stat{
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 1rem;
   padding: 1.1rem 1.25rem;
   border-radius: 14px;
   box-shadow: var(--shadow);
 }
+[data-css-page="student-dashboard"] .stat > div{ min-width: 0; overflow-wrap: anywhere; }
 [data-css-page="student-dashboard"] .stat strong{ display: block; font-family: "Sora", sans-serif; font-size: 2rem; line-height: 1.1; }
 [data-css-page="student-dashboard"] .stat span:not(.stat-icon){ font-size: 0.95rem; font-weight: 600; }
 
@@ -13578,6 +13582,8 @@
   [data-css-page="student-dashboard"] .top-actions{ gap: 0.1rem; }
   [data-css-page="student-dashboard"] .top-actions .icon-btn{ width: 40px; height: 40px; }
   [data-css-page="student-dashboard"] .stats{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-css-page="student-dashboard"] .stat{ gap: 0.55rem; padding: 0.9rem 0.75rem; }
+  [data-css-page="student-dashboard"] .stat-icon{ width: 36px; height: 36px; }
   [data-css-page="student-dashboard"] .content{ padding-inline: 0.85rem; }
   [data-css-page="student-dashboard"] .club-grid{ grid-template-columns: 1fr; }
 }

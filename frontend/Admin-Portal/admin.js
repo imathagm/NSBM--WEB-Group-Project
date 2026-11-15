@@ -121,6 +121,7 @@
   var state = emptyState();
   var adminApiBase = new URL("../../backend/api/admin/", document.currentScript.src);
   var csrfToken = "";
+  var currentAdmin = null;
   var page = document.body.getAttribute("data-page");
   if (!pageDefinitions[page]) page = "dashboard";
   var visibleRows = [];
@@ -170,6 +171,7 @@
       return false;
     }
     csrfToken = session.csrfToken;
+    currentAdmin = session.admin;
     var result = await adminRequest("records.php?entity=all");
     Object.keys(state).forEach(function (key) {
       if (Array.isArray(result.records[key])) state[key] = result.records[key];
@@ -315,9 +317,7 @@
   }
 
   function todayDate() {
-    var today = new Date();
-    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   }
 
   function tableMarkup(entity, rows) {
@@ -371,8 +371,8 @@
   }
 
   function renderDashboard() {
-    var upcomingTraining = state.training.filter(function (item) { return item.date >= today() && item.status !== "Cancelled"; });
-    var upcomingEvents = state.events.filter(function (item) { return item.date >= today() && item.status !== "Cancelled"; });
+    var upcomingTraining = state.training.filter(function (item) { return item.date >= today() && item.status === "Scheduled"; });
+    var upcomingEvents = state.events.filter(function (item) { return item.date >= today() && item.status === "Scheduled"; });
     var pendingApplications = state.applications.filter(function (item) { return item.status === "Pending"; }).slice(0, 5);
     var recent = state.activity.slice(0, 5);
     return '<section class="stats-grid" aria-label="Administrative overview">' +
@@ -492,13 +492,12 @@
     return '<section class="dashboard-section"><div class="toolbar"><label class="field"><span>Report category</span><select id="report-filter"><option value="all">All categories</option><option value="membership">Memberships</option><option value="events">Matches &amp; tournaments</option><option value="operations">Training &amp; bookings</option></select></label><button class="btn btn-secondary" id="export-report" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export report CSV</button></div>' +
       '<div class="report-grid" id="report-grid">' + counts.map(function (row, index) {
         var type = index < 4 ? "membership" : index < 6 ? "events" : "operations";
-        return '<article class="report-card" data-category="' + type + '"><h3>' + escapeHtml(row[0]) + '</h3><p><strong>' + row[1] + '</strong> recorded in this session</p><a class="table-link" href="' + row[2] + '">View records <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></article>';
+        return '<article class="report-card" data-category="' + type + '"><h3>' + escapeHtml(row[0]) + '</h3><p><strong>' + row[1] + '</strong> stored in the database</p><a class="table-link" href="' + row[2] + '">View records <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></article>';
       }).join("") + "</div><p class=\"intro-copy\" style=\"margin-top:1rem\">Reports are calculated from this session’s entered records only. No historical or database data is connected.</p></section>";
   }
 
   function today() {
-    var date = new Date();
-    return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+    return todayDate();
   }
 
   function notify(message) {
@@ -533,7 +532,13 @@
     var fields = definition.fields.map(function (field) {
       var value = item ? item[field.key] || "" : "";
       var control;
-      if (field.type === "select") {
+      if (field.key === 'club' && (entity === 'training' || entity === 'applications')) {
+        var clubs = state.clubs.filter(function (club) { return club.status === 'Active' || club.name === value; });
+        control = '<select name="club" required><option value="">Choose a club</option>' + clubs.map(function (club) {
+          return '<option value="' + escapeHtml(club.name) + '"' + (club.name === value ? ' selected' : '') + '>' + escapeHtml(club.name) + '</option>';
+        }).join('') + '</select>';
+        if (!clubs.length) control += '<small>No active clubs yet. <a href="clubs.html?action=add">Add a sports club first</a>.</small>';
+      } else if (field.type === "select") {
         var choices = field.options.map(function (option) {
           return '<option value="' + escapeHtml(option) + '"' + (value === option ? " selected" : "") + ">" + escapeHtml(option) + "</option>";
         }).join("");
@@ -548,6 +553,15 @@
     var dialog = document.getElementById("record-dialog");
     dialog.innerHTML = '<div class="dialog-head"><div><p class="section-overline">' + (item ? "EDIT RECORD" : "NEW RECORD") + '</p><h2 id="dialog-title">' + (item ? "Edit " : "Add ") + escapeHtml(definition.label) + '</h2></div><button class="dialog-close" type="button" data-action="close-dialog" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>' +
       '<form id="record-form" data-entity="' + entity + '" data-id="' + (item ? escapeHtml(item.id) : "") + '"><div class="form-grid">' + fields + '</div><div class="dialog-actions"><button class="btn btn-secondary" type="button" data-action="close-dialog">Cancel</button><button class="btn" type="submit">Save ' + escapeHtml(definition.label) + "</button></div></form>";
+    var recordForm = dialog.querySelector('#record-form');
+    var formError = document.createElement('p');
+    formError.id = 'record-form-error';
+    formError.setAttribute('role', 'alert');
+    formError.hidden = true;
+    recordForm.querySelector('.dialog-actions').before(formError);
+    if ((entity === 'training' || entity === 'applications') && !recordForm.querySelector('[name="club"] option[value]:not([value=""])')) {
+      recordForm.querySelector('button[type="submit"]').disabled = true;
+    }
     dialog.showModal();
   }
 
@@ -570,7 +584,7 @@
       related = '<section class="related-records"><h3>Club memberships (' + studentMemberships.length + ")</h3>" +
         (studentMemberships.length ? "<ul>" + studentMemberships.map(function (application) {
           return "<li>" + clubLink(application.club) + " <span>" + escapeHtml(application.status) + "</span></li>";
-        }).join("") + "</ul>" : '<p class="intro-copy">No approved club memberships are recorded in this session.</p>') +
+        }).join("") + "</ul>" : '<p class="intro-copy">No approved club memberships are stored in the database.</p>') +
         '<a class="table-link" href="applications.html?student=' + encodeURIComponent(item.studentId) + '">View related applications</a></section>';
     }
     if (entity === "clubs") {
@@ -581,12 +595,12 @@
       related = '<section class="related-records"><h3>Club members (' + clubMemberships.length + ")</h3>" +
         (clubMemberships.length ? "<ul>" + clubMemberships.map(function (application) {
           return "<li>" + studentLink(application.studentId, application.studentName) + "</li>";
-        }).join("") + "</ul>" : '<p class="intro-copy">No approved club memberships are recorded in this session.</p>') +
+        }).join("") + "</ul>" : '<p class="intro-copy">No approved club memberships are stored in the database.</p>') +
         '<a class="table-link" href="applications.html?club=' + encodeURIComponent(item.name) + '">View related applications</a>' +
         '<h3 class="related-subheading">Training sessions (' + clubSessions.length + ")</h3>" +
         (clubSessions.length ? "<ul>" + clubSessions.map(function (session) {
           return '<li><a class="table-link" href="training.html">' + escapeHtml(session.title) + "</a> <span>" + escapeHtml(session.date || "Date not set") + "</span></li>";
-        }).join("") + "</ul>" : '<p class="intro-copy">No training sessions are recorded in this session.</p>') + "</section>";
+        }).join("") + "</ul>" : '<p class="intro-copy">No training sessions are stored in the database.</p>') + "</section>";
     }
     var dialog = document.getElementById("record-dialog");
     dialog.innerHTML = '<div class="dialog-head"><div><p class="section-overline">' + (entity === "announcements" ? "ANNOUNCEMENT PREVIEW" : "RECORD DETAILS") + '</p><h2 id="dialog-title">' + escapeHtml(item.name || item.title || item.studentName || item.resource || definition.label) + '</h2></div><button class="dialog-close" type="button" data-action="close-dialog" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div><dl class="detail-list">' + fields + "</dl>" + related + '<div class="dialog-actions"><button class="btn btn-secondary" type="button" data-action="close-dialog">Close</button></div>';
@@ -627,7 +641,9 @@
   }
 
   function csvCell(value) {
-    return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
+    var text = String(value == null ? "" : value);
+    if (/^[\s]*[=+@-]/.test(text)) text = "'" + text;
+    return '"' + text.replace(/"/g, '""') + '"';
   }
 
   function downloadCsv(filename, text) {
@@ -733,7 +749,7 @@
       if (!option) return;
       setProfileMenu(false);
       if (option.dataset.profileAction === "profile") {
-        notify("Administrator profile details are unavailable until an authenticated admin account is connected.");
+        notify(currentAdmin ? currentAdmin.fullName + ' | ' + currentAdmin.email : 'Administrator details are unavailable.');
       } else if (option.dataset.profileAction === "preferences") {
         notify("Use the adjacent theme button to switch between light and dark appearance.");
       } else if (option.dataset.profileAction === "logout") {
@@ -760,6 +776,10 @@
     });
     var clear = document.getElementById("clear-filters");
     if (clear) clear.addEventListener("click", function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('student');
+      url.searchParams.delete('club');
+      window.history.replaceState(null, '', url);
       document.querySelectorAll(".toolbar input, .toolbar select").forEach(function (control) { control.value = ""; });
       applyFilters();
     });
@@ -803,6 +823,8 @@
       var record = existing ? Object.assign({}, existing) :
         { id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : String(Date.now()) };
       var submitButton = form.querySelector('button[type="submit"]');
+      var formError = form.querySelector('#record-form-error');
+      formError.hidden = true;
       submitButton.disabled = true;
       new FormData(form).forEach(function (value, key) { record[key] = String(value).trim(); });
       if (!record.status && datasets[entity].fields.some(function (field) { return field.key === "status"; })) {
@@ -816,14 +838,17 @@
           state[entity].unshift(savedRecord);
         }
       } catch (error) {
-        notify(error.message);
+        formError.textContent = error.message;
+        formError.hidden = false;
         submitButton.disabled = false;
         return;
       }
       document.getElementById("record-dialog").close();
       notify("Record " + (existing ? "updated" : "created") + ".");
-      if (page === "dashboard") window.location.reload();
-      else applyFilters();
+      var url = new URL(window.location.href);
+      url.searchParams.delete('action');
+      window.history.replaceState(null, '', url);
+      window.location.reload();
     });
 
     var query = new URLSearchParams(window.location.search);

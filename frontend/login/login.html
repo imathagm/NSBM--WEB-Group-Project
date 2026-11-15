@@ -147,19 +147,19 @@
                     </p>
 
                     <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName"
+                    <input type="text" id="fullName" minlength="2" maxlength="120" autocomplete="name"
                         placeholder="Enter your full name" required>
 
                     <label for="registerStudentID">Student ID</label>
-                    <input type="text" id="registerStudentID"
+                    <input type="text" id="registerStudentID" minlength="5" maxlength="24"
                         placeholder="Enter your student ID" required>
 
                     <label for="registerEmail">Email Address</label>
-                    <input type="email" id="registerEmail"
+                    <input type="email" id="registerEmail" maxlength="254" autocomplete="email"
                         placeholder="Enter your email" required>
 
                     <label for="contactNumber">Contact Number</label>
-                    <input type="tel" id="contactNumber"
+                    <input type="tel" id="contactNumber" maxlength="24" autocomplete="tel"
                         placeholder="Enter your contact number" required>
 
                     <label for="sport">Sport of Interest</label>
@@ -176,7 +176,7 @@
                     <label for="registerPassword">Password</label>
                     <div class="password-box">
                         <input type="password" id="registerPassword"
-                                placeholder="Create a password" maxlength="72" required>
+                                placeholder="Create a password (at least 8 characters)" minlength="8" maxlength="72" autocomplete="new-password" required>
                         <button type="button" class="toggle-password"
                             data-target="registerPassword">Show</button>
                     </div>

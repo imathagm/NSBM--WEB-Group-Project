@@ -17,7 +17,7 @@ try {
     }
 
     if ($user === null) {
-        $_SESSION = [];
+        unset($_SESSION['student_id']);
         auth_respond(200, [
             'success' => true,
             'authenticated' => false,

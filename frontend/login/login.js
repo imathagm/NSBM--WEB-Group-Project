@@ -17,7 +17,7 @@
   ]);
   var params = new URLSearchParams(window.location.search);
   var returnPage = params.get("return");
-  if (!returnPages.has(returnPage)) returnPage = "dashboard.html";
+  if (!returnPage || !returnPages.has(returnPage.split('?')[0])) returnPage = "dashboard.html";
 
   function showMessage(text, isError) {
     message.textContent = text;
@@ -45,7 +45,8 @@
     });
   });
   document.querySelectorAll("[data-view]").forEach(function (control) {
-    control.addEventListener("click", function () {
+    control.addEventListener("click", function (event) {
+      event.preventDefault();
       setView(control.dataset.view);
     });
   });
@@ -173,5 +174,5 @@
 
   var requestedView = params.get("view") || window.location.hash.slice(1) || "login";
   if (requestedView === "register") setView("register");
-  else setView(requestedView === "admin" ? "admin" : "login");
+  else setView(requestedView === "admin" ? "admin" : requestedView === "forgot" ? "forgot" : "login");
 })();

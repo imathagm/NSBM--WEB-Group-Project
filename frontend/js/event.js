@@ -1,5 +1,6 @@
+var eventScriptUrl = document.currentScript.src;
 document.addEventListener("DOMContentLoaded", function () {
-  var scriptUrl = document.currentScript.src;
+  var scriptUrl = eventScriptUrl;
   var contentEndpoint = new URL("../../backend/api/public-content.php", scriptUrl);
   var eventSearch = document.getElementById("eventSearch");
   var clearSearch = document.getElementById("clearSearch");
@@ -12,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var events = [];
   var announcements = [];
   var selectedSport = "all";
+  var storyIndex = 0;
+  var storyTrigger = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
@@ -180,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (allButton) allButton.click();
     filterEvents();
   });
-  eventsGrid.addEventListener("click", function (event) {
+  function openEvent(event) {
     var button = event.target.closest("[data-event-id]");
     if (!button) return;
     var record = events.find(function (item) { return String(item.id) === button.dataset.eventId; });
@@ -193,32 +196,63 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("dialogDate").textContent = displayDate(record.date);
     document.getElementById("dialogLocation").textContent = record.venue || "Venue not published";
     document.getElementById("eventDialog").showModal();
-  });
+  }
+  eventsGrid.addEventListener("click", openEvent);
+  featuredEvent.addEventListener("click", openEvent);
   document.getElementById("closeDialog").addEventListener("click", function () {
     document.getElementById("eventDialog").close();
   });
-  storiesTrack.addEventListener("click", function (event) {
-    var story = event.target.closest("[data-story-index]");
-    if (!story) return;
-    var index = Number(story.dataset.storyIndex);
+  function showStory(index) {
+    if (!announcements[index]) return;
+    storyIndex = index;
     document.getElementById("viewerTitle").textContent = announcements[index].title;
     document.getElementById("viewerCategory").textContent = "ANNOUNCEMENT";
     document.getElementById("viewerText").textContent = announcements[index].content;
     document.getElementById("viewerTime").textContent = displayDate(announcements[index].publishedDate);
     document.getElementById("viewerCounter").textContent = (index + 1) + " / " + announcements.length;
-    document.getElementById("storyViewer").classList.add("is-active");
+    document.getElementById('storyPrevious').disabled = index === 0;
+    document.getElementById('storyNext').setAttribute('aria-label', index === announcements.length - 1 ? 'Close last story' : 'Next story');
+    var progress = document.getElementById('storyProgressTrack');
+    progress.replaceChildren();
+    announcements.forEach(function (_, position) {
+      var segment = document.createElement('div');
+      segment.className = 'story-progress-segment' + (position <= index ? ' completed' : '');
+      var fill = document.createElement('div');
+      fill.className = 'story-progress-fill';
+      segment.appendChild(fill);
+      progress.appendChild(segment);
+    });
+    document.getElementById("storyViewer").classList.add("is-open");
     document.getElementById("storyViewer").setAttribute("aria-hidden", "false");
     document.body.classList.add("story-open");
+  }
+  storiesTrack.addEventListener("click", function (event) {
+    var story = event.target.closest("[data-story-index]");
+    if (!story) return;
+    storyTrigger = story;
+    showStory(Number(story.dataset.storyIndex));
+    document.getElementById('closeStoryViewer').focus();
   });
   function closeStories() {
-    document.getElementById("storyViewer").classList.remove("is-active");
+    document.getElementById("storyViewer").classList.remove("is-open");
     document.getElementById("storyViewer").setAttribute("aria-hidden", "true");
     document.body.classList.remove("story-open");
+    if (storyTrigger) storyTrigger.focus();
   }
+  function nextStory() {
+    if (storyIndex === announcements.length - 1) closeStories();
+    else showStory(storyIndex + 1);
+  }
+  document.getElementById('storyPrevious').addEventListener('click', function () { showStory(storyIndex - 1); });
+  document.getElementById('storyNext').addEventListener('click', nextStory);
   document.getElementById("closeStoryViewer").addEventListener("click", closeStories);
   document.getElementById("storyBackdrop").addEventListener("click", closeStories);
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") closeStories();
+    if (document.getElementById('storyViewer').classList.contains('is-open')) {
+      if (event.key === 'ArrowRight') nextStory();
+      if (event.key === 'ArrowLeft') showStory(storyIndex - 1);
+    }
   });
 
   loadContent();

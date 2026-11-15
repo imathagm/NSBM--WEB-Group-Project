@@ -119,12 +119,12 @@ function admin_validate_record(array $entity, array $input): array
             continue;
         }
 
-        if (!is_scalar($input[$key])) {
+        if ($input[$key] !== null && !is_scalar($input[$key])) {
             admin_record_error('Record fields must contain plain text values.');
         }
         $value = trim((string) $input[$key]);
         if ($value === '') {
-            if (!empty($field['required'])) {
+            if (!empty($field['required']) || ($field['type'] ?? '') === 'enum') {
                 admin_record_error('Complete all required fields.');
             }
             $clean[$key] = null;
@@ -203,7 +203,8 @@ function admin_valid_id(string $entityName, string $id): bool
 function admin_store_activity(PDO $pdo, string $description): void
 {
     $statement = $pdo->prepare('INSERT INTO sportshub_admin_activity (description) VALUES (:description)');
-    $statement->execute(['description' => mb_substr($description, 0, 255, 'UTF-8')]);
+    preg_match('/\A.{0,255}/us', $description, $matches);
+    $statement->execute(['description' => $matches[0] ?? 'Record updated']);
 }
 
 try {
@@ -256,6 +257,22 @@ try {
             admin_record_error('Choose a valid record.');
         }
         $pdo->beginTransaction();
+        if ($entityName === 'clubs') {
+            $related = $pdo->prepare(
+                'SELECT (SELECT COUNT(*) FROM sportshub_membership_applications WHERE club = clubs.name)
+                      + (SELECT COUNT(*) FROM sportshub_training_sessions WHERE club = clubs.name)
+                 FROM sportshub_clubs AS clubs WHERE id = :id FOR UPDATE'
+            );
+            $related->execute(['id' => $id]);
+            if ((int) $related->fetchColumn() > 0) {
+                $pdo->rollBack();
+                auth_respond(409, ['success' => false, 'message' => 'This club has applications or training sessions. Mark it Inactive, or remove those records first.']);
+            }
+        }
+        if ($entityName === 'events') {
+            $entries = $pdo->prepare('DELETE FROM sportshub_tournament_registrations WHERE tournament_id = :id');
+            $entries->execute(['id' => $id]);
+        }
         if ($entityName === 'students') {
             $linkedAccount = $pdo->prepare(
                 'SELECT user_id, student_id FROM admin_students WHERE id = :id FOR UPDATE'
@@ -266,11 +283,11 @@ try {
                 $pdo->rollBack();
                 auth_respond(404, ['success' => false, 'message' => 'The record no longer exists.']);
             }
+            foreach (['sportshub_membership_applications', 'sportshub_tournament_registrations'] as $table) {
+                $deleteRelated = $pdo->prepare('DELETE FROM ' . $table . ' WHERE student_id = :student_id');
+                $deleteRelated->execute(['student_id' => $studentRecord['student_id']]);
+            }
             if ($studentRecord['user_id'] !== null) {
-                $deleteRegistrations = $pdo->prepare(
-                    'DELETE FROM sportshub_tournament_registrations WHERE student_id = :student_id'
-                );
-                $deleteRegistrations->execute(['student_id' => $studentRecord['student_id']]);
                 $deleteAccount = $pdo->prepare('DELETE FROM sportshub_users WHERE user_id = :user_id');
                 $deleteAccount->execute(['user_id' => $studentRecord['user_id']]);
             }
@@ -290,9 +307,81 @@ try {
     if (!is_array($data)) {
         admin_record_error('Record data is required.');
     }
-    $values = admin_validate_record($entity, $data);
-    $label = (string) ($data['name'] ?? $data['title'] ?? $data['studentName'] ?? $data['resource'] ?? rtrim($entityName, 's'));
     $pdo->beginTransaction();
+    $previous = null;
+    if ($method === 'PUT') {
+        if (!admin_valid_id($entityName, $id)) {
+            admin_record_error('Choose a valid record.');
+        }
+        $existing = $pdo->prepare('SELECT * FROM ' . $entity['table'] . ' WHERE ' . $idColumn . ' = :id FOR UPDATE');
+        $existing->execute(['id' => $id]);
+        $previous = $existing->fetch();
+        if ($previous === false) {
+            auth_respond(404, ['success' => false, 'message' => 'The record no longer exists.']);
+        }
+        $current = [];
+        foreach ($entity['fields'] as $key => $field) {
+            $current[$key] = $previous[$field['column']];
+        }
+        $data = array_replace($current, $data);
+    }
+    $values = admin_validate_record($entity, $data);
+    $label = (string) ($values['name'] ?? $values['title'] ?? $values['studentName'] ?? $values['resource'] ?? rtrim($entityName, 's'));
+
+    if ($entityName === 'events' && !empty($values['date']) && !empty($values['registrationDeadline'])
+        && $values['registrationDeadline'] > $values['date']) {
+        admin_record_error('The registration deadline cannot be after the event date.');
+    }
+    if (in_array($entityName, ['applications', 'training'], true)) {
+        $club = $pdo->prepare('SELECT name FROM sportshub_clubs WHERE name = :name FOR UPDATE');
+        $club->execute(['name' => $values['club']]);
+        $clubName = $club->fetchColumn();
+        if ($clubName === false) {
+            admin_record_error('Choose an existing club. Add the club in Sports Clubs first.');
+        }
+        $values['club'] = $clubName;
+    }
+    if ($entityName === 'applications') {
+        $student = $pdo->prepare('SELECT name, student_id FROM admin_students WHERE student_id = :student_id');
+        $student->execute(['student_id' => $values['studentId']]);
+        $studentDetails = $student->fetch();
+        if ($studentDetails === false) {
+            admin_record_error('Choose an existing student. Add the student in Students first.');
+        }
+        $values['studentName'] = $studentDetails['name'];
+        $values['studentId'] = $studentDetails['student_id'];
+        $duplicate = $pdo->prepare(
+            'SELECT id FROM sportshub_membership_applications
+             WHERE student_id = :student_id AND club = :club AND id <> :id LIMIT 1'
+        );
+        $duplicate->execute(['student_id' => $values['studentId'], 'club' => $values['club'], 'id' => $id]);
+        if ($duplicate->fetchColumn()) {
+            auth_respond(409, ['success' => false, 'message' => 'This student already has an application for this club. Edit that application instead.']);
+        }
+    }
+    if ($entityName === 'facilities') {
+        $start = $values['startTime'] ?? null;
+        $end = $values['endTime'] ?? null;
+        if (($start === null) !== ($end === null) || ($start !== null && $end <= $start)) {
+            admin_record_error('Enter both booking times, with the end time after the start time. Leave both blank for an all-day booking.');
+        }
+        if (($values['status'] ?? '') === 'Approved') {
+            $overlap = $pdo->prepare(
+                "SELECT id FROM sportshub_facility_bookings
+                 WHERE resource = :resource AND type = :type AND event_date = :date
+                   AND status = 'Approved' AND id <> :id
+                   AND COALESCE(start_time, '00:00:00') < :end_time
+                   AND COALESCE(end_time, '23:59:59') > :start_time FOR UPDATE"
+            );
+            $overlap->execute([
+                'resource' => $values['resource'], 'type' => $values['type'], 'date' => $values['date'],
+                'id' => $id, 'start_time' => $start ?? '00:00:00', 'end_time' => $end ?? '23:59:59',
+            ]);
+            if ($overlap->fetchColumn()) {
+                auth_respond(409, ['success' => false, 'message' => 'This resource already has an approved booking during that time.']);
+            }
+        }
+    }
 
     if ($method === 'POST') {
         $id = admin_uuid();
@@ -357,15 +446,37 @@ try {
                  WHERE fixture_id = :id"
             );
             $sectionUpdate->execute(['id' => $id]);
-            if (array_key_exists('opponent', $values)) {
+            if (($previous['opponent_name'] ?? null) !== ($values['opponent'] ?? null)) {
                 $clearOpponentCode = $pdo->prepare(
                     'UPDATE sports_fixtures SET opponent_code = NULL
-                     WHERE fixture_id = :id AND NOT (opponent_name <=> :opponent)'
+                     WHERE fixture_id = :id'
                 );
-                $clearOpponentCode->execute(['id' => $id, 'opponent' => $values['opponent']]);
+                $clearOpponentCode->execute(['id' => $id]);
             }
+            $entries = $pdo->prepare('UPDATE sportshub_tournament_registrations SET tournament_name = :title WHERE tournament_id = :id');
+            $entries->execute(['title' => $values['title'], 'id' => $id]);
+        }
+        if ($entityName === 'clubs' && $previous['name'] !== $values['name']) {
+            foreach (['sportshub_membership_applications', 'sportshub_training_sessions'] as $table) {
+                $rename = $pdo->prepare('UPDATE ' . $table . ' SET club = :new_name WHERE club = :old_name');
+                $rename->execute(['new_name' => $values['name'], 'old_name' => $previous['name']]);
+            }
+            $rename = $pdo->prepare('UPDATE sports_fixtures SET home_team = :new_name WHERE home_team = :old_name');
+            $rename->execute(['new_name' => $values['name'], 'old_name' => $previous['name']]);
         }
         if ($entityName === 'students') {
+            $applications = $pdo->prepare(
+                'UPDATE sportshub_membership_applications SET student_id = :new_id, student_name = :name WHERE student_id = :old_id'
+            );
+            $applications->execute(['new_id' => $values['studentId'], 'name' => $values['name'], 'old_id' => $previous['student_id']]);
+            $entries = $pdo->prepare(
+                'UPDATE sportshub_tournament_registrations SET student_id = :new_id, student_name = :name,
+                 email = :email, faculty = :faculty, year_of_study = :year WHERE student_id = :old_id'
+            );
+            $entries->execute([
+                'new_id' => $values['studentId'], 'name' => $values['name'], 'email' => $values['email'] ?? '',
+                'faculty' => $values['faculty'] ?? null, 'year' => $values['batch'] ?? null, 'old_id' => $previous['student_id'],
+            ]);
             $linkedAccount = $pdo->prepare('SELECT user_id FROM admin_students WHERE id = :id');
             $linkedAccount->execute(['id' => $id]);
             $userId = $linkedAccount->fetchColumn();

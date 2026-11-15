@@ -6,6 +6,7 @@
 
   var endpointBase = new URL("../../backend/api/auth/", scriptUrl);
   var csrfToken = "";
+  var sessionRequest = null;
 
   async function parseResponse(response) {
     var payload;
@@ -25,14 +26,17 @@
     return payload;
   }
 
-  async function getSession() {
-    var response = await fetch(new URL("session.php", endpointBase), {
-      method: "GET",
-      credentials: "same-origin",
-      cache: "no-store",
-      headers: { "Accept": "application/json" }
-    });
-    return parseResponse(response);
+  function getSession() {
+    if (!sessionRequest) {
+      // All page scripts share one check while the session cookie is restored.
+      sessionRequest = fetch(new URL("session.php", endpointBase), {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      }).then(parseResponse).finally(function () { sessionRequest = null; });
+    }
+    return sessionRequest;
   }
 
   async function post(action, payload) {

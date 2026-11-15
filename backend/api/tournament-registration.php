@@ -15,7 +15,7 @@ $tournamentId = (string) ($input['tournamentId'] ?? '');
 try {
     $pdo = sportshubDatabaseConnection();
     $tournamentQuery = $pdo->prepare(
-        "SELECT competition, registration_deadline
+        "SELECT competition, registration_deadline, event_date
          FROM sports_fixtures
          WHERE fixture_id = :fixture_id
            AND kind = 'Tournament'
@@ -31,7 +31,8 @@ try {
         auth_respond(400, ['success' => false, 'message' => 'Registration is unavailable because this tournament has no deadline.']);
     }
     $today = (new DateTimeImmutable('now', new DateTimeZone('Asia/Colombo')))->format('Y-m-d');
-    if ($today > $tournament['registration_deadline']) {
+    if ($today > $tournament['registration_deadline']
+        || (!empty($tournament['event_date']) && $today > $tournament['event_date'])) {
         auth_respond(400, ['success' => false, 'message' => 'The registration deadline for this tournament has passed.']);
     }
 
@@ -43,6 +44,12 @@ try {
     $account = $student->fetch();
     if ($account === false) {
         auth_respond(401, ['success' => false, 'message' => 'Student account is no longer available.']);
+    }
+
+    $faculty = trim((string) ($input['faculty'] ?? $account['faculty'] ?? ''));
+    $yearOfStudy = trim((string) ($input['yearOfStudy'] ?? $account['academic_year'] ?? ''));
+    if (preg_match_all('/./us', $faculty) > 120 || preg_match_all('/./us', $yearOfStudy) > 40) {
+        auth_respond(400, ['success' => false, 'message' => 'Faculty or year of study is too long.']);
     }
 
     $providedId = strtolower(trim((string) ($input['studentId'] ?? '')));
@@ -64,8 +71,8 @@ try {
         'student_name' => $account['full_name'],
         'student_id' => $account['student_id'],
         'email' => $account['email'],
-        'faculty' => $account['faculty'],
-        'year_of_study' => $account['academic_year'],
+        'faculty' => $faculty === '' ? null : $faculty,
+        'year_of_study' => $yearOfStudy === '' ? null : $yearOfStudy,
     ]);
 
     auth_respond(201, [

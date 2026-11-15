@@ -87,6 +87,14 @@ document.addEventListener("DOMContentLoaded", function () {
         dialogTitle.textContent = club.name;
         dialogDescription.textContent = [club.description, club.coach && "Coach: " + club.coach, club.venue && "Venue: " + club.venue]
             .filter(Boolean).join(" ");
+        let applyLink = clubDialog.querySelector('.club-apply-link');
+        if (!applyLink) {
+            applyLink = document.createElement('a');
+            applyLink.className = 'button club-apply-link';
+            applyLink.textContent = 'Apply to this club';
+            clubDialog.querySelector('.club-dialog__content').appendChild(applyLink);
+        }
+        applyLink.href = '../pages/clubregister.html?club=' + encodeURIComponent(club.id);
         clubDialog.showModal();
     });
     dialogCloseButton.addEventListener("click", function () { clubDialog.close(); });

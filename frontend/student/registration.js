@@ -32,9 +32,7 @@
   }
 
   function todayAsISO() {
-    var today = new Date();
-    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
   }
 
   function isDeadlinePassed() {
@@ -175,7 +173,9 @@
           tournamentId: tournamentId,
           fullName: fullNameInput.value.trim(),
           studentId: studentId,
-          email: emailInput.value.trim()
+          email: emailInput.value.trim(),
+          faculty: document.getElementById('faculty').value,
+          yearOfStudy: document.getElementById('batch').value
         })
       });
       var result = await response.json();
