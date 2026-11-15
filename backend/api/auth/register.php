@@ -10,6 +10,9 @@ $fullName = trim((string) ($input['fullName'] ?? ''));
 $studentId = trim((string) ($input['studentId'] ?? ''));
 $email = strtolower(trim((string) ($input['email'] ?? '')));
 $contactNumber = trim((string) ($input['contactNumber'] ?? ''));
+$faculty = trim((string) ($input['faculty'] ?? ''));
+$degreeProgram = trim((string) ($input['degreeProgram'] ?? ''));
+$academicYear = trim((string) ($input['academicYear'] ?? ''));
 $sport = trim((string) ($input['sportOfInterest'] ?? ''));
 $password = (string) ($input['password'] ?? '');
 $allowedSports = ['Cricket', 'Football', 'Basketball', 'Volleyball', 'Badminton', 'Other'];
@@ -28,6 +31,16 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
 if (!preg_match('/\A[+0-9(). -]{7,24}\z/', $contactNumber) || $digitCount === false || $digitCount < 7 || $digitCount > 15) {
     auth_respond(400, ['success' => false, 'message' => 'Enter a valid contact number.']);
 }
+foreach ([
+    'Faculty' => [$faculty, 120],
+    'Degree Programme' => [$degreeProgram, 160],
+    'Academic Year' => [$academicYear, 40],
+] as $label => [$value, $maximum]) {
+    $length = preg_match_all('/./us', $value);
+    if ($length === false || $length < 2 || $length > $maximum) {
+        auth_respond(400, ['success' => false, 'message' => 'Enter a ' . strtolower($label) . ' between 2 and ' . $maximum . ' characters.']);
+    }
+}
 if (!in_array($sport, $allowedSports, true)) {
     auth_respond(400, ['success' => false, 'message' => 'Choose a sport from the list.']);
 }
@@ -40,8 +53,10 @@ try {
     $pdo->beginTransaction();
     $insert = $pdo->prepare(
         'INSERT INTO sportshub_users
-         (full_name, student_id, email, contact_number, sport_of_interest, password_hash)
-         VALUES (:full_name, :student_id, :email, :contact_number, :sport, :password_hash)'
+         (full_name, student_id, email, contact_number, sport_of_interest,
+          faculty, degree_program, academic_year, password_hash)
+         VALUES (:full_name, :student_id, :email, :contact_number, :sport,
+                 :faculty, :degree_program, :academic_year, :password_hash)'
     );
     $insert->execute([
         'full_name' => $fullName,
@@ -49,6 +64,9 @@ try {
         'email' => $email,
         'contact_number' => $contactNumber,
         'sport' => $sport,
+        'faculty' => $faculty,
+        'degree_program' => $degreeProgram,
+        'academic_year' => $academicYear,
         'password_hash' => password_hash($password, PASSWORD_DEFAULT),
     ]);
 
@@ -64,8 +82,8 @@ try {
     $directoryId = $existingDirectoryRecord->fetchColumn();
     if ($directoryId === false) {
         $directory = $pdo->prepare(
-            'INSERT INTO admin_students (id, user_id, name, student_id, email)
-             VALUES (:id, :user_id, :name, :student_id, :email)'
+            'INSERT INTO admin_students (id, user_id, name, student_id, email, faculty, batch)
+             VALUES (:id, :user_id, :name, :student_id, :email, :faculty, :batch)'
         );
         $directory->execute([
             'id' => auth_uuid(),
@@ -73,17 +91,22 @@ try {
             'name' => $fullName,
             'student_id' => $studentId,
             'email' => $email,
+            'faculty' => $faculty,
+            'batch' => $academicYear,
         ]);
     } else {
         $directory = $pdo->prepare(
             'UPDATE admin_students
-             SET user_id = :user_id, name = :name, email = :email
+             SET user_id = :user_id, name = :name, email = :email,
+                 faculty = :faculty, batch = :batch
              WHERE id = :id'
         );
         $directory->execute([
             'user_id' => $user['user_id'],
             'name' => $fullName,
             'email' => $email,
+            'faculty' => $faculty,
+            'batch' => $academicYear,
             'id' => $directoryId,
         ]);
     }

@@ -1,6 +1,7 @@
 (function () {
   var scriptUrl = document.currentScript.src;
   var fixturesEndpoint = new URL("../../backend/api/fixtures.php", scriptUrl);
+  var registrationsEndpoint = new URL("../../backend/api/student-event-registrations.php", scriptUrl);
   var sportFilter = document.getElementById("sport-filter");
   var statusFilter = document.getElementById("status-filter");
   var dateFilter = document.getElementById("date-filter");
@@ -51,7 +52,30 @@
   function isRegistrationOpen(fixture) {
     var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Colombo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
     return fixture.status === "Scheduled" && fixture.registration_deadline &&
+
+      todayAsISO() <= fixture.registration_deadline;
+  }
+
+  function todayAsISO() {
+    var today = new Date();
+    return today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" +
+      String(today.getDate()).padStart(2, "0");
+  }
+
+  function registrationAction(fixture) {
+    var open = Boolean(isRegistrationOpen(fixture));
+    if (fixture.kind === "Match" && !fixture.registration_deadline) return "";
+    if (!open) {
+      return '<button class="register-button register-button--disabled" type="button" disabled>Registration unavailable</button>';
+    }
+    var parameter = fixture.kind === "Match" ? "match" : "tournament";
+    var label = fixture.kind === "Match" ? "Register for Match" : "Register Now";
+    return '<a class="register-button" href="tournament-registration.html?' + parameter + "=" +
+      encodeURIComponent(fixture.fixture_id) + '">' + label +
+      ' <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>';
+
       (!fixture.event_date || fixture.event_date >= today) && today <= fixture.registration_deadline;
+
   }
 
   function sectionFor(fixture) {
@@ -83,7 +107,7 @@
       escapeHtml(formatDate(fixture.event_date, false)) + '</span><span><i class="fa-regular fa-clock" aria-hidden="true"></i> ' +
       escapeHtml(formatTime(fixture.start_time)) + '</span></div><div class="match-venue"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> ' +
       escapeHtml(fixture.venue || "Venue To Be Announced") + '</div>' +
-      createDetailsButton(fixture, status) + '</article>';
+      createDetailsButton(fixture, status) + registrationAction(fixture) + '</article>';
   }
 
   function renderTournament(fixture) {
@@ -92,10 +116,7 @@
     var deadline = fixture.registration_deadline
       ? "Registration deadline: " + formatDate(fixture.registration_deadline, true)
       : "Registration deadline not published";
-    var registration = open
-      ? '<a class="register-button" href="tournament-registration.html?tournament=' +
-        encodeURIComponent(fixture.fixture_id) + '">Register Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>'
-      : '<button class="register-button register-button--disabled" type="button" disabled>Registration unavailable</button>';
+    var registration = registrationAction(fixture);
     return '<article class="tournament-card filter-card" data-sport="' + escapeHtml(slug(fixture.sport)) +
       '" data-status="' + status + '" data-date="' + escapeHtml(fixture.event_date || "") + '">' +
       '<div class="tournament-visual"><span class="sport-tag">' + escapeHtml(fixture.sport) +
@@ -200,6 +221,44 @@
     }
   }
 
+  async function loadRegistrations() {
+    var list = document.getElementById("my-registrations-list");
+    var count = document.getElementById("my-registrations-count");
+    try {
+      var response = await fetch(registrationsEndpoint, {
+        headers: { Accept: "application/json" },
+        credentials: "same-origin",
+        cache: "no-store"
+      });
+      var payload = await response.json();
+      if (!response.ok || !payload || payload.success !== true || !Array.isArray(payload.records)) {
+        throw new Error(payload && payload.message ? payload.message : "Your registrations are unavailable.");
+      }
+      count.textContent = payload.records.length + " SUBMISSIONS";
+      if (!payload.records.length) {
+        list.innerHTML = '<p class="empty-message">You have not submitted any match or tournament registrations yet.</p>';
+        return;
+      }
+      list.innerHTML = payload.records.map(function (record) {
+        var status = String(record.status || "Pending");
+        var statusClass = slug(status);
+        var reviewDate = record.reviewedAt
+          ? '<p class="registration-review-date">Reviewed ' + escapeHtml(formatDate(record.reviewedAt, true)) + "</p>"
+          : "";
+        return '<article class="registration-item"><div><p class="registration-type">' +
+          escapeHtml(record.registrationType) + ' registration</p><h3>' + escapeHtml(record.eventName) +
+          '</h3><p class="registration-meta">Submitted ' + escapeHtml(formatDate(record.submittedAt, true)) +
+          ' · Student ID ' + escapeHtml(record.studentId) + "</p>" + reviewDate +
+          '</div><span class="registration-status registration-status--' + escapeHtml(statusClass) + '">' +
+          escapeHtml(status) + "</span></article>";
+      }).join("");
+    } catch (error) {
+      console.error("Unable to load student event registrations.", error);
+      count.textContent = "—";
+      list.textContent = error.message || "Your registrations are temporarily unavailable.";
+    }
+  }
+
   sportFilter.addEventListener("change", applyFilters);
   statusFilter.addEventListener("change", applyFilters);
   dateFilter.addEventListener("change", applyFilters);
@@ -250,4 +309,5 @@
   });
 
   loadFixtures();
+  loadRegistrations();
 })();

@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const endpoint = new URL('../../backend/api/auth/profile.php', profileScriptUrl);
   let savedProfile = null;
   let pendingPhoto = '';
+
+  const maxProfilePhotoBytes = 600 * 1024;
+  const maxUploadBytes = 1.5 * 1024 * 1024;
+
   let photoReader = null;
 
   function showMessage(text, type = '') {
@@ -63,6 +67,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     photo.hidden = !profile.profilePhoto;
     avatar.hidden = Boolean(profile.profilePhoto);
     if (profile.profilePhoto) photo.src = profile.profilePhoto;
+  }
+
+  function readAsDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => {
+        if (typeof reader.result === 'string') resolve(reader.result);
+        else reject(new Error('The selected photo could not be read.'));
+      });
+      reader.addEventListener('error', () => reject(new Error('The selected photo could not be read.')));
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function loadImage(file) {
+    return new Promise((resolve, reject) => {
+      const imageUrl = URL.createObjectURL(file);
+      const image = new Image();
+      image.addEventListener('load', () => {
+        URL.revokeObjectURL(imageUrl);
+        resolve(image);
+      }, { once: true });
+      image.addEventListener('error', () => {
+        URL.revokeObjectURL(imageUrl);
+        reject(new Error('The selected photo could not be read.'));
+      }, { once: true });
+      image.src = imageUrl;
+    });
+  }
+
+  async function prepareProfilePhoto(file) {
+    if (file.size <= maxProfilePhotoBytes) return readAsDataUrl(file);
+
+    const image = await loadImage(file);
+    const canvas = document.createElement('canvas');
+    const maximumDimension = 1200;
+    let dimension = Math.max(320, Math.min(maximumDimension, Math.max(image.naturalWidth, image.naturalHeight)));
+
+    while (dimension >= 320) {
+      const scale = Math.min(1, dimension / Math.max(image.naturalWidth, image.naturalHeight));
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('The selected photo could not be processed.');
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      for (const quality of [0.86, 0.76, 0.66, 0.56]) {
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (blob && blob.size <= maxProfilePhotoBytes) return readAsDataUrl(blob);
+      }
+      dimension = Math.floor(dimension * 0.8);
+    }
+
+    throw new Error('The selected photo could not be reduced to the supported size.');
   }
 
   function setEditing(enabled) {
@@ -127,8 +187,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     fullName.focus();
   });
 
+
+  photoInput.addEventListener('change', async () => {
+
   photoInput.addEventListener('change', () => {
     if (photoReader && photoReader.readyState === FileReader.LOADING) photoReader.abort();
+
     const file = photoInput.files[0];
     if (!file) return;
     const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
@@ -137,11 +201,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       showMessage('Choose a JPG, PNG, or WebP profile photo.', 'error');
       return;
     }
-    if (file.size > 1.5 * 1024 * 1024) {
+    if (file.size > maxUploadBytes) {
       photoInput.value = '';
       showMessage('Profile photos must be 1.5 MB or smaller.', 'error');
       return;
     }
+
+    try {
+      pendingPhoto = await prepareProfilePhoto(file);
+
     const reader = new FileReader();
     photoReader = reader;
     saveButton.disabled = true;
@@ -152,13 +220,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
       pendingPhoto = reader.result;
+
       photo.src = pendingPhoto;
       photo.hidden = false;
       avatar.hidden = true;
       showMessage('');
-    });
-    reader.addEventListener('error', () => showMessage('The selected photo could not be read.', 'error'));
-    reader.readAsDataURL(file);
+    } catch (error) {
+      photoInput.value = '';
+      showMessage(error.message || 'The selected photo could not be processed.', 'error');
+    }
   });
 
   form.addEventListener('submit', async (event) => {

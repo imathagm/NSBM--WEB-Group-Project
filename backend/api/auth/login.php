@@ -17,7 +17,8 @@ if ($identifier === '' || strlen($identifier) > 254 || $password === '' || strle
 try {
     $pdo = sportshubDatabaseConnection();
     $statement = $pdo->prepare(
-        'SELECT user_id, full_name, student_id, email, contact_number, sport_of_interest, password_hash
+        'SELECT user_id, full_name, student_id, email, contact_number, sport_of_interest,
+                faculty, degree_program, academic_year, password_hash
          FROM sportshub_users
          WHERE LOWER(email) = :email OR LOWER(student_id) = :student_id
          LIMIT 1'

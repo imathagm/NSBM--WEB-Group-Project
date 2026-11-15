@@ -93,6 +93,19 @@ $entities = [
     ],
 ];
 
+$eventRegistrationEntities = [
+    'tournamentRegistrations' => [
+        'table' => 'sportshub_tournament_registrations',
+        'eventColumn' => 'tournament_name',
+        'eventLabel' => 'tournament',
+    ],
+    'matchRegistrations' => [
+        'table' => 'sportshub_match_registrations',
+        'eventColumn' => 'match_name',
+        'eventLabel' => 'match',
+    ],
+];
+
 function admin_record_error(string $message): never
 {
     auth_respond(400, ['success' => false, 'message' => $message]);
@@ -167,8 +180,66 @@ function admin_validate_record(array $entity, array $input): array
     return $clean;
 }
 
-function admin_select_records(PDO $pdo, array $entity): array
+function admin_select_application_records(PDO $pdo, ?string $id = null): array
 {
+    $query = 'SELECT application.id,
+                     application.student_name AS studentName,
+                     application.student_id AS studentId,
+                     COALESCE(student.email, \'\') AS studentEmail,
+                     application.club,
+                     DATE_FORMAT(application.submitted_on, \'%Y-%m-%d\') AS submittedOn,
+                     application.status,
+                     application.notes,
+                     COALESCE(reviewer.full_name, \'\') AS reviewedBy,
+                     DATE_FORMAT(application.reviewed_at, \'%Y-%m-%d %H:%i\') AS reviewedAt
+              FROM sportshub_membership_applications AS application
+              LEFT JOIN sportshub_users AS student
+                ON student.user_id = application.user_id
+                OR (application.user_id IS NULL AND student.student_id = application.student_id)
+              LEFT JOIN administrators AS reviewer
+                ON reviewer.admin_id = application.reviewed_by';
+    if ($id !== null) {
+        $statement = $pdo->prepare($query . ' WHERE application.id = :id');
+        $statement->execute(['id' => $id]);
+        $record = $statement->fetch();
+        return $record === false ? [] : [$record];
+    }
+
+    return $pdo->query($query . ' ORDER BY application.created_at DESC')->fetchAll();
+}
+
+function admin_select_event_registration_records(PDO $pdo, array $definition, ?string $id = null): array
+{
+    $query = 'SELECT CAST(registration.registration_id AS CHAR) AS id,
+                     registration.' . $definition['eventColumn'] . ' AS eventName,
+                     registration.student_name AS studentName,
+                     registration.student_id AS studentId,
+                     registration.email,
+                     registration.faculty,
+                     registration.year_of_study AS yearOfStudy,
+                     DATE_FORMAT(registration.created_at, \'%Y-%m-%d %H:%i\') AS submittedAt,
+                     registration.status,
+                     COALESCE(reviewer.full_name, \'\') AS reviewedBy,
+                     DATE_FORMAT(registration.reviewed_at, \'%Y-%m-%d %H:%i\') AS reviewedAt
+              FROM ' . $definition['table'] . ' AS registration
+              LEFT JOIN administrators AS reviewer
+                ON reviewer.admin_id = registration.reviewed_by';
+    if ($id !== null) {
+        $statement = $pdo->prepare($query . ' WHERE registration.registration_id = :id');
+        $statement->execute(['id' => $id]);
+        $record = $statement->fetch();
+        return $record === false ? [] : [$record];
+    }
+
+    return $pdo->query($query . ' ORDER BY registration.created_at DESC LIMIT 200')->fetchAll();
+}
+
+function admin_select_records(PDO $pdo, array $entity, ?string $entityName = null): array
+{
+    if ($entityName === 'applications') {
+        return admin_select_application_records($pdo);
+    }
+
     $idColumn = $entity['idColumn'] ?? 'id';
     $columns = [$idColumn . ' AS id'];
     foreach ($entity['fields'] as $key => $field) {
@@ -216,16 +287,11 @@ try {
         if ($requested === 'all') {
             $records = [];
             foreach ($entities as $name => $definition) {
-                $records[$name] = admin_select_records($pdo, $definition);
+                $records[$name] = admin_select_records($pdo, $definition, $name);
             }
-            $records['tournamentRegistrations'] = $pdo->query(
-                "SELECT registration_id AS id, tournament_id AS tournamentId,
-                        tournament_name AS tournament, student_name AS studentName,
-                        student_id AS studentId, email, faculty, year_of_study AS yearOfStudy,
-                        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS submittedAt
-                 FROM sportshub_tournament_registrations
-                 ORDER BY registration_id DESC LIMIT 200"
-            )->fetchAll();
+            foreach ($eventRegistrationEntities as $name => $definition) {
+                $records[$name] = admin_select_event_registration_records($pdo, $definition);
+            }
             $records['activity'] = $pdo->query(
                 "SELECT description AS text, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i') AS time
                  FROM sportshub_admin_activity ORDER BY activity_id DESC LIMIT 50"
@@ -235,7 +301,10 @@ try {
         if (!isset($entities[$requested])) {
             admin_record_error('Choose a valid record type.');
         }
-        auth_respond(200, ['success' => true, 'records' => admin_select_records($pdo, $entities[$requested])]);
+        auth_respond(200, [
+            'success' => true,
+            'records' => admin_select_records($pdo, $entities[$requested], $requested),
+        ]);
     }
 
     if (!in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
@@ -245,12 +314,123 @@ try {
     auth_require_csrf();
     $input = auth_read_json();
     $entityName = (string) ($input['entity'] ?? '');
+    if (isset($eventRegistrationEntities[$entityName])) {
+        if ($method !== 'PUT') {
+            auth_respond(405, ['success' => false, 'message' => 'Event registrations can only be reviewed.']);
+        }
+        $data = $input['data'] ?? null;
+        if (!is_array($data)
+            || count($data) !== 1
+            || !array_key_exists('status', $data)
+            || !in_array($data['status'], ['Approved', 'Rejected'], true)) {
+            admin_record_error('Choose Approve or Reject for this event registration.');
+        }
+        $id = (string) ($input['id'] ?? '');
+        if (!preg_match('/\A[1-9][0-9]{0,19}\z/', $id)) {
+            admin_record_error('Choose a valid event registration.');
+        }
+
+        $definition = $eventRegistrationEntities[$entityName];
+        $pdo->beginTransaction();
+        $review = $pdo->prepare(
+            'UPDATE ' . $definition['table'] . '
+             SET status = :status, reviewed_by = :admin_id, reviewed_at = CURRENT_TIMESTAMP
+             WHERE registration_id = :id AND status = \'Pending\''
+        );
+        $review->execute([
+            'status' => $data['status'],
+            'admin_id' => (int) $_SESSION['admin_id'],
+            'id' => $id,
+        ]);
+        if ($review->rowCount() !== 1) {
+            $exists = $pdo->prepare(
+                'SELECT 1 FROM ' . $definition['table'] . ' WHERE registration_id = :id'
+            );
+            $exists->execute(['id' => $id]);
+            $pdo->rollBack();
+            if (!$exists->fetchColumn()) {
+                auth_respond(404, ['success' => false, 'message' => 'The event registration no longer exists.']);
+            }
+            auth_respond(409, ['success' => false, 'message' => 'This event registration has already been reviewed.']);
+        }
+
+        $records = admin_select_event_registration_records($pdo, $definition, $id);
+        if (!$records) {
+            $pdo->rollBack();
+            auth_respond(404, ['success' => false, 'message' => 'The event registration no longer exists.']);
+        }
+        $record = $records[0];
+        admin_store_activity(
+            $pdo,
+            $data['status'] . ' ' . $definition['eventLabel'] . ' registration for '
+                . $record['studentName'] . ' (' . $record['studentId'] . ') to ' . $record['eventName']
+        );
+        $pdo->commit();
+        auth_respond(200, ['success' => true, 'record' => $record]);
+    }
     if (!isset($entities[$entityName])) {
         admin_record_error('Choose a valid record type.');
     }
     $entity = $entities[$entityName];
     $idColumn = $entity['idColumn'] ?? 'id';
     $id = (string) ($input['id'] ?? '');
+
+    if ($entityName === 'applications') {
+        if ($method !== 'PUT') {
+            auth_respond(405, ['success' => false, 'message' => 'Applications can only be reviewed.']);
+        }
+        $data = $input['data'] ?? null;
+        if (!is_array($data)
+            || count($data) !== 1
+            || !array_key_exists('status', $data)
+            || !in_array($data['status'], ['Approved', 'Rejected'], true)) {
+            admin_record_error('Choose Approve or Reject for this application.');
+        }
+        if (!admin_valid_id($entityName, $id)) {
+            admin_record_error('Choose a valid application.');
+        }
+
+        $pdo->beginTransaction();
+        $review = $pdo->prepare(
+            "UPDATE sportshub_membership_applications
+             SET status = :status, reviewed_by = :admin_id, reviewed_at = CURRENT_TIMESTAMP
+             WHERE id = :id AND status = 'Pending'"
+        );
+        $review->execute([
+            'status' => $data['status'],
+            'admin_id' => (int) $_SESSION['admin_id'],
+            'id' => $id,
+        ]);
+        if ($review->rowCount() !== 1) {
+            $exists = $pdo->prepare('SELECT 1 FROM sportshub_membership_applications WHERE id = :id');
+            $exists->execute(['id' => $id]);
+            $pdo->rollBack();
+            if (!$exists->fetchColumn()) {
+                auth_respond(404, ['success' => false, 'message' => 'The application no longer exists.']);
+            }
+            auth_respond(409, ['success' => false, 'message' => 'This application has already been reviewed.']);
+        }
+
+        $activity = $pdo->prepare(
+            'SELECT student_name, student_id, club
+             FROM sportshub_membership_applications
+             WHERE id = :id'
+        );
+        $activity->execute(['id' => $id]);
+        $application = $activity->fetch();
+        if ($application === false) {
+            $pdo->rollBack();
+            auth_respond(404, ['success' => false, 'message' => 'The application no longer exists.']);
+        }
+        admin_store_activity(
+            $pdo,
+            $data['status'] . ' membership application for ' . $application['student_name']
+                . ' (' . $application['student_id'] . ') to ' . $application['club']
+        );
+        $pdo->commit();
+        $records = admin_select_application_records($pdo, $id);
+        auth_respond(200, ['success' => true, 'record' => $records[0]]);
+    }
 
     if ($method === 'DELETE') {
         if (!admin_valid_id($entityName, $id)) {
@@ -288,6 +468,15 @@ try {
                 $deleteRelated->execute(['student_id' => $studentRecord['student_id']]);
             }
             if ($studentRecord['user_id'] !== null) {
+              
+                $deleteRegistrations = $pdo->prepare(
+                    'DELETE FROM sportshub_tournament_registrations WHERE student_id = :student_id'
+                );
+                $deleteRegistrations->execute(['student_id' => $studentRecord['student_id']]);
+                $deleteMatchRegistrations = $pdo->prepare(
+                    'DELETE FROM sportshub_match_registrations WHERE student_id = :student_id'
+                );
+                $deleteMatchRegistrations->execute(['student_id' => $studentRecord['student_id']])
                 $deleteAccount = $pdo->prepare('DELETE FROM sportshub_users WHERE user_id = :user_id');
                 $deleteAccount->execute(['user_id' => $studentRecord['user_id']]);
             }

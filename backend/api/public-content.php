@@ -13,16 +13,43 @@ function respond_public_content(int $status, array $payload): never
     exit;
 }
 
+function public_club_records(PDO $pdo): array
+{
+    $tables = $pdo->query(
+        "SELECT TABLE_NAME
+         FROM information_schema.TABLES
+         WHERE TABLE_SCHEMA = DATABASE()
+           AND TABLE_NAME IN ('sportshub_clubs', 'sports_clubs')"
+    )->fetchAll(PDO::FETCH_COLUMN);
+
+    if (in_array('sportshub_clubs', $tables, true)) {
+        return $pdo->query(
+            "SELECT id, name, sport, coach, venue, description
+             FROM sportshub_clubs
+             WHERE status = 'Active'
+             ORDER BY name"
+        )->fetchAll();
+    }
+
+    if (in_array('sports_clubs', $tables, true)) {
+        return $pdo->query(
+            "SELECT club_id AS id, club_name AS name, sport_name AS sport,
+                    NULL AS coach, training_location AS venue, description
+             FROM sports_clubs
+             WHERE status = 'active'
+             ORDER BY club_name"
+        )->fetchAll();
+    }
+
+    throw new RuntimeException('No supported clubs table exists in the configured database.');
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET') {
     header('Allow: GET');
     respond_public_content(405, ['success' => false, 'message' => 'Method not allowed.']);
 }
 
 $queries = [
-    'clubs' => "SELECT id, name, sport, coach, venue, description
-                FROM sportshub_clubs
-                WHERE status = 'Active'
-                ORDER BY name",
     'training' => "SELECT training.id, training.title, training.club,
                           club.sport, training.event_date AS date,
                           TIME_FORMAT(training.start_time, '%H:%i') AS time,
@@ -50,12 +77,15 @@ $queries = [
 ];
 
 $entity = (string) ($_GET['entity'] ?? '');
-if (!isset($queries[$entity])) {
+if ($entity !== 'clubs' && !isset($queries[$entity])) {
     respond_public_content(400, ['success' => false, 'message' => 'Choose a valid public record type.']);
 }
 
 try {
-    $records = sportshubDatabaseConnection()->query($queries[$entity])->fetchAll();
+    $pdo = sportshubDatabaseConnection();
+    $records = $entity === 'clubs'
+        ? public_club_records($pdo)
+        : $pdo->query($queries[$entity])->fetchAll();
     respond_public_content(200, ['success' => true, 'records' => $records]);
 } catch (Throwable $error) {
     error_log('Unable to retrieve public SportsHub records: ' . $error->getMessage());

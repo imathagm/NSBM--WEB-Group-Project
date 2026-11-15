@@ -17,13 +17,18 @@ try {
     }
 
     $applications = $pdo->prepare(
-        'SELECT id, student_name AS studentName, student_id AS studentId, club,
-                submitted_on AS submittedOn, status, notes
+        'SELECT id, club_id AS clubId, student_name AS studentName,
+                student_id AS studentId, club, submitted_on AS submittedOn,
+                status, notes, DATE_FORMAT(reviewed_at, \'%Y-%m-%d %H:%i\') AS reviewedAt
          FROM sportshub_membership_applications
-         WHERE student_id = :student_id
+         WHERE user_id = :user_id
+            OR (user_id IS NULL AND student_id = :student_id)
          ORDER BY created_at DESC'
     );
-    $applications->execute(['student_id' => $user['student_id']]);
+    $applications->execute([
+        'user_id' => $user['user_id'],
+        'student_id' => $user['student_id'],
+    ]);
 
     $clubs = $pdo->query(
         "SELECT id, name, sport, coach, venue, description

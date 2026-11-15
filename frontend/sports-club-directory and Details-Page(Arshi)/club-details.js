@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", function () {
         elements.scheduleTableWrap.hidden = false;
     }
 
-    function renderClub(club) {
+    function renderClub(club, clubId) {
         elements.title.textContent = club.name;
         elements.category.textContent = club.category.toLocaleUpperCase();
         elements.intro.textContent = club.intro;
@@ -619,8 +619,28 @@ document.addEventListener("DOMContentLoaded", function () {
         elements.image.src = club.image;
         elements.image.alt = club.name + " project image; not an official NSBM photograph";
         elements.imageCaption.textContent = "Project image; not represented as official NSBM photography.";
-        document.querySelector("#join-title").textContent = "Interested in " + club.name + "?";
         document.title = club.name + " | NSBM SportsHub";
+    }
+
+    function clubPreview(clubId) {
+        const name = clubId.split("-").map(function (part) {
+            return part.charAt(0).toLocaleUpperCase() + part.slice(1);
+        }).join(" ");
+        const imageName = clubId === "martial-arts" ? "karate" : clubId;
+        return {
+            name: name + " Club",
+            category: "Sports club",
+            image: "images/" + imageName + ".jpg",
+            intro: "Explore the " + name + " community at NSBM SportsHub.",
+            description: ["Detailed club information has not been added yet. Contact the university sports office for confirmed details."],
+            activities: [],
+            facilities: [],
+            staff: [],
+            leaders: [],
+            achievements: [],
+            schedule: [],
+            sourceNote: "Club information has not been added to this project preview yet."
+        };
     }
 
     function showUnavailableClub() {
@@ -630,20 +650,24 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector(".details-layout").hidden = true;
         document.querySelector(".source-notice").hidden = true;
         document.querySelector(".club-hero__image").hidden = true;
-        document.querySelector(".join-banner").hidden = true;
         document.querySelector(".primary-nav .button").hidden = true;
         document.querySelector(".site-footer__contact p").textContent = "Club information is not configured for this club yet.";
         document.title = "Club Details Unavailable | NSBM SportsHub";
     }
 
     const clubId = new URLSearchParams(window.location.search).get("id");
-    const club = clubId ? clubs[clubId.toLocaleLowerCase()] : null;
+    const normalizedClubId = clubId ? clubId.toLocaleLowerCase() : "";
+    const club = normalizedClubId
+        ? clubs[normalizedClubId] || clubPreview(normalizedClubId)
+        : null;
 
     if (club) {
-        renderClub(club);
+        renderClub(club, normalizedClubId);
     } else {
         showUnavailableClub();
     }
 
-    elements.currentYear.textContent = String(new Date().getFullYear());
+    if (elements.currentYear) {
+        elements.currentYear.textContent = String(new Date().getFullYear());
+    }
 });

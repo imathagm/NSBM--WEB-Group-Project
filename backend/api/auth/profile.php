@@ -83,16 +83,16 @@ foreach ([
 
 if ($profilePhoto !== null && $profilePhoto !== '') {
     if (!is_string($profilePhoto)
-        || strlen($profilePhoto) > 2100000
+        || strlen($profilePhoto) > 830000
         || !preg_match('/\Adata:image\/(jpeg|png|webp);base64,([A-Za-z0-9+\/=]+)\z/', $profilePhoto, $parts)) {
-        auth_respond(400, ['success' => false, 'message' => 'Choose a valid JPG, PNG, or WebP profile photo under 1.5 MB.']);
+        auth_respond(400, ['success' => false, 'message' => 'Choose a valid JPG, PNG, or WebP profile photo under 600 KB after processing.']);
     }
     $image = base64_decode($parts[2], true);
     $imageInfo = $image === false ? false : @getimagesizefromstring($image);
     $allowedMimeTypes = ['jpeg' => 'image/jpeg', 'png' => 'image/png', 'webp' => 'image/webp'];
-    if ($image === false || strlen($image) > 1572864 || $imageInfo === false
+    if ($image === false || strlen($image) > 614400 || $imageInfo === false
         || ($imageInfo['mime'] ?? '') !== $allowedMimeTypes[$parts[1]]) {
-        auth_respond(400, ['success' => false, 'message' => 'The selected profile photo is invalid or too large.']);
+        auth_respond(400, ['success' => false, 'message' => 'The selected profile photo is invalid or exceeds 600 KB after processing.']);
     }
 } else {
     $profilePhoto = null;
@@ -140,8 +140,14 @@ try {
     $pdo->commit();
     auth_respond(200, ['success' => true, 'message' => 'Profile updated successfully.']);
 } catch (PDOException $error) {
-    if (isset($pdo) && $pdo->inTransaction()) {
-        $pdo->rollBack();
+    if (isset($pdo)) {
+        try {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+        } catch (Throwable $rollbackError) {
+            error_log('Student profile transaction rollback failed: ' . $rollbackError->getMessage());
+        }
     }
     if ($error->getCode() === '23000') {
         auth_respond(409, ['success' => false, 'message' => 'That email address is already associated with another account.']);
@@ -149,8 +155,14 @@ try {
     error_log('Student profile update failed: ' . $error->getMessage());
     auth_respond(503, ['success' => false, 'message' => 'The profile could not be saved right now.']);
 } catch (Throwable $error) {
-    if (isset($pdo) && $pdo->inTransaction()) {
-        $pdo->rollBack();
+    if (isset($pdo)) {
+        try {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+        } catch (Throwable $rollbackError) {
+            error_log('Student profile transaction rollback failed: ' . $rollbackError->getMessage());
+        }
     }
     error_log('Student profile update failed: ' . $error->getMessage());
     auth_respond(500, ['success' => false, 'message' => 'The profile could not be saved.']);

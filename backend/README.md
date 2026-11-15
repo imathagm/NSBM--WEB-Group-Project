@@ -12,9 +12,13 @@ VS Code Live Server alone will not execute the APIs.
    `20261104_password_recovery.sql`,
    `20261109_account_tables.sql`,
    `20261110_student_auth_profile.sql`, and
-   `20261111_backend_integration.sql`, and
-   `20261112_admin_managed_content.sql`. If the existing database already has
-   migrations through `20261111`, apply only `20261112_admin_managed_content.sql`.
+   `20261111_backend_integration.sql`,
+   `20261112_admin_managed_content.sql`,
+   `20261115_membership_applications.sql`, and
+   `20261115_tournament_match_registrations.sql`. If the existing database
+   already has migrations through `20261111`, apply the remaining migrations;
+   if it is through `20261112`, apply both `20261115` migrations in the order
+   listed above.
    Do not rerun an already-applied `ALTER TABLE` migration.
 2. Configure `NSBM_DB_HOST`, `NSBM_DB_NAME`, `NSBM_DB_USER`, and
    `NSBM_DB_PASSWORD` in the PHP process environment. `NSBM_DB_PORT` is
@@ -39,14 +43,25 @@ VS Code Live Server alone will not execute the APIs.
 - Student registration and sign-in use `api/auth/register.php` and
   `api/auth/login.php`. Student session checks and sign-out use
   `api/auth/session.php` and `api/auth/logout.php`. Authenticated students can
-  update their profile and photo through `api/auth/profile.php`.
+  update their profile and photo through `api/auth/profile.php`. Account
+  creation requires Faculty, Degree Programme, and Academic Year.
+  Profile photos accept JPG, PNG, or WebP up to 1.5 MB; larger accepted
+  images are resized and compressed to 600 KB or less before database storage.
+- Club applications use the same `sportshub_membership_applications` records in
+  the student portal and Admin Portal. Students submit through
+  `api/membership-applications.php`; an administrator's review is recorded with
+  the authenticated admin ID and timestamp.
+- `api/student-applications.php` returns the signed-in student's club
+  applications and tournament/match registrations, including their current
+  review statuses, for the Student Portal's My Applications view.
 - Published announcements for the signed-in student are served by
   `api/announcements.php`. Drafts, future-dated announcements, and
   administrator-only announcements are not shown in the student portal;
   club-member announcements are shown to students with an approved membership.
 - Public club, training, event, and all-student announcement listings are served
-  from active database records by `api/public-content.php`; the student dashboard
-  and listings do not preload sample records.
+  from active database records by `api/public-content.php`. Club listings use
+  `sportshub_clubs` when present and fall back to the legacy `sports_clubs`
+  schema; the student dashboard and listings do not preload sample records.
 - Password recovery uses `api/forgot-password.php` and
   `api/reset-password.php`. Install the locked PHP dependencies with Composer
   from `backend/`, then create `config/mail-config.php` using
@@ -67,8 +82,17 @@ VS Code Live Server alone will not execute the APIs.
   training sessions, events, announcements, and facility bookings are stored
   in MySQL. Student accounts created through the registration form appear in
   the student directory; deleting a linked account from that directory also
-  deletes its login account and tournament entries. Directory-only records do
+  deletes its login account and event registrations. Directory-only records do
   not create login accounts.
+
+- Tournament and match entries require a signed-in student, are saved
+  separately in `sportshub_tournament_registrations` and
+  `sportshub_match_registrations`, and are linked to active `sports_fixtures`
+  records. Students can review their status in Matches & Tournaments;
+  administrators review both queues on Registrations & Applications.
+- The legacy `tournament_registrations`, `tournaments`, and `matches` tables use
+  the separate legacy `users` accounts. The active student portal continues to
+  use `sports_fixtures` and the `sportshub_*` registration tables.
 - Tournament entry submissions require a signed-in student and are saved in
   MySQL. Administrators can review them in the Admin Portal's Matches &
   Tournaments page.

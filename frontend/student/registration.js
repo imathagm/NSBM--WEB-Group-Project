@@ -2,8 +2,10 @@
   var scriptUrl = document.currentScript.src;
   var registrationEndpoint = new URL("../../backend/api/tournament-registration.php", scriptUrl);
   var eventsEndpoint = new URL("../../backend/api/public-content.php?entity=events", scriptUrl);
-  var tournamentId = new URLSearchParams(window.location.search).get("tournament");
-  var tournament = null;
+  var registrationParams = new URLSearchParams(window.location.search);
+  var eventId = registrationParams.get("match") || registrationParams.get("tournament");
+  var eventKind = registrationParams.has("match") ? "Match" : "Tournament";
+  var event = null;
   var form = document.getElementById("registration-form");
   var formMessage = document.getElementById("form-message");
   var successPanel = document.getElementById("success-panel");
@@ -36,7 +38,7 @@
   }
 
   function isDeadlinePassed() {
-    return !tournament || !tournament.registrationDeadline || todayAsISO() > tournament.registrationDeadline;
+    return !event || !event.registrationDeadline || todayAsISO() > event.registrationDeadline;
   }
 
   function disableUnavailableRegistration(message) {
@@ -50,12 +52,12 @@
     showFormError(message);
   }
 
-  function showTournament(record) {
-    tournament = record;
+  function showEvent(record) {
+    event = record;
     document.title = "Register — " + record.title + " | NSBM Student Portal";
     document.getElementById("tournament-name").textContent = record.title;
     document.getElementById("summary-category").textContent =
-      (record.sport || "SPORT") + " · TOURNAMENT";
+      (record.sport || "SPORT") + " · " + record.kind.toUpperCase();
     document.getElementById("summary-start").textContent = formatDate(record.date);
     document.getElementById("summary-deadline").textContent = formatDate(record.registrationDeadline);
     document.getElementById("summary-venue").textContent = record.venue || "Not published";
@@ -64,32 +66,32 @@
       String(record.sport || "sport").toLowerCase().replace(/[^a-z0-9]+/g, "-");
     if (isDeadlinePassed()) {
       disableUnavailableRegistration(record.registrationDeadline
-        ? "The registration deadline for this tournament has passed."
-        : "Registration is unavailable because this tournament has no deadline.");
+        ? "The registration deadline for this event has passed."
+        : "Registration is unavailable because this event has no deadline.");
     }
   }
 
-  async function loadTournament() {
+  async function loadEvent() {
     try {
-      if (!tournamentId) throw new Error("Choose a tournament from the tournament list.");
+      if (!eventId) throw new Error("Choose a match or tournament from the event list.");
       var response = await fetch(eventsEndpoint, { headers: { Accept: "application/json" }, cache: "no-store" });
       var payload = await response.json();
       if (!response.ok || payload.success !== true || !Array.isArray(payload.records)) {
-        throw new Error(payload.message || "Tournament records are temporarily unavailable.");
+        throw new Error(payload.message || "Event records are temporarily unavailable.");
       }
       var record = payload.records.find(function (item) {
-        return String(item.id) === tournamentId && item.kind === "Tournament";
+        return String(item.id) === eventId && item.kind === eventKind;
       });
-      if (!record) throw new Error("This tournament is no longer available for registration.");
-      showTournament(record);
+      if (!record) throw new Error("This event is no longer available for registration.");
+      showEvent(record);
     } catch (error) {
-      console.error("Unable to load tournament registration details.", error);
-      document.getElementById("tournament-name").textContent = "Tournament unavailable";
+      console.error("Unable to load event registration details.", error);
+      document.getElementById("tournament-name").textContent = "Event unavailable";
       document.getElementById("summary-category").textContent = "REGISTRATION NOT AVAILABLE";
       document.getElementById("summary-start").textContent = "—";
       document.getElementById("summary-deadline").textContent = "—";
       document.getElementById("summary-venue").textContent = "—";
-      disableUnavailableRegistration(error.message || "Tournament details are temporarily unavailable.");
+      disableUnavailableRegistration(error.message || "Event details are temporarily unavailable.");
     }
   }
 
@@ -102,6 +104,8 @@
     document.getElementById("full-name").value = session.user.fullName || "";
     document.getElementById("student-id").value = session.user.studentId || "";
     document.getElementById("student-email").value = session.user.email || "";
+    document.getElementById("faculty").value = session.user.faculty || "";
+    document.getElementById("batch").value = session.user.academicYear || "";
     return session;
   }).catch(function (error) {
     showFormError(error.message || "The account service is unavailable.");
@@ -123,37 +127,19 @@
     });
   });
 
-  form.addEventListener("submit", async function (event) {
-    event.preventDefault();
+  form.addEventListener("submit", async function (submitEvent) {
+    submitEvent.preventDefault();
     clearFormError();
-    idInput.setCustomValidity("");
-    if (!tournament) {
-      showFormError("Registration is unavailable because this tournament could not be found.");
+    if (!window.sportshubAuth) {
+      showFormError("The account service is unavailable.");
+      return;
+    }
+    if (!eventId) {
+      showFormError("Choose a match or tournament from the event list.");
       return;
     }
     if (isDeadlinePassed()) {
       disableUnavailableRegistration("The registration deadline has passed or is not available.");
-      return;
-    }
-    if (!form.reportValidity()) return;
-
-    var fullNameInput = document.getElementById("full-name");
-    if (!fullNameInput.value.trim()) {
-      fullNameInput.setCustomValidity("Enter your full name.");
-      fullNameInput.setAttribute("aria-invalid", "true");
-      fullNameInput.reportValidity();
-      return;
-    }
-    var studentId = idInput.value.trim();
-    if (!/^[A-Za-z0-9][A-Za-z0-9/-]{3,22}[A-Za-z0-9]$/.test(studentId)) {
-      idInput.setCustomValidity("Enter a valid student ID using 5–24 letters, numbers, slashes, or hyphens.");
-      idInput.setAttribute("aria-invalid", "true");
-      idInput.reportValidity();
-      return;
-    }
-    if (!emailInput.validity.valid) {
-      emailInput.setAttribute("aria-invalid", "true");
-      emailInput.reportValidity();
       return;
     }
     if (!await authSessionPromise) return;
@@ -169,6 +155,9 @@
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken
         },
+
+        body: JSON.stringify({ fixtureId: eventId })
+
         body: JSON.stringify({
           tournamentId: tournamentId,
           fullName: fullNameInput.value.trim(),
@@ -177,13 +166,14 @@
           faculty: document.getElementById('faculty').value,
           yearOfStudy: document.getElementById('batch').value
         })
+
       });
       var result = await response.json();
       if (!response.ok || result.success !== true) {
         throw new Error(result.message || "Your registration could not be submitted.");
       }
       document.getElementById("success-copy").textContent =
-        fullNameInput.value.trim() + ", " + result.message;
+        result.message + " Current status: " + result.status + ".";
       form.hidden = true;
       formPanelHeading.hidden = true;
       successPanel.hidden = false;
@@ -210,5 +200,5 @@
     if (event.key === "Escape") setSidebarOpen(false);
   });
 
-  loadTournament();
+  loadEvent();
 })();

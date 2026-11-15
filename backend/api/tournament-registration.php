@@ -10,34 +10,47 @@ if (empty($_SESSION['student_id'])) {
 }
 
 $input = auth_read_json();
-$tournamentId = (string) ($input['tournamentId'] ?? '');
+$fixtureId = trim((string) ($input['fixtureId'] ?? $input['tournamentId'] ?? ''));
+if (!preg_match('/\A[A-Za-z0-9][A-Za-z0-9_-]{0,63}\z/', $fixtureId)) {
+    auth_respond(400, ['success' => false, 'message' => 'Choose a valid match or tournament.']);
+}
 
 try {
     $pdo = sportshubDatabaseConnection();
+
+    $eventQuery = $pdo->prepare(
+        "SELECT competition, registration_deadline, kind
+        
     $tournamentQuery = $pdo->prepare(
         "SELECT competition, registration_deadline, event_date
+
          FROM sports_fixtures
          WHERE fixture_id = :fixture_id
-           AND kind = 'Tournament'
+           AND kind IN ('Tournament', 'Match')
            AND status = 'Scheduled'
          LIMIT 1"
     );
-    $tournamentQuery->execute(['fixture_id' => $tournamentId]);
-    $tournament = $tournamentQuery->fetch();
-    if ($tournament === false) {
-        auth_respond(400, ['success' => false, 'message' => 'Choose a tournament currently available for registration.']);
+    $eventQuery->execute(['fixture_id' => $fixtureId]);
+    $event = $eventQuery->fetch();
+    if ($event === false) {
+        auth_respond(400, ['success' => false, 'message' => 'Choose a scheduled match or tournament.']);
     }
-    if (empty($tournament['registration_deadline'])) {
-        auth_respond(400, ['success' => false, 'message' => 'Registration is unavailable because this tournament has no deadline.']);
+    if (empty($event['registration_deadline'])) {
+        auth_respond(400, ['success' => false, 'message' => 'Registration is unavailable because this event has no deadline.']);
     }
     $today = (new DateTimeImmutable('now', new DateTimeZone('Asia/Colombo')))->format('Y-m-d');
+
+    if ($today > $event['registration_deadline']) {
+        auth_respond(400, ['success' => false, 'message' => 'The registration deadline for this event has passed.']);
+
     if ($today > $tournament['registration_deadline']
         || (!empty($tournament['event_date']) && $today > $tournament['event_date'])) {
         auth_respond(400, ['success' => false, 'message' => 'The registration deadline for this tournament has passed.']);
+
     }
 
     $student = $pdo->prepare(
-        'SELECT full_name, student_id, email, faculty, academic_year
+        'SELECT user_id, full_name, student_id, email, faculty, academic_year
          FROM sportshub_users WHERE user_id = :user_id LIMIT 1'
     );
     $student->execute(['user_id' => (int) $_SESSION['student_id']]);
@@ -45,6 +58,9 @@ try {
     if ($account === false) {
         auth_respond(401, ['success' => false, 'message' => 'Student account is no longer available.']);
     }
+
+    if (trim((string) $account['full_name']) === '' || trim((string) $account['student_id']) === '') {
+        auth_respond(400, ['success' => false, 'message' => 'Complete your student name and ID before registering.']);
 
     $faculty = trim((string) ($input['faculty'] ?? $account['faculty'] ?? ''));
     $yearOfStudy = trim((string) ($input['yearOfStudy'] ?? $account['academic_year'] ?? ''));
@@ -58,16 +74,28 @@ try {
         || $providedEmail !== strtolower((string) $account['email'])
         || trim((string) ($input['fullName'] ?? '')) !== (string) $account['full_name']) {
         auth_respond(403, ['success' => false, 'message' => 'Use the name, student ID, and email on your signed-in account.']);
+
     }
 
-    $insert = $pdo->prepare(
-        'INSERT INTO sportshub_tournament_registrations
-         (tournament_id, tournament_name, student_name, student_id, email, faculty, year_of_study)
-         VALUES (:tournament_id, :tournament_name, :student_name, :student_id, :email, :faculty, :year_of_study)'
-    );
+    if ($event['kind'] === 'Tournament') {
+        $insert = $pdo->prepare(
+            'INSERT INTO sportshub_tournament_registrations
+             (user_id, tournament_id, tournament_name, student_name, student_id, email, faculty, year_of_study)
+             VALUES (:user_id, :event_id, :event_name, :student_name, :student_id, :email, :faculty, :year_of_study)'
+        );
+        $registrationType = 'Tournament';
+    } else {
+        $insert = $pdo->prepare(
+            'INSERT INTO sportshub_match_registrations
+             (user_id, fixture_id, match_name, student_name, student_id, email, faculty, year_of_study)
+             VALUES (:user_id, :event_id, :event_name, :student_name, :student_id, :email, :faculty, :year_of_study)'
+        );
+        $registrationType = 'Match';
+    }
     $insert->execute([
-        'tournament_id' => $tournamentId,
-        'tournament_name' => $tournament['competition'],
+        'user_id' => (int) $account['user_id'],
+        'event_id' => $fixtureId,
+        'event_name' => $event['competition'],
         'student_name' => $account['full_name'],
         'student_id' => $account['student_id'],
         'email' => $account['email'],
@@ -77,15 +105,17 @@ try {
 
     auth_respond(201, [
         'success' => true,
-        'message' => 'Your tournament registration has been submitted.',
+        'message' => 'Your ' . strtolower($registrationType) . ' registration has been submitted.',
+        'registrationType' => $registrationType,
+        'status' => 'Pending',
     ]);
 } catch (PDOException $error) {
-    if ($error->getCode() === '23000') {
-        auth_respond(409, ['success' => false, 'message' => 'You are already registered for this tournament.']);
+    if ($error->getCode() === '23000' && (int) ($error->errorInfo[1] ?? 0) === 1062) {
+        auth_respond(409, ['success' => false, 'message' => 'You are already registered for this event.']);
     }
-    error_log('Tournament registration failed: ' . $error->getMessage());
-    auth_respond(503, ['success' => false, 'message' => 'Tournament registration is temporarily unavailable.']);
+    error_log('Student event registration failed: ' . $error->getMessage());
+    auth_respond(503, ['success' => false, 'message' => 'Event registration is temporarily unavailable.']);
 } catch (Throwable $error) {
-    error_log('Tournament registration failed: ' . $error->getMessage());
-    auth_respond(500, ['success' => false, 'message' => 'The registration could not be completed.']);
+    error_log('Student event registration failed: ' . $error->getMessage());
+    auth_respond(500, ['success' => false, 'message' => 'The event registration could not be completed.']);
 }

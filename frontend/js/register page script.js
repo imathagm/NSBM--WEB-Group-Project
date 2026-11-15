@@ -1,5 +1,32 @@
 "use strict";
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registration-form");
+  const message = document.getElementById("registration-message");
+  const storageKey = "nsbmSportsHubClubRegistrations";
+  const requestedClub = new URLSearchParams(window.location.search).get("club");
+
+  // Update the copyright year automatically.
+  document.querySelectorAll(".current-year").forEach((element) => {
+    element.textContent = new Date().getFullYear();
+  });
+
+  if (!form || !message) return;
+
+  if (requestedClub) {
+    const requestedClubSlug = requestedClub.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const clubSelect = document.getElementById("club-select");
+    const matchingOption = Array.from(clubSelect.options).find((option) =>
+      option.value.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") === requestedClubSlug
+    );
+    if (matchingOption) clubSelect.value = matchingOption.value;
+  }
+
+  const showMessage = (text, type) => {
+    message.textContent = text; // textContent prevents injected HTML.
+    message.className = `message ${type}`;
+    
 const clubApplicationEndpoint = new URL('../../backend/api/club-application.php', document.currentScript.src);
 const clubListEndpoint = new URL('../../backend/api/public-content.php?entity=clubs', document.currentScript.src);
 
@@ -12,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const showMessage = (text, error = false) => {
     message.textContent = text;
     message.className = 'message ' + (error ? 'error' : 'success');
+
     message.hidden = false;
   };
   const fillStudent = () => {
