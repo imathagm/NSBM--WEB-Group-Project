@@ -7,11 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const grid = document.querySelector("#club-grid");
     const resultsCount = document.querySelector("#results-count");
     const emptyState = document.querySelector("#empty-state");
-    const clubDialog = document.querySelector("#club-dialog");
-    const dialogCloseButton = document.querySelector("#dialog-close");
-    const dialogCategory = document.querySelector("#dialog-category");
-    const dialogTitle = document.querySelector("#dialog-title");
-    const dialogDescription = document.querySelector("#dialog-description");
     const currentYear = document.querySelector("#current-year");
     let clubs = [];
     let selectedSport = "all";
@@ -24,6 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function slug(value) {
         return String(value || "").toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    function imageName(sport) {
+        const key = String(sport || "").toLocaleLowerCase();
+        return key === "martial arts" ? "karate" : slug(key);
     }
 
     function renderFilters() {
@@ -49,11 +49,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         grid.innerHTML = visible.map(function (club, index) {
             const initials = club.name.split(/\s+/).slice(0, 2).map(function (part) { return part.charAt(0); }).join("");
+            const clubSlug = slug(club.sport);
+            const photo = "images/" + imageName(club.sport) + ".jpg";
             return '<article class="club-card" data-club-id="' + escapeHtml(club.id) + '" data-club-name="' + escapeHtml(club.name) + '" data-category="' + escapeHtml(club.sport) + '">' +
-                '<div class="club-card__visual"><div class="club-emblem" role="img" aria-label="' + escapeHtml(club.name) + '"><span>' + escapeHtml(initials) + '</span><i aria-hidden="true"></i></div><span class="club-card__index">' + String(index + 1).padStart(2, "0") + '</span></div>' +
-                '<div class="club-card__body"><p class="club-card__category">' + escapeHtml(club.sport) + '</p><h3 class="club-card__title">' + escapeHtml(club.name) + '</h3><p class="club-card__description">' + escapeHtml(club.description || "") + '</p><button class="club-card__action" type="button" aria-label="View ' + escapeHtml(club.name) + ' club details">View Club <span aria-hidden="true">↗</span></button></div>' +
+                '<div class="club-card__visual"><div class="club-emblem" role="img" aria-label="' + escapeHtml(club.name) + '"><span>' + escapeHtml(initials) + '</span><i aria-hidden="true"></i></div><img class="club-image" src="' + escapeHtml(photo) + '" alt="' + escapeHtml(club.name) + ' preview" loading="lazy" decoding="async"><span class="club-card__index">' + String(index + 1).padStart(2, "0") + '</span></div>' +
+                '<div class="club-card__body"><p class="club-card__category">' + escapeHtml(club.sport) + '</p><h3 class="club-card__title">' + escapeHtml(club.name) + '</h3><p class="club-card__description">' + escapeHtml(club.description || "") + '</p><a class="club-card__action" href="details-page.html?id=' + encodeURIComponent(clubSlug) + '" aria-label="View details for ' + escapeHtml(club.name) + '">View Club <span aria-hidden="true">↗</span></a></div>' +
                 '</article>';
         }).join("");
+        grid.querySelectorAll(".club-image").forEach(function (image) {
+            image.addEventListener("error", function () {
+                image.style.display = "none";
+            }, { once: true });
+        });
         resultsCount.textContent = "Showing " + visible.length + (visible.length === 1 ? " club" : " clubs");
         emptyState.textContent = clubs.length ? "No clubs match that search. Try another sport or clear your filters." : "No active clubs have been added yet.";
         emptyState.hidden = visible.length !== 0;
@@ -77,27 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
             item.setAttribute("aria-pressed", String(active));
         });
         updateDirectory();
-    });
-    grid.addEventListener("click", function (event) {
-        if (!event.target.closest(".club-card__action")) return;
-        const card = event.target.closest("[data-club-id]");
-        const club = clubs.find(function (item) { return String(item.id) === card.dataset.clubId; });
-        if (!club) return;
-        dialogCategory.textContent = club.sport;
-        dialogTitle.textContent = club.name;
-        dialogDescription.textContent = [club.description, club.coach && "Coach: " + club.coach, club.venue && "Venue: " + club.venue]
-            .filter(Boolean).join(" ");
-        clubDialog.showModal();
-    });
-    dialogCloseButton.addEventListener("click", function () { clubDialog.close(); });
-    clubDialog.addEventListener("click", function (event) {
-        if (event.target === clubDialog) clubDialog.close();
-    });
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && clubDialog.open) {
-            event.preventDefault();
-            clubDialog.close();
-        }
     });
     currentYear.textContent = String(new Date().getFullYear());
 

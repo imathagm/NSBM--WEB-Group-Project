@@ -13499,6 +13499,7 @@
   background: var(--primary-2);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
+[data-css-page="student-dashboard"] .joined-badge[hidden]{display:none}
 
 [data-css-page="student-dashboard"] .club-content{ display: flex; flex-direction: column; flex-grow: 1; padding: 1.25rem; }
 
@@ -13592,6 +13593,310 @@
   [data-css-page="student-dashboard"] *{ transition: none !important; }
   [data-css-page="student-dashboard"] .club-card:hover,
 [data-css-page="student-dashboard"] .club-card:hover .club-cover{ transform: none; }
+}
+
+[data-css-page="student-dashboard"] .join-club-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom:1rem;
+}
+[data-css-page="student-dashboard"] .join-club-toolbar > p{
+  margin:0;
+  color:var(--muted);
+  font-size:.9rem;
+  font-weight:700;
+}
+[data-css-page="student-dashboard"] .join-club-search{
+  display:flex;
+  width:min(100%, 380px);
+  min-height:46px;
+  align-items:center;
+  gap:.65rem;
+  padding:0 .9rem;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  color:var(--muted);
+  box-shadow:var(--shadow);
+}
+[data-css-page="student-dashboard"] .join-club-search input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--text);
+  font:inherit;
+}
+[data-css-page="student-dashboard"] .join-club-search input:focus-visible{outline:0}
+[data-css-page="student-dashboard"] .join-club-search:focus-within{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-glow);
+}
+[data-css-page="student-dashboard"] .join-club-message{
+  min-height:1.4rem;
+  margin:0 0 .85rem;
+  color:var(--muted);
+  font-weight:700;
+}
+[data-css-page="student-dashboard"] .join-club-message.is-success{color:var(--primary)}
+[data-css-page="student-dashboard"] .join-club-message.is-error{color:#b42318}
+[data-css-page="student-dashboard"] .join-club-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));
+  gap:1rem;
+}
+[data-css-page="student-dashboard"] .join-club-card{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  animation:student-club-enter .32s ease both;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+[data-css-page="student-dashboard"] .join-club-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--primary);
+  box-shadow:var(--shadow-hover);
+}
+[data-css-page="student-dashboard"] .join-club-card__visual{
+  position:relative;
+  aspect-ratio:16 / 9;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--primary),var(--header));
+}
+[data-css-page="student-dashboard"] .join-club-card__image{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .3s ease;
+}
+[data-css-page="student-dashboard"] .join-club-card:hover .join-club-card__image{transform:scale(1.04)}
+[data-css-page="student-dashboard"] .join-club-card__image[hidden]{display:none}
+[data-css-page="student-dashboard"] .join-club-card__sport{
+  position:absolute;
+  right:.75rem;
+  bottom:.75rem;
+  padding:.3rem .65rem;
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:999px;
+  background:rgba(7,35,25,.76);
+  color:#fff;
+  font-size:.8rem;
+  font-weight:700;
+}
+[data-css-page="student-dashboard"] .join-club-card__body{
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  padding:1.15rem;
+}
+[data-css-page="student-dashboard"] .join-club-card__eyebrow{
+  margin:0 0 .3rem;
+  color:var(--primary);
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.1em;
+}
+[data-css-page="student-dashboard"] .join-club-card h2{
+  font-size:1.05rem;
+  line-height:1.35;
+}
+[data-css-page="student-dashboard"] .join-club-card__description{
+  flex:1;
+  margin:.6rem 0;
+  color:var(--muted);
+  font-size:.9rem;
+}
+[data-css-page="student-dashboard"] .join-club-location{
+  display:flex;
+  align-items:flex-start;
+  gap:.45rem;
+  margin:.2rem 0 .9rem;
+  color:var(--muted);
+  font-size:.84rem;
+}
+[data-css-page="student-dashboard"] .join-club-location i{margin-top:.2rem;color:var(--primary)}
+[data-css-page="student-dashboard"] .join-club-card__actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:.55rem;
+  margin-top:auto;
+}
+[data-css-page="student-dashboard"] .join-club-button{
+  min-height:42px;
+  flex:1;
+  padding:.55rem .8rem;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  color:#fff;
+  font-weight:800;
+  transition:filter .18s ease,transform .18s ease;
+}
+[data-css-page="student-dashboard"] .join-club-button:hover:not(:disabled){
+  filter:brightness(1.08);
+  transform:translateY(-1px);
+}
+[data-css-page="student-dashboard"] .join-club-button--secondary{
+  border-color:var(--border);
+  background:var(--hover-bg);
+  color:var(--text);
+}
+[data-css-page="student-dashboard"] .join-club-status,
+[data-css-page="student-dashboard"] .application-status{
+  padding:.32rem .65rem;
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:800;
+  white-space:nowrap;
+}
+[data-css-page="student-dashboard"] .join-club-status--pending,
+[data-css-page="student-dashboard"] .application-status--pending{
+  background:var(--badge-info-bg);
+  color:var(--badge-info);
+}
+[data-css-page="student-dashboard"] .join-club-status--approved,
+[data-css-page="student-dashboard"] .application-status--approved{
+  background:var(--badge-ok-bg);
+  color:var(--badge-ok);
+}
+[data-css-page="student-dashboard"] .join-club-status--rejected,
+[data-css-page="student-dashboard"] .application-status--rejected{
+  background:#fae3e3;
+  color:#962b2b;
+}
+[data-css-page="student-dashboard"][data-theme="dark"] .join-club-status--rejected,
+[data-css-page="student-dashboard"][data-theme="dark"] .application-status--rejected{
+  background:#482323;
+  color:#ffb6b6;
+}
+[data-css-page="student-dashboard"] .application-item > div{min-width:0;flex:1}
+[data-css-page="student-dashboard"] .application-item .application-status-message{font-weight:700}
+[data-css-page="student-dashboard"] .application-item .application-note{overflow-wrap:anywhere}
+[data-css-page="student-dashboard"] .club-application-dialog{
+  width:min(100% - 2rem,520px);
+  max-height:min(90vh,760px);
+  padding:0;
+  overflow:auto;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+}
+[data-css-page="student-dashboard"] .club-application-dialog::backdrop{background:rgba(4,20,14,.62);backdrop-filter:blur(3px)}
+[data-css-page="student-dashboard"] .club-application-dialog__head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  padding:1.25rem 1.35rem;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(115deg,var(--primary-glow),transparent 80%);
+}
+[data-css-page="student-dashboard"] .club-application-dialog__head h2{font-size:1.2rem}
+[data-css-page="student-dashboard"] .section-overline{
+  margin:0 0 .25rem;
+  color:var(--primary);
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.11em;
+}
+[data-css-page="student-dashboard"] .club-application-close{
+  display:grid;
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  place-items:center;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface);
+}
+[data-css-page="student-dashboard"] .club-application-applicant{
+  margin:1.1rem 1.35rem;
+  padding:.8rem .9rem;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--bg);
+  color:var(--muted);
+  font-size:.9rem;
+}
+[data-css-page="student-dashboard"] .club-application-message{
+  display:grid;
+  gap:.5rem;
+  margin:0 1.35rem;
+  font-size:.9rem;
+  font-weight:800;
+}
+[data-css-page="student-dashboard"] .club-application-message textarea{
+  width:100%;
+  resize:vertical;
+  padding:.75rem;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--bg);
+  color:var(--text);
+  font:inherit;
+  font-weight:400;
+}
+[data-css-page="student-dashboard"] .club-application-message > span{
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:400;
+  text-align:right;
+}
+[data-css-page="student-dashboard"] .club-application-feedback{
+  min-height:1.4rem;
+  margin:.6rem 1.35rem 0;
+  color:var(--muted);
+  font-size:.88rem;
+}
+[data-css-page="student-dashboard"] .club-application-feedback.is-error{color:#b42318}
+[data-css-page="student-dashboard"] .club-application-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:.65rem;
+  padding:1rem 1.35rem 1.35rem;
+}
+[data-css-page="student-dashboard"] .club-application-actions .btn-secondary{
+  min-height:42px;
+  padding:.55rem .9rem;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface);
+  font-weight:700;
+}
+[data-css-page="student-dashboard"] .club-application-actions .btn-primary:disabled{opacity:.65;cursor:wait}
+@keyframes student-club-enter{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media (max-width:620px){
+  [data-css-page="student-dashboard"] .join-club-toolbar{align-items:stretch;flex-direction:column}
+  [data-css-page="student-dashboard"] .join-club-search{width:100%}
+  [data-css-page="student-dashboard"] .join-club-grid{grid-template-columns:1fr}
+  [data-css-page="student-dashboard"] .application-item{align-items:flex-start}
+  [data-css-page="student-dashboard"] .club-application-dialog__head,
+  [data-css-page="student-dashboard"] .club-application-applicant,
+  [data-css-page="student-dashboard"] .club-application-message{margin-left:1rem;margin-right:1rem}
+  [data-css-page="student-dashboard"] .club-application-dialog__head{padding:1rem}
+  [data-css-page="student-dashboard"] .club-application-actions{padding:1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  [data-css-page="student-dashboard"] .join-club-card,
+  [data-css-page="student-dashboard"] .join-club-card *,
+  [data-css-page="student-dashboard"] .club-application-dialog *{animation:none!important;transition:none!important}
+  [data-css-page="student-dashboard"] .join-club-card:hover,
+  [data-css-page="student-dashboard"] .join-club-card:hover .join-club-card__image,
+  [data-css-page="student-dashboard"] .join-club-button:hover:not(:disabled){transform:none}
 }
 
 
@@ -13928,6 +14233,17 @@
 [data-css-page="student-matches"] .register-button:disabled{ border-color: var(--line); background: var(--control-surface); color: var(--subtle); cursor: not-allowed; }
 [data-css-page="student-matches"] .register-button > i{ font-size: .7rem; }
 [data-css-page="student-matches"] .registration-closed{ border-color: var(--line); color: var(--subtle); }
+[data-css-page="student-matches"] .registration-list{ display: grid; gap: .65rem; }
+[data-css-page="student-matches"] .registration-item{ display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow); }
+[data-css-page="student-matches"] .registration-item > div{ min-width: 0; }
+[data-css-page="student-matches"] .registration-item h3{ margin: .15rem 0 .25rem; color: var(--white); font-family: "Sora", sans-serif; font-size: .96rem; }
+[data-css-page="student-matches"] .registration-type{ margin: 0; color: var(--lime-text); font-size: .64rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+[data-css-page="student-matches"] .registration-meta,
+[data-css-page="student-matches"] .registration-review-date{ margin: 0; color: var(--muted); font-size: .75rem; }
+[data-css-page="student-matches"] .registration-status{ flex: 0 0 auto; padding: .3rem .55rem; border-radius: 99px; font-size: .68rem; font-weight: 700; }
+[data-css-page="student-matches"] .registration-status--pending{ background: var(--warning-surface); color: var(--warning-text); }
+[data-css-page="student-matches"] .registration-status--approved{ background: var(--lime-soft); color: var(--lime-text); }
+[data-css-page="student-matches"] .registration-status--rejected{ background: var(--completed-surface); color: var(--completed-text); }
 
 [data-css-page="student-matches"] .results-section{ margin-bottom: 1.8rem; }
 [data-css-page="student-matches"] .results-list{ display: grid; gap: .65rem; }

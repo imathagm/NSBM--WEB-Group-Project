@@ -91,6 +91,9 @@
         studentId: document.getElementById("registerStudentID").value.trim(),
         email: document.getElementById("registerEmail").value.trim(),
         contactNumber: document.getElementById("contactNumber").value.trim(),
+        faculty: document.getElementById("faculty").value.trim(),
+        degreeProgram: document.getElementById("degreeProgram").value.trim(),
+        academicYear: document.getElementById("academicYear").value.trim(),
         sportOfInterest: document.getElementById("sport").value,
         password: password
       });

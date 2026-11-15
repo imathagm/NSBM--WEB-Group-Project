@@ -52,7 +52,8 @@ function auth_require_csrf(): void
 function auth_user(PDO $pdo, int $userId): ?array
 {
     $statement = $pdo->prepare(
-        'SELECT user_id, full_name, student_id, email, contact_number, sport_of_interest
+        'SELECT user_id, full_name, student_id, email, contact_number, sport_of_interest,
+                faculty, degree_program, academic_year
          FROM sportshub_users
          WHERE user_id = :user_id
          LIMIT 1'
@@ -71,6 +72,9 @@ function auth_public_user(array $user): array
         'email' => $user['email'],
         'contactNumber' => $user['contact_number'],
         'sportOfInterest' => $user['sport_of_interest'],
+        'faculty' => $user['faculty'],
+        'degreeProgram' => $user['degree_program'],
+        'academicYear' => $user['academic_year'],
     ];
 }
 

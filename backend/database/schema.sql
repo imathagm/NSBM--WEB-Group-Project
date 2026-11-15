@@ -83,18 +83,35 @@ CREATE TABLE IF NOT EXISTS sportshub_clubs (
 
 CREATE TABLE IF NOT EXISTS sportshub_membership_applications (
   id CHAR(36) NOT NULL PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  club_id CHAR(36) NULL,
   student_name VARCHAR(120) NOT NULL,
   student_id VARCHAR(24) NOT NULL,
   club VARCHAR(120) NOT NULL,
   submitted_on DATE NULL,
   status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
   notes TEXT NULL,
+  reviewed_by BIGINT UNSIGNED NULL,
+  reviewed_at DATETIME NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_membership_account_club (user_id, club_id),
   KEY idx_membership_student (student_id),
   KEY idx_membership_club (club),
-  KEY idx_membership_status (status)
+  KEY idx_membership_status (status),
+  CONSTRAINT fk_membership_application_user
+    FOREIGN KEY (user_id)
+    REFERENCES sportshub_users(user_id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_membership_application_club
+    FOREIGN KEY (club_id)
+    REFERENCES sportshub_clubs(id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_membership_application_reviewer
+    FOREIGN KEY (reviewed_by)
+    REFERENCES administrators(admin_id)
+    ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS sportshub_training_sessions (
@@ -148,16 +165,65 @@ CREATE TABLE IF NOT EXISTS sportshub_admin_activity (
 
 CREATE TABLE IF NOT EXISTS sportshub_tournament_registrations (
   registration_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  tournament_id VARCHAR(64) NOT NULL,
+  user_id BIGINT UNSIGNED NULL,
+  tournament_id VARCHAR(64) NULL,
   tournament_name VARCHAR(160) NOT NULL,
   student_name VARCHAR(120) NOT NULL,
   student_id VARCHAR(24) NOT NULL,
   email VARCHAR(254) NOT NULL,
   faculty VARCHAR(120) NULL,
   year_of_study VARCHAR(40) NULL,
+  status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
+  reviewed_by BIGINT UNSIGNED NULL,
+  reviewed_at DATETIME NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_tournament_student (tournament_id, student_id),
-  KEY idx_tournament_registration (tournament_id)
+  UNIQUE KEY uq_tournament_user (tournament_id, user_id),
+  KEY idx_tournament_registration (tournament_id),
+  KEY idx_tournament_registration_status (status, created_at),
+  CONSTRAINT fk_sportshub_tournament_user
+    FOREIGN KEY (user_id)
+    REFERENCES sportshub_users(user_id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_sportshub_tournament_reviewer
+    FOREIGN KEY (reviewed_by)
+    REFERENCES administrators(admin_id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_sportshub_tournament_event
+    FOREIGN KEY (tournament_id)
+    REFERENCES sports_fixtures(fixture_id)
+    ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS sportshub_match_registrations (
+  registration_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NULL,
+  fixture_id VARCHAR(64) NULL,
+  match_name VARCHAR(160) NOT NULL,
+  student_name VARCHAR(120) NOT NULL,
+  student_id VARCHAR(24) NOT NULL,
+  email VARCHAR(254) NOT NULL,
+  faculty VARCHAR(120) NULL,
+  year_of_study VARCHAR(40) NULL,
+  status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
+  reviewed_by BIGINT UNSIGNED NULL,
+  reviewed_at DATETIME NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_match_registration_user (fixture_id, user_id),
+  KEY idx_match_registration_fixture (fixture_id),
+  KEY idx_match_registration_status (status, created_at),
+  CONSTRAINT fk_sportshub_match_registration_user
+    FOREIGN KEY (user_id)
+    REFERENCES sportshub_users(user_id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_sportshub_match_registration_fixture
+    FOREIGN KEY (fixture_id)
+    REFERENCES sports_fixtures(fixture_id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_sportshub_match_registration_reviewer
+    FOREIGN KEY (reviewed_by)
+    REFERENCES administrators(admin_id)
+    ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS password_reset_tokens (

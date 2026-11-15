@@ -42,9 +42,9 @@
         <i class="fas fa-bell"></i>
         <span class="count-badge" id="bellCount">2</span>
       </button>
-      <button class="icon-btn" type="button" aria-label="My profile" data-go="profile">
+      <a class="icon-btn" href="profile.html" aria-label="My profile">
         <i class="fas fa-circle-user"></i>
-      </button>
+      </a>
     </div>
   </header>
 
@@ -54,7 +54,7 @@
       <div class="sidebar-heading">STUDENT PORTAL</div>
       <nav class="sidebar-nav" aria-label="Student menu">
         <button class="nav-btn" type="button" data-target="dashboard"><span class="nav-icon"><i class="fas fa-gauge-high"></i></span> Dashboard</button>
-        <button class="nav-btn" type="button" data-target="profile"><span class="nav-icon"><i class="fas fa-user"></i></span> My Profile</button>
+        <a class="nav-btn" href="profile.html"><span class="nav-icon"><i class="fas fa-user"></i></span> My Profile</a>
         <button class="nav-btn" type="button" data-target="join-club"><span class="nav-icon"><i class="fas fa-people-group"></i></span> Join Club</button>
         <button class="nav-btn" type="button" data-target="applications"><span class="nav-icon"><i class="fas fa-file-lines"></i></span> Applications</button>
         <button class="nav-btn" type="button" data-target="schedule"><span class="nav-icon"><i class="fas fa-calendar-days"></i></span> Schedule</button>
@@ -87,28 +87,49 @@
           <div class="clubs-grid" id="dashboard-clubs"></div>
         </section>
       </section>
-      <!-- ============ MY PROFILE ============ -->
-      <section class="view" id="profile" hidden>
-        <div class="page-head"><h1>My Profile</h1><p>Your details and participation history.</p></div>
-        <div class="panel empty">
-          <i class="fas fa-user"></i>
-          <p>Profile details will show here once your account is connected.</p>
-        </div>
-      </section>
-
       <!-- ============ JOIN CLUB ============ -->
       <section class="view" id="join-club" hidden>
-        <div class="page-head"><h1>Join Club</h1><p>Find a club and send your application.</p></div>
-        <div class="panel empty">
-          <i class="fas fa-people-group"></i>
-          <p>Browse every club on the dashboard, then open one to apply.</p>
-          <button class="btn-primary" type="button" data-go="dashboard">Browse clubs</button>
+        <div class="page-head"><h1>Join a Club</h1><p>Explore active SportsHub clubs and apply without leaving your portal.</p></div>
+        <div class="join-club-toolbar">
+          <label class="join-club-search">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+            <input id="join-club-search" type="search" aria-label="Search clubs" placeholder="Search by club or sport" autocomplete="off">
+          </label>
+          <p id="join-club-count" aria-live="polite">Loading clubs…</p>
         </div>
+        <p class="join-club-message" id="join-club-message" role="status" aria-live="polite"></p>
+        <div class="join-club-grid" id="join-club-grid">
+          <div class="panel empty"><i class="fas fa-people-group" aria-hidden="true"></i><p>Loading available clubs…</p></div>
+        </div>
+        <dialog class="club-application-dialog" id="club-application-dialog" aria-labelledby="club-application-title">
+          <div class="club-application-dialog__head">
+            <div>
+              <p class="section-overline">CLUB MEMBERSHIP</p>
+              <h2 id="club-application-title">Apply to join</h2>
+            </div>
+            <button class="club-application-close" type="button" data-close-club-application aria-label="Close application form">
+              <i class="fas fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+          <p class="club-application-applicant" id="club-application-applicant">Your name, student ID, and email will be taken from your signed-in account.</p>
+          <form id="club-application-form">
+            <label class="club-application-message" for="club-application-note">
+              Optional message to the club
+              <textarea id="club-application-note" name="message" maxlength="1000" rows="5" placeholder="Tell the club why you are interested."></textarea>
+              <span><span id="club-application-remaining">1,000</span> characters remaining</span>
+            </label>
+            <p class="club-application-feedback" id="club-application-feedback" role="status" aria-live="polite"></p>
+            <div class="club-application-actions">
+              <button class="btn-secondary" type="button" data-close-club-application>Cancel</button>
+              <button class="btn-primary" id="club-application-submit" type="submit">Submit application</button>
+            </div>
+          </form>
+        </dialog>
       </section>
 
       <!-- ============ APPLICATIONS ============ -->
       <section class="view" id="applications" hidden>
-        <div class="page-head"><h1>Applications</h1><p>Membership applications recorded for your account.</p></div>
+        <div class="page-head"><h1>My Applications</h1><p>Track club applications and tournament or match registration decisions.</p></div>
         <ul class="activities" id="dashboard-applications"><li class="activity-item">Loading records…</li></ul>
       </section>
 

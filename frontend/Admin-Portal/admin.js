@@ -5,11 +5,10 @@
     dashboard: { title: "Admin Dashboard", crumb: "Overview", icon: "fa-gauge-high", description: "A clear overview of SportsHub administration, based on saved server records." },
     students: { title: "Student Management", crumb: "People", icon: "fa-user-graduate", description: "Manage student records and follow their club memberships." },
     clubs: { title: "Sports Club Management", crumb: "Clubs", icon: "fa-people-group", description: "Maintain club information and review related members, schedules, and applications." },
-    applications: { title: "Membership Applications", crumb: "Memberships", icon: "fa-file-lines", description: "Review requests, inspect the related student, and record an application decision." },
+    applications: { title: "Registrations & Applications", crumb: "Registrations", icon: "fa-file-lines", description: "Review club applications, tournament entries, and match registrations in separate queues." },
     training: { title: "Training Schedules", crumb: "Schedules", icon: "fa-calendar-days", description: "Create and maintain training sessions with a club, date, time, and location." },
     events: { title: "Matches & Tournaments", crumb: "Competitions", icon: "fa-trophy", description: "Manage matches, tournaments, participating clubs, fixtures, and results." },
     announcements: { title: "Announcement Management", crumb: "Communication", icon: "fa-bullhorn", description: "Draft, preview, publish, and maintain announcements for selected audiences." },
-    facilities: { title: "Facilities & Equipment", crumb: "Resources", icon: "fa-building", description: "Review facility and equipment booking requests and record decisions." },
     reports: { title: "Reports & Statistics", crumb: "Insights", icon: "fa-chart-line", description: "Review summaries calculated from saved SportsHub records and export the current report." }
   };
 
@@ -17,11 +16,10 @@
     ["dashboard", "Dashboard", "fa-gauge-high", "dashboard.html"],
     ["students", "Student Management", "fa-user-graduate", "students.html"],
     ["clubs", "Sports Club Management", "fa-people-group", "clubs.html"],
-    ["applications", "Membership Applications", "fa-file-lines", "applications.html"],
+    ["applications", "Registrations & Applications", "fa-file-lines", "applications.html"],
     ["training", "Training Schedules", "fa-calendar-days", "training.html"],
     ["events", "Matches & Tournaments", "fa-trophy", "matches-tournaments.html"],
     ["announcements", "Announcements", "fa-bullhorn", "announcements.html"],
-    ["facilities", "Facilities & Equipment", "fa-building", "facilities.html"],
     ["reports", "Reports & Statistics", "fa-chart-line", "reports.html"]
   ];
 
@@ -54,12 +52,15 @@
       fields: [
         { key: "studentName", label: "Student name", required: true },
         { key: "studentId", label: "Student ID", required: true },
+        { key: "studentEmail", label: "Student email" },
         { key: "club", label: "Club", required: true },
         { key: "submittedOn", label: "Submitted on", type: "date" },
         { key: "status", label: "Status", type: "select", options: ["Pending", "Approved", "Rejected"] },
-        { key: "notes", label: "Notes", type: "textarea", full: true }
+        { key: "notes", label: "Application message", type: "textarea", full: true },
+        { key: "reviewedBy", label: "Reviewed by" },
+        { key: "reviewedAt", label: "Reviewed on" }
       ],
-      columns: [["studentName", "Student"], ["studentId", "Student ID"], ["club", "Club"], ["submittedOn", "Submitted"], ["status", "Status"]]
+      columns: [["studentName", "Student"], ["studentId", "Student ID"], ["studentEmail", "Email"], ["club", "Club"], ["notes", "Message"], ["submittedOn", "Submitted"], ["status", "Status"]]
     },
     training: {
       label: "training session", plural: "training sessions", icon: "fa-calendar-days",
@@ -102,20 +103,6 @@
       ],
       columns: [["title", "Announcement"], ["audience", "Audience"], ["publishDate", "Publish date"], ["status", "Status"]]
     },
-    facilities: {
-      label: "booking", plural: "bookings", icon: "fa-building",
-      fields: [
-        { key: "type", label: "Booking type", type: "select", options: ["Facility", "Equipment"] },
-        { key: "resource", label: "Facility / equipment", required: true },
-        { key: "requester", label: "Requested by" },
-        { key: "date", label: "Date", type: "date", required: true },
-        { key: "startTime", label: "Start time", type: "time" },
-        { key: "endTime", label: "End time", type: "time" },
-        { key: "purpose", label: "Purpose", type: "textarea", full: true },
-        { key: "status", label: "Status", type: "select", options: ["Pending", "Approved", "Rejected"] }
-      ],
-      columns: [["type", "Type"], ["resource", "Resource"], ["requester", "Requested by"], ["date", "Date"], ["startTime", "Time"], ["status", "Status"]]
-    }
   };
 
   var state = emptyState();
@@ -127,7 +114,7 @@
   var toastTimer;
 
   function emptyState() {
-    return { students: [], clubs: [], applications: [], training: [], events: [], announcements: [], facilities: [], activity: [], tournamentRegistrations: [] };
+    return { students: [], clubs: [], applications: [], training: [], events: [], announcements: [], activity: [], tournamentRegistrations: [], matchRegistrations: [] };
   }
 
   function escapeHtml(value) {
@@ -201,24 +188,6 @@
     document.getElementById("startup-error").textContent = error.message || "The administration service could not be reached.";
   }
 
-  function refreshNotificationCount() {
-    var button = document.getElementById("notifications-button");
-    if (!button) return;
-    var count = state.applications.filter(function (item) { return item.status === "Pending"; }).length +
-      state.facilities.filter(function (item) { return item.status === "Pending"; }).length;
-    button.setAttribute("aria-label", count + " pending items");
-    var badge = button.querySelector(".notification-count");
-    if (count && !badge) {
-      badge = document.createElement("span");
-      badge.className = "notification-count";
-      button.appendChild(badge);
-    }
-    if (badge) {
-      badge.textContent = String(count);
-      badge.hidden = count === 0;
-    }
-  }
-
   function applyTheme(theme, save) {
     document.documentElement.setAttribute("data-theme", theme);
     var button = document.getElementById("theme-toggle");
@@ -284,6 +253,11 @@
   function formatCell(entity, item, key) {
     var value = fieldValue(entity, item, key);
     if (key === "status") return statusBadge(value);
+    if (entity === "applications" && key === "notes" && value) {
+      var message = String(value);
+      var preview = message.length > 90 ? message.slice(0, 87) + "…" : message;
+      return '<span title="' + escapeHtml(message) + '">' + escapeHtml(preview) + "</span>";
+    }
     if (entity === "students" && key === "name") return studentLink(item.studentId, value);
     if (entity === "students" && key === "membershipCount") {
       return '<a class="table-link" href="applications.html?student=' + encodeURIComponent(item.studentId) + '">' + escapeHtml(value) + " membership(s)</a>";
@@ -300,9 +274,11 @@
 
   function actionButtons(entity, item) {
     var viewLabel = entity === "announcements" ? "Preview" : "View";
-    var buttons = '<button class="btn btn-secondary btn-small" type="button" data-action="details" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">' + viewLabel + "</button>" +
-      '<button class="btn btn-secondary btn-small" type="button" data-action="edit" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Edit</button>';
-    if ((entity === "applications" || entity === "facilities") && item.status === "Pending") {
+    var buttons = '<button class="btn btn-secondary btn-small" type="button" data-action="details" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">' + viewLabel + "</button>";
+    if (entity !== "applications") {
+      buttons += '<button class="btn btn-secondary btn-small" type="button" data-action="edit" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Edit</button>';
+    }
+    if (entity === "applications" && item.status === "Pending") {
       buttons += '<button class="btn btn-small" type="button" data-action="approve" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Approve</button>' +
         '<button class="btn btn-danger btn-small" type="button" data-action="reject" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Reject</button>';
     }
@@ -310,7 +286,9 @@
         (item.status === "Draft" || (item.publishDate && item.publishDate > todayDate()))) {
       buttons += '<button class="btn btn-small" type="button" data-action="publish" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Publish now</button>';
     }
-    buttons += '<button class="btn btn-danger btn-small" type="button" data-action="delete" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Delete</button>';
+    if (entity !== "applications") {
+      buttons += '<button class="btn btn-danger btn-small" type="button" data-action="delete" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Delete</button>';
+    }
     return '<div class="row-actions">' + buttons + "</div>";
   }
 
@@ -323,7 +301,10 @@
   function tableMarkup(entity, rows) {
     var definition = datasets[entity];
     if (!rows.length) {
-      return '<div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><strong>No ' + escapeHtml(definition.plural) + " to display</strong><p>Create a record or adjust the search and filters. No sample records are preloaded.</p></div>";
+      var emptyMessage = entity === "applications"
+        ? "Student club applications will appear here after they are submitted."
+        : "Create a record or adjust the search and filters. No sample records are preloaded.";
+      return '<div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><strong>No ' + escapeHtml(definition.plural) + " to display</strong><p>" + emptyMessage + "</p></div>";
     }
     var headings = definition.columns.map(function (column) { return "<th>" + escapeHtml(column[1]) + "</th>"; }).join("");
     var body = rows.map(function (item) {
@@ -337,8 +318,7 @@
 
   function renderHeader() {
     var current = pageDefinitions[page];
-    var pending = state.applications.filter(function (item) { return item.status === "Pending"; }).length +
-      state.facilities.filter(function (item) { return item.status === "Pending"; }).length;
+    var pending = state.applications.filter(function (item) { return item.status === "Pending"; }).length;
     return '<header class="portal-header">' +
       '<button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open admin navigation" aria-expanded="false" aria-controls="portal-sidebar"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>' +
       '<a class="portal-brand" href="dashboard.html" aria-label="NSBM SportsHub Admin Portal"><img src="../assets/nsbm.jpg" alt=""><span>NSBM <strong>SPORTSHUB</strong><small>ADMIN PORTAL</small></span></a>' +
@@ -367,7 +347,8 @@
       '<section class="page-intro"><div><p class="eyebrow"><span class="eyebrow-mark"></span> NSBM SPORTSHUB ADMINISTRATION</p><h1>' + escapeHtml(definition.title) + '</h1><p class="intro-copy">' + escapeHtml(definition.description) + '</p></div><div class="season-chip"><i class="fa-solid ' + definition.icon + '" aria-hidden="true"></i> Admin workspace</div></section>' +
       '<div class="prototype-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>Administrator workspace:</strong> changes are stored in the SportsHub database and require an administrator account.</span></div>' +
       (page === "dashboard" ? renderDashboard() : page === "reports" ? renderReports() :
-        page === "events" ? renderManager(page) + renderTournamentRegistrations() : renderManager(page));
+        page === "applications" ? renderManager(page) + renderTournamentRegistrations() + renderMatchRegistrations() :
+        renderManager(page));
   }
 
   function renderDashboard() {
@@ -420,47 +401,52 @@
   function renderManager(entity) {
     var definition = datasets[entity];
     return '<section class="dashboard-section"><div class="toolbar" aria-label="Search and filter ' + escapeHtml(definition.plural) + '">' +
-      '<label class="field search-field"><span>Search</span><input id="record-search" type="search" placeholder="Search ' + escapeHtml(definition.plural) + '" autocomplete="off"></label>' +
+      '<label class="field search-field"><span>Search</span><input id="record-search" type="search" placeholder="' + (entity === "applications" ? "Search student, ID, email, club, or message" : "Search " + escapeHtml(definition.plural)) + '" autocomplete="off"></label>' +
       (entity !== "students" ? '<label class="field"><span>Filter by status</span><select id="status-filter"><option value="">All statuses</option>' + statusOptions(entity) + "</select></label>" : "") +
       (entity === "students" ? '<label class="field"><span>Faculty</span><select id="faculty-filter"><option value="">All faculties</option>' + uniqueOptions("students", "faculty") + '</select></label><label class="field"><span>Batch / year</span><select id="batch-filter"><option value="">All batches</option>' + uniqueOptions("students", "batch") + "</select></label>" : "") +
       (entity === "applications" ? '<label class="field"><span>Club</span><select id="club-filter"><option value="">All clubs</option>' + uniqueOptions("applications", "club") + "</select></label>" : "") +
       (entity === "events" ? '<label class="field"><span>Event type</span><select id="kind-filter"><option value="">All event types</option><option>Match</option><option>Tournament</option></select></label>' : "") +
       '<button class="btn btn-secondary" id="clear-filters" type="button"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Clear</button>' +
-      '<button class="btn" id="add-record" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add ' + escapeHtml(definition.label) + "</button>" +
+      (entity !== "applications" ? '<button class="btn" id="add-record" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Add ' + escapeHtml(definition.label) + "</button>" : "") +
       '<button class="btn btn-secondary" id="export-records" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export CSV</button></div>' +
-      '<div id="record-table">' + tableMarkup(entity, state[entity]) + "</div></section>" +
-      (entity === "facilities" ? renderAvailability() : "");
+      '<div id="record-table">' + tableMarkup(entity, state[entity]) + "</div></section>";
   }
 
-  function renderAvailability() {
-    var bySlot = Object.create(null);
-    state.facilities.forEach(function (booking) {
-      if (!booking.resource || !booking.date) return;
-      var key = [booking.resource, booking.date, booking.startTime || ""].join("|");
-      if (!bySlot[key] || booking.status === "Approved") bySlot[key] = booking;
-    });
-    var rows = Object.keys(bySlot).map(function (key) { return bySlot[key]; });
-    var content = rows.length
-      ? '<div class="table-wrap"><table class="admin-table"><thead><tr><th>Resource</th><th>Date</th><th>Time</th><th>Booking status</th></tr></thead><tbody>' +
-        rows.map(function (item) { return "<tr><td><strong>" + escapeHtml(item.resource) + "</strong></td><td>" + escapeHtml(item.date) + "</td><td>" + escapeHtml(item.startTime || "—") + (item.endTime ? "–" + escapeHtml(item.endTime) : "") + "</td><td>" + statusBadge(item.status) + "</td></tr>"; }).join("") +
-        "</tbody></table></div>"
-      : '<div class="empty-state"><i class="fa-solid fa-building-circle-check" aria-hidden="true"></i><strong>No resource availability data</strong><p>Availability will appear when booking records are added.</p></div>';
-    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">DATABASE RECORDS</p><h2>Booking availability</h2></div></div><p class="intro-copy" style="margin-bottom:.8rem">Availability summarizes the saved booking requests; it is not a complete resource inventory or authoritative calendar.</p>' + content + "</section>";
+  function renderEventRegistrations(entity, heading, eventLabel, emptyDescription) {
+    var rows = state[entity] || [];
+    if (!rows.length) {
+      return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>' + escapeHtml(heading) + '</h2></div></div><div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><strong>No ' + escapeHtml(eventLabel) + ' registrations</strong><p>' + escapeHtml(emptyDescription) + '</p></div></section>';
+    }
+    var body = rows.map(function (item) {
+      var actions = item.status === "Pending"
+        ? '<button class="btn btn-small" type="button" data-action="approve" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Approve</button> ' +
+          '<button class="btn btn-danger btn-small" type="button" data-action="reject" data-entity="' + entity + '" data-id="' + escapeHtml(item.id) + '">Reject</button>'
+        : '<span class="intro-copy">' + escapeHtml(item.reviewedAt || item.reviewedBy || "Reviewed") + '</span>';
+      return "<tr><td>" + escapeHtml(item.eventName) + "</td><td>" + escapeHtml(item.studentName) +
+        "</td><td>" + escapeHtml(item.studentId) + "</td><td>" + escapeHtml(item.email) +
+        "</td><td>" + escapeHtml(item.submittedAt) + "</td><td>" + statusBadge(item.status) +
+        "</td><td>" + actions + "</td></tr>";
+    }).join("");
+    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>' + escapeHtml(heading) + '</h2></div><span class="section-count">' + escapeHtml(rows.length) + "</span></div>" +
+      '<div class="table-wrap"><table class="admin-table"><thead><tr><th>' + escapeHtml(eventLabel) + '</th><th>Student</th><th>Student ID</th><th>Email</th><th>Registration date</th><th>Status</th><th>Decision</th></tr></thead><tbody>' + body + "</tbody></table></div></section>";
   }
 
   function renderTournamentRegistrations() {
-    var rows = state.tournamentRegistrations;
-    if (!rows.length) {
-      return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>Tournament registrations</h2></div></div><div class="empty-state"><i class="fa-regular fa-folder-open" aria-hidden="true"></i><strong>No tournament registrations</strong><p>Student submissions will appear here after they are received.</p></div></section>';
-    }
-    var body = rows.map(function (item) {
-      return "<tr><td>" + escapeHtml(item.tournament) + "</td><td>" + escapeHtml(item.studentName) +
-        "</td><td>" + escapeHtml(item.studentId) + "</td><td>" + escapeHtml(item.email) +
-        "</td><td>" + escapeHtml(item.faculty || "—") + "</td><td>" +
-        escapeHtml(item.yearOfStudy || "—") + "</td><td>" + escapeHtml(item.submittedAt) + "</td></tr>";
-    }).join("");
-    return '<section class="dashboard-section panel"><div class="section-heading"><div><p class="section-overline">STUDENT ENTRIES</p><h2>Tournament registrations</h2></div><span class="section-count">' + escapeHtml(rows.length) + "</span></div>" +
-      '<div class="table-wrap"><table class="admin-table"><thead><tr><th>Tournament</th><th>Student</th><th>Student ID</th><th>Email</th><th>Faculty</th><th>Year</th><th>Submitted</th></tr></thead><tbody>' + body + "</tbody></table></div></section>";
+    return renderEventRegistrations(
+      "tournamentRegistrations",
+      "Tournament registrations",
+      "Tournament",
+      "Student tournament entries will appear here after submission."
+    );
+  }
+
+  function renderMatchRegistrations() {
+    return renderEventRegistrations(
+      "matchRegistrations",
+      "Match registrations",
+      "Match",
+      "Student match entries will appear here after submission."
+    );
   }
 
   function uniqueOptions(entity, key) {
@@ -470,7 +456,7 @@
 
   function statusOptions(entity) {
     var statuses = Array.from(new Set(state[entity].map(function (item) { return item.status; }).filter(Boolean)));
-    if (entity === "applications" || entity === "facilities") statuses = ["Pending", "Approved", "Rejected"];
+    if (entity === "applications") statuses = ["Pending", "Approved", "Rejected"];
     if (entity === "announcements") statuses = ["Draft", "Published"];
     if (entity === "events") statuses = ["Draft", "Scheduled", "Completed", "Cancelled"];
     if (entity === "clubs") statuses = ["Active", "Inactive"];
@@ -486,14 +472,13 @@
       ["Approved memberships", state.applications.filter(function (item) { return item.status === "Approved"; }).length, "applications.html"],
       ["Matches", state.events.filter(function (item) { return item.kind === "Match"; }).length, "matches-tournaments.html"],
       ["Tournaments", state.events.filter(function (item) { return item.kind === "Tournament"; }).length, "matches-tournaments.html"],
-      ["Training sessions", state.training.length, "training.html"],
-      ["Pending bookings", state.facilities.filter(function (item) { return item.status === "Pending"; }).length, "facilities.html"]
+      ["Training sessions", state.training.length, "training.html"]
     ];
-    return '<section class="dashboard-section"><div class="toolbar"><label class="field"><span>Report category</span><select id="report-filter"><option value="all">All categories</option><option value="membership">Memberships</option><option value="events">Matches &amp; tournaments</option><option value="operations">Training &amp; bookings</option></select></label><button class="btn btn-secondary" id="export-report" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export report CSV</button></div>' +
+    return '<section class="dashboard-section"><div class="toolbar"><label class="field"><span>Report category</span><select id="report-filter"><option value="all">All categories</option><option value="membership">Memberships</option><option value="events">Matches &amp; tournaments</option><option value="operations">Training</option></select></label><button class="btn btn-secondary" id="export-report" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export report CSV</button></div>' +
       '<div class="report-grid" id="report-grid">' + counts.map(function (row, index) {
         var type = index < 4 ? "membership" : index < 6 ? "events" : "operations";
         return '<article class="report-card" data-category="' + type + '"><h3>' + escapeHtml(row[0]) + '</h3><p><strong>' + row[1] + '</strong> recorded in this session</p><a class="table-link" href="' + row[2] + '">View records <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></article>';
-      }).join("") + "</div><p class=\"intro-copy\" style=\"margin-top:1rem\">Reports are calculated from this session’s entered records only. No historical or database data is connected.</p></section>";
+      }).join("") + "</div><p class=\"intro-copy\" style=\"margin-top:1rem\">Reports are calculated from saved SportsHub database records.</p></section>";
   }
 
   function today() {
@@ -512,18 +497,15 @@
 
   function showNotifications() {
     var pendingApplications = state.applications.filter(function (item) { return item.status === "Pending"; });
-    var pendingBookings = state.facilities.filter(function (item) { return item.status === "Pending"; });
     var items = pendingApplications.map(function (item) {
       return { title: "Membership application", text: (item.studentName || item.studentId || "Student") + " · " + (item.club || "Club not specified"), href: "applications.html?record=" + encodeURIComponent(item.id) };
-    }).concat(pendingBookings.map(function (item) {
-      return { title: "Booking request", text: (item.resource || "Resource") + " · " + (item.date || "Date not set"), href: "facilities.html?record=" + encodeURIComponent(item.id) };
-    }));
+    });
     var dialog = document.getElementById("notifications-dialog");
     var content = items.length
       ? '<div class="activity-list">' + items.map(function (item) {
         return '<a class="activity-row notification-row" href="' + item.href + '"><i class="fa-regular fa-bell" aria-hidden="true"></i><span><strong>' + escapeHtml(item.title) + '</strong><span class="notification-copy">' + escapeHtml(item.text) + "</span></span></a>";
       }).join("") + "</div>"
-      : '<div class="empty-state"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No pending items</strong><p>Pending applications and booking requests will appear here.</p></div>';
+      : '<div class="empty-state"><i class="fa-regular fa-bell-slash" aria-hidden="true"></i><strong>No pending applications</strong><p>New club applications will appear here.</p></div>';
     dialog.innerHTML = '<div class="dialog-head"><div><p class="section-overline">ADMIN UPDATES</p><h2 id="notifications-title">Notifications</h2></div><button class="dialog-close" type="button" data-action="close-notifications" aria-label="Close"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>' + content;
     dialog.showModal();
   }
@@ -662,26 +644,43 @@
     if (action === "edit") renderForm(entity, item);
     if (action === "approve" || action === "reject" || action === "publish") {
       var nextStatus = action === "approve" ? "Approved" : action === "reject" ? "Rejected" : "Published";
+      var isEventRegistration = entity === "tournamentRegistrations" || entity === "matchRegistrations";
+      var entityLabel = isEventRegistration
+        ? (entity === "matchRegistrations" ? "match registration" : "tournament registration")
+        : datasets[entity].label;
       var confirmation = action === "publish"
         ? "Publish this announcement now so students can see it immediately?"
-        : "Change this " + datasets[entity].label + " status to " + nextStatus + "?";
+        : "Change this " + entityLabel + " status to " + nextStatus + "?";
       if (!window.confirm(confirmation)) return;
       var previousStatus = item.status;
       var previousPublishDate = item.publishDate;
       item.status = nextStatus;
       if (action === "publish") item.publishDate = todayDate();
-      saveRecord(entity, item, item.id).then(function (saved) {
+      var saveRequest;
+      if (isEventRegistration) {
+        saveRequest = adminRequest("records.php", "PUT", {
+          entity: entity,
+          id: item.id,
+          data: { status: nextStatus }
+        }).then(function (result) { return result.record; });
+      } else {
+        var update = entity === "applications" ? { status: nextStatus } : item;
+        saveRequest = saveRecord(entity, update, item.id);
+      }
+      control.disabled = true;
+      saveRequest.then(function (saved) {
         state[entity] = state[entity].map(function (record) { return record.id === saved.id ? saved : record; });
         window.location.reload();
       }).catch(function (error) {
         item.status = previousStatus;
         if (entity === "announcements") item.publishDate = previousPublishDate;
+        control.disabled = false;
         notify(error.message);
       });
     }
     if (action === "delete") {
       var deleteWarning = entity === "students" && item.hasAccount
-        ? "Delete this student and their login account and tournament registrations? This cannot be undone."
+        ? "Delete this student and their login account and event registrations? This cannot be undone."
         : "Delete this " + datasets[entity].label + "? This cannot be undone.";
       if (!window.confirm(deleteWarning)) return;
       deleteRecord(entity, item.id).then(function () {
@@ -784,8 +783,7 @@
         ["membership", "Approved memberships", state.applications.filter(function (item) { return item.status === "Approved"; }).length],
         ["events", "Matches", state.events.filter(function (item) { return item.kind === "Match"; }).length],
         ["events", "Tournaments", state.events.filter(function (item) { return item.kind === "Tournament"; }).length],
-        ["operations", "Training sessions", state.training.length],
-        ["operations", "Pending bookings", state.facilities.filter(function (item) { return item.status === "Pending"; }).length]
+        ["operations", "Training sessions", state.training.length]
       ];
       reportRows.filter(function (row) { return selectedCategory === "all" || row[0] === selectedCategory; })
         .forEach(function (row) { rows.push([row[1], row[2]]); });
@@ -827,7 +825,7 @@
     });
 
     var query = new URLSearchParams(window.location.search);
-    if (query.get("action") === "add" && datasets[page]) renderForm(page, null);
+    if (query.get("action") === "add" && datasets[page] && page !== "applications") renderForm(page, null);
     if (query.get("record") && datasets[page]) {
       var linkedRecord = state[page].find(function (item) { return item.id === query.get("record"); });
       if (linkedRecord) renderDetails(page, linkedRecord);
