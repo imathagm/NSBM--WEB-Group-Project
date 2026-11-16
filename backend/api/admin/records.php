@@ -476,7 +476,7 @@ try {
                 $deleteMatchRegistrations = $pdo->prepare(
                     'DELETE FROM sportshub_match_registrations WHERE student_id = :student_id'
                 );
-                $deleteMatchRegistrations->execute(['student_id' => $studentRecord['student_id']])
+                $deleteMatchRegistrations->execute(['student_id' => $studentRecord['student_id']]);
                 $deleteAccount = $pdo->prepare('DELETE FROM sportshub_users WHERE user_id = :user_id');
                 $deleteAccount->execute(['user_id' => $studentRecord['user_id']]);
             }
