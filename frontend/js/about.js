@@ -1,25 +1,23 @@
-(function(){
-  const html = document.documentElement;
-  const KEY = 'nsbm-theme';
+(function () {
+  "use strict";
 
-  function setTheme(theme){
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem(KEY, theme);
-    document.querySelectorAll('.theme-button').forEach(btn=>{
-      const choice = btn.getAttribute('data-theme-choice');
-      btn.setAttribute('aria-pressed', choice === theme ? 'true' : 'false');
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!("IntersectionObserver" in window)) return;
+
+    var elements = document.querySelectorAll(
+      ".story-item, .campus-card, .values-card, .people-section .card"
+    );
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12 });
+
+    elements.forEach(function (element) {
+      element.classList.add("about-reveal");
+      observer.observe(element);
     });
-  }
-
-  const saved = localStorage.getItem(KEY) || 'dark';
-  setTheme(saved);
-
-  document.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.theme-button');
-    if(!btn) return;
-    const choice = btn.getAttribute('data-theme-choice');
-    if(choice) setTheme(choice);
   });
-
-  console.log('✅ About page loaded - Home page same light/dark SVG icon working');
 })();
