@@ -15,15 +15,14 @@ if (!preg_match('/\A[A-Za-z0-9][A-Za-z0-9_-]{0,63}\z/', $fixtureId)) {
     auth_respond(400, ['success' => false, 'message' => 'Choose a valid match or tournament.']);
 }
 
+$providedName = trim((string) ($input['fullName'] ?? ''));
+$providedStudentId = strtolower(trim((string) ($input['studentId'] ?? '')));
+$providedEmail = strtolower(trim((string) ($input['email'] ?? '')));
+
 try {
     $pdo = sportshubDatabaseConnection();
-
     $eventQuery = $pdo->prepare(
-        "SELECT competition, registration_deadline, kind
-        
-    $tournamentQuery = $pdo->prepare(
-        "SELECT competition, registration_deadline, event_date
-
+        "SELECT competition, registration_deadline, event_date, kind
          FROM sports_fixtures
          WHERE fixture_id = :fixture_id
            AND kind IN ('Tournament', 'Match')
@@ -35,18 +34,14 @@ try {
     if ($event === false) {
         auth_respond(400, ['success' => false, 'message' => 'Choose a scheduled match or tournament.']);
     }
+
     if (empty($event['registration_deadline'])) {
         auth_respond(400, ['success' => false, 'message' => 'Registration is unavailable because this event has no deadline.']);
     }
     $today = (new DateTimeImmutable('now', new DateTimeZone('Asia/Colombo')))->format('Y-m-d');
-
-    if ($today > $event['registration_deadline']) {
+    if ($today > $event['registration_deadline']
+        || (!empty($event['event_date']) && $today > $event['event_date'])) {
         auth_respond(400, ['success' => false, 'message' => 'The registration deadline for this event has passed.']);
-
-    if ($today > $tournament['registration_deadline']
-        || (!empty($tournament['event_date']) && $today > $tournament['event_date'])) {
-        auth_respond(400, ['success' => false, 'message' => 'The registration deadline for this tournament has passed.']);
-
     }
 
     $student = $pdo->prepare(
@@ -58,23 +53,21 @@ try {
     if ($account === false) {
         auth_respond(401, ['success' => false, 'message' => 'Student account is no longer available.']);
     }
-
     if (trim((string) $account['full_name']) === '' || trim((string) $account['student_id']) === '') {
         auth_respond(400, ['success' => false, 'message' => 'Complete your student name and ID before registering.']);
+    }
+    if ($providedName !== (string) $account['full_name']
+        || $providedStudentId !== strtolower((string) $account['student_id'])
+        || $providedEmail !== strtolower((string) $account['email'])) {
+        auth_respond(403, ['success' => false, 'message' => 'Use the name, student ID, and email on your signed-in account.']);
+    }
 
     $faculty = trim((string) ($input['faculty'] ?? $account['faculty'] ?? ''));
     $yearOfStudy = trim((string) ($input['yearOfStudy'] ?? $account['academic_year'] ?? ''));
-    if (preg_match_all('/./us', $faculty) > 120 || preg_match_all('/./us', $yearOfStudy) > 40) {
+    $facultyLength = preg_match_all('/./us', $faculty, $matches);
+    $yearLength = preg_match_all('/./us', $yearOfStudy, $matches);
+    if ($facultyLength === false || $facultyLength > 120 || $yearLength === false || $yearLength > 40) {
         auth_respond(400, ['success' => false, 'message' => 'Faculty or year of study is too long.']);
-    }
-
-    $providedId = strtolower(trim((string) ($input['studentId'] ?? '')));
-    $providedEmail = strtolower(trim((string) ($input['email'] ?? '')));
-    if ($providedId !== strtolower((string) $account['student_id'])
-        || $providedEmail !== strtolower((string) $account['email'])
-        || trim((string) ($input['fullName'] ?? '')) !== (string) $account['full_name']) {
-        auth_respond(403, ['success' => false, 'message' => 'Use the name, student ID, and email on your signed-in account.']);
-
     }
 
     if ($event['kind'] === 'Tournament') {

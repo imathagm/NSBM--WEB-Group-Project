@@ -246,12 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
         '</div><a class="btn-view-club" href="' + (joined ? '#applications' : '../pages/clubregister.html?club=' + encodeURIComponent(club.id)) + '">' +
         (joined ? 'View application' : 'Apply to club') + '</a></div></article>';
     }).join('') : '<p class="panel empty">No active clubs have been added.</p>';
-    dashboardClubList.querySelectorAll('.btn-view-club').forEach((button) => {
-      button.addEventListener('click', () => {
-        window.location.href = '../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html';
-      });
-    });
-
     if (activities.length) {
       dashboardActivityList.innerHTML = activities.slice(0, 5).map((item) => formatActivity(item, item.type)).join('');
     } else {
@@ -404,9 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
       applicationSubmit.disabled = false;
     }
   });
-  loadDashboard();
-  loadAnnouncements();
-
   window.sportshubAuth.session().then((session) => {
     if (session.authenticated) {
       loadDashboard();

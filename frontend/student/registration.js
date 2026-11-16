@@ -114,6 +114,7 @@
 
   var idInput = document.getElementById("student-id");
   var emailInput = document.getElementById("student-email");
+  var fullNameInput = document.getElementById("full-name");
   form.querySelectorAll("input, select").forEach(function (field) {
     field.addEventListener("input", function () {
       field.setCustomValidity("");
@@ -156,17 +157,14 @@
           "X-CSRF-Token": csrfToken
         },
 
-        body: JSON.stringify({ fixtureId: eventId })
-
         body: JSON.stringify({
-          tournamentId: tournamentId,
+          fixtureId: eventId,
           fullName: fullNameInput.value.trim(),
-          studentId: studentId,
+          studentId: idInput.value.trim(),
           email: emailInput.value.trim(),
-          faculty: document.getElementById('faculty').value,
-          yearOfStudy: document.getElementById('batch').value
+          faculty: document.getElementById("faculty").value,
+          yearOfStudy: document.getElementById("batch").value
         })
-
       });
       var result = await response.json();
       if (!response.ok || result.success !== true) {
