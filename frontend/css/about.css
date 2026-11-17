@@ -1,0 +1,428 @@
+[data-css-page="about"] main {
+  padding-top: 0;
+}
+
+[data-css-page="about"] .about-hero-banner {
+  position: relative;
+  display: flex;
+  min-height: 36rem;
+  align-items: center;
+  overflow: hidden;
+  padding: 9rem 5vw 5rem;
+  background: var(--turf-dark);
+  color: #fff;
+}
+
+[data-css-page="about"] .hero-bg,
+[data-css-page="about"] .hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+[data-css-page="about"] .hero-bg {
+  object-fit: cover;
+  object-position: center 45%;
+}
+
+[data-css-page="about"] .hero-overlay {
+  background: linear-gradient(90deg, rgba(7, 38, 23, 0.94), rgba(7, 38, 23, 0.3));
+}
+
+[data-css-page="about"] .hero-content {
+  position: relative;
+  z-index: 1;
+  width: min(52rem, 100%);
+}
+
+[data-css-page="about"] .eyebrow {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  color: var(--medal);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+[data-css-page="about"] .about-hero-banner h1 {
+  max-width: 46rem;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 1.08;
+}
+
+[data-css-page="about"] .about-hero-banner h1 span {
+  color: var(--medal);
+}
+
+[data-css-page="about"] .about-hero-banner p {
+  max-width: 42rem;
+  margin-top: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+}
+
+[data-css-page="about"] .hero-stats {
+  display: grid;
+  width: min(35rem, 100%);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 2rem;
+  list-style: none;
+}
+
+[data-css-page="about"] .hero-stats li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.75rem;
+  background: rgba(7, 38, 23, 0.35);
+}
+
+[data-css-page="about"] .hero-stats strong {
+  color: var(--medal);
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  line-height: 1.1;
+}
+
+[data-css-page="about"] .hero-stats span {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+[data-css-page="about"] .about-main {
+  width: min(76rem, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+}
+
+[data-css-page="about"] .content-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+[data-css-page="about"] .left-stories,
+[data-css-page="about"] .right-showcase {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+[data-css-page="about"] .story-item {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--paper);
+}
+
+[data-css-page="about"] .story-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--chalk);
+  color: var(--turf);
+  font-size: 1.2rem;
+}
+
+[data-css-page="about"] .story-text h2 {
+  margin-bottom: 0.4rem;
+  color: var(--turf-dark);
+  font-size: 1.25rem;
+}
+
+[data-css-page="about"][data-theme="dark"] .story-text h2 {
+  color: var(--ink);
+}
+
+[data-css-page="about"] .story-text p,
+[data-css-page="about"] .sub {
+  color: var(--muted);
+}
+
+[data-css-page="about"] .campus-card {
+  position: relative;
+  min-height: 19rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: var(--turf-dark);
+}
+
+[data-css-page="about"] .campus-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-css-page="about"] .play-overlay {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  min-height: 9rem;
+  align-items: end;
+  justify-content: space-between;
+  padding: 1.5rem;
+  background: linear-gradient(transparent, rgba(7, 38, 23, 0.82));
+  color: #fff;
+}
+
+[data-css-page="about"] .play-text {
+  font-family: "Montserrat Alternates", system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+[data-css-page="about"] .play-underline {
+  width: 3.5rem;
+  height: 0.25rem;
+  margin-bottom: 0.4rem;
+  border-radius: 1rem;
+  background: var(--medal);
+}
+
+[data-css-page="about"] .values-card {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--paper);
+}
+
+[data-css-page="about"] .values-card h2 {
+  margin-bottom: 1rem;
+  color: var(--turf-dark);
+  font-family: "Archivo", system-ui, sans-serif;
+  font-size: 1.4rem;
+}
+
+[data-css-page="about"][data-theme="dark"] .values-card h2 {
+  color: var(--ink);
+}
+
+[data-css-page="about"] .values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+[data-css-page="about"] .value {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.25rem 0.6rem;
+  align-items: center;
+}
+
+[data-css-page="about"] .value i {
+  grid-row: span 2;
+  color: var(--turf);
+}
+
+[data-css-page="about"] .value span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+[data-css-page="about"] .clubs-section {
+  margin-top: clamp(4rem, 8vw, 7rem);
+  text-align: center;
+}
+
+[data-css-page="about"] .clubs-section > h2,
+[data-css-page="about"] .people-section > h2 {
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+[data-css-page="about"] .clubs-section > .sub,
+[data-css-page="about"] .people-section > .sub {
+  margin-bottom: 1.5rem;
+}
+
+[data-css-page="about"] .clubs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+[data-css-page="about"] .club-card {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: left;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+[data-css-page="about"] .club-card:hover {
+  transform: translateY(-0.25rem);
+  border-color: var(--medal);
+  box-shadow: 0 0.75rem 1.5rem rgba(20, 66, 42, 0.15);
+}
+
+[data-css-page="about"] .club-card:focus-visible {
+  outline: 3px solid var(--medal);
+  outline-offset: 3px;
+}
+
+[data-css-page="about"] .club-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  background: var(--chalk);
+}
+
+[data-css-page="about"] .club-card h3 {
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+}
+
+[data-css-page="about"] .people-section {
+  margin-top: clamp(4rem, 8vw, 7rem);
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+[data-css-page="about"] .people-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+[data-css-page="about"] .people-grid.single {
+  grid-template-columns: minmax(0, 15rem);
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+[data-css-page="about"] .people-grid .card {
+  display: flex;
+  min-width: 0;
+  min-height: 13rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--paper);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+[data-css-page="about"] .people-grid .card:hover {
+  transform: translateY(-0.2rem);
+  border-color: var(--medal);
+}
+
+[data-css-page="about"] .avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 0.85rem;
+  overflow: hidden;
+  border: 3px solid var(--medal);
+  border-radius: 50%;
+  background: var(--chalk);
+}
+
+[data-css-page="about"] .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-css-page="about"] .people-grid .card h3 {
+  margin-bottom: 0.25rem;
+  font-size: 1.05rem;
+}
+
+[data-css-page="about"] .role,
+[data-css-page="about"] .dept {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+[data-css-page="about"] .about-reveal {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+[data-css-page="about"] .about-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 850px) {
+  [data-css-page="about"] .content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  [data-css-page="about"] .people-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  [data-css-page="about"] .about-hero-banner {
+    min-height: 34rem;
+    padding: 9rem 1.25rem 3rem;
+  }
+}
+
+@media (max-width: 600px) {
+  [data-css-page="about"] .about-main {
+    width: min(100% - 2rem, 76rem);
+  }
+
+  [data-css-page="about"] .hero-stats {
+    gap: 0.45rem;
+  }
+
+  [data-css-page="about"] .hero-stats li {
+    padding: 0.65rem 0.5rem;
+  }
+
+  [data-css-page="about"] .hero-stats span {
+    font-size: 0.75rem;
+  }
+
+  [data-css-page="about"] .values-grid,
+  [data-css-page="about"] .people-grid {
+    grid-template-columns: 1fr;
+  }
+
+  [data-css-page="about"] .people-grid.single {
+    grid-template-columns: minmax(0, 15rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-css-page="about"] .about-reveal,
+  [data-css-page="about"] .club-card,
+  [data-css-page="about"] .people-grid .card {
+    transition: none;
+  }
+
+  [data-css-page="about"] .about-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

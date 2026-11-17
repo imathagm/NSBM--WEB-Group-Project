@@ -15,12 +15,14 @@ $experience = trim((string) ($input['experience'] ?? ''));
 $notes = trim((string) ($input['notes'] ?? ''));
 $faculty = trim((string) ($input['faculty'] ?? ''));
 $academicYear = trim((string) ($input['academicYear'] ?? ''));
+$facultyLength = preg_match_all('/./us', $faculty, $matches);
+$academicYearLength = preg_match_all('/./us', $academicYear, $matches);
 if (!preg_match('/\A[0-9a-f-]{36}\z/i', $clubId)
     || !in_array($experience, ['Beginner', 'Intermediate', 'Experienced'], true)
     || preg_match_all('/./us', $notes) > 500
-    || !in_array($faculty, ['', 'Computing', 'Business', 'Engineering', 'Science', 'Other'], true)
-    || !in_array($academicYear, ['', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Other'], true)) {
-    auth_respond(400, ['success' => false, 'message' => 'Choose a club and experience level. Keep your message within 500 characters.']);
+    || $facultyLength === false || $facultyLength > 120
+    || $academicYearLength === false || $academicYearLength > 40) {
+    auth_respond(400, ['success' => false, 'message' => 'Choose a club and experience level. Check the length of your profile details and message.']);
 }
 
 try {
@@ -48,11 +50,12 @@ try {
 
     $insert = $pdo->prepare(
         "INSERT INTO sportshub_membership_applications
-         (id, student_name, student_id, club, submitted_on, status, notes)
-         VALUES (:id, :name, :student_id, :club, CURRENT_DATE(), 'Pending', :notes)"
+         (id, user_id, club_id, student_name, student_id, club, submitted_on, status, notes)
+         VALUES (:id, :user_id, :club_id, :name, :student_id, :club, CURRENT_DATE(), 'Pending', :notes)"
     );
     $insert->execute([
-        'id' => auth_uuid(), 'name' => $student['full_name'], 'student_id' => $student['student_id'],
+        'id' => auth_uuid(), 'user_id' => $student['user_id'], 'club_id' => $clubId,
+        'name' => $student['full_name'], 'student_id' => $student['student_id'],
         'club' => $club, 'notes' => 'Experience: ' . $experience . ($notes === '' ? '' : "\n" . $notes),
     ]);
     if ($faculty !== '' || $academicYear !== '') {

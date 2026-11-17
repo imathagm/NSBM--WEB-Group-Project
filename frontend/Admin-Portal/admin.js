@@ -480,10 +480,6 @@
 
         return '<article class="report-card" data-category="' + type + '"><h3>' + escapeHtml(row[0]) + '</h3><p><strong>' + row[1] + '</strong> recorded in this session</p><a class="table-link" href="' + row[2] + '">View records <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></article>';
       }).join("") + "</div><p class=\"intro-copy\" style=\"margin-top:1rem\">Reports are calculated from saved SportsHub database records.</p></section>";
-
-        return '<article class="report-card" data-category="' + type + '"><h3>' + escapeHtml(row[0]) + '</h3><p><strong>' + row[1] + '</strong> stored in the database</p><a class="table-link" href="' + row[2] + '">View records <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></article>';
-      }).join("") + "</div><p class=\"intro-copy\" style=\"margin-top:1rem\">Reports are calculated from this session’s entered records only. No historical or database data is connected.</p></section>";
-
   }
 
   function today() {

@@ -3,114 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Learn about NSBM SportsHub, its sports clubs, values and student community.">
   <title>About - NSBM Sports Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;800&family=Montserrat+Alternates:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../app.css">
-
-
-
+  <link rel="stylesheet" href="../css/about.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-
   <header class="site-header">
     <a class="brand" href="../index.html" aria-label="NSBM SportsHub home">
-      <img class="brand-logo" src="../assets/nsbm.jpg" alt="NSBM SportsHub logo">
+      <img class="brand-logo" src="../assets/nsbm.jpg" alt="">
       <span class="brand-text">NSBM SPORTS HUB</span>
     </a>
-    <nav aria-label="Main">
+    <nav aria-label="Main navigation">
       <a href="../index.html">Home</a>
       <a href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Clubs</a>
-      <a class="primary-nav__link" href="./event.html">Events</a>
-
+      <a href="./event.html">Events</a>
       <a href="./about.html" class="active" aria-current="page">About</a>
       <a class="btn btn-small" href="./login.html">Sign in</a>
     </nav>
     <div class="theme-switch" role="group" aria-label="Color theme">
-      <button class="theme-button" type="button" data-theme-choice="light" aria-label="Use light theme" title="Light theme" aria-pressed="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+      <button class="theme-button" type="button" data-theme-choice="light" aria-label="Use light theme" title="Light theme" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
       </button>
       <button class="theme-button" type="button" data-theme-choice="dark" aria-label="Use dark theme" title="Dark theme" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg>
       </button>
     </div>
   </header>
 
   <main>
-    <section class="about-hero-banner">
-      <div class="hero-overlay"></div>
+    <section class="about-hero-banner" aria-labelledby="about-title">
+      <div class="hero-overlay" aria-hidden="true"></div>
       <div class="hero-content">
         <span class="eyebrow">ABOUT US</span>
-        <h2> More Than Just <span>Sports</span><br>It's a Community</h2>
-        <p> NSBM SportsHub is your one-stop platform to explore sports clubs, stay updated with events, and be part of a vibrant student community at NSBM.</p>
+        <h1 id="about-title">More Than Just <span>Sports</span><br>It's a Community</h1>
+        <p>We are NSBM Green University's premier sports community, uniting 15+ sports clubs under one digital platform. Empowering athletes and building champions.</p>
+        <ul class="hero-stats" aria-label="SportsHub at a glance">
+          <li><strong>15+</strong><span>Sports Clubs</span></li>
+          <li><strong>500+</strong><span>Active Athletes</span></li>
+          <li><strong>50+</strong><span>Events Yearly</span></li>
+        </ul>
       </div>
-      <img class="hero-bg" src="../assets/NSBM-campus.jpg" onerror="this.src='../assets/nsbm.jpg'" alt="NSBM Building">
+      <img class="hero-bg" src="../assets/NSBM-campus.jpg" data-fallback="../assets/nsbm.jpg" alt="NSBM Green University campus">
     </section>
 
     <div class="about-main">
       <div class="content-layout">
-        <div class="left-stories">
-          <div class="story-item">
-            <div class="story-icon"><i class="fa-solid fa-users"></i></div>
+        <section class="left-stories" aria-label="Our story, mission and vision">
+          <article class="story-item">
+            <div class="story-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
             <div class="story-text">
-              <h3>Our Story</h3>
-              <p>NSBM SportsHub was created to bring together students who share a passion for sports and a healthy lifestyle. What started as a simple idea has now grown into a platform that connects clubs and builds a stronger NSBM community.</p>
+              <h2>Our Story</h2>
+              <p>NSBM SportsHub was created to bring together students who share a passion for sports and a healthy lifestyle. What started as a simple idea has grown into a platform that connects clubs and builds a stronger NSBM community.</p>
             </div>
-          </div>
-          <div class="story-item">
-            <div class="story-icon"><i class="fa-solid fa-bullseye"></i></div>
+          </article>
+          <article class="story-item">
+            <div class="story-icon" aria-hidden="true"><i class="fa-solid fa-bullseye"></i></div>
             <div class="story-text">
-              <h3>Our Mission</h3>
+              <h2>Our Mission</h2>
               <p>To provide a centralized platform for all sports clubs at NSBM, encouraging participation, communication and engagement throughout the university community.</p>
             </div>
-          </div>
-          <div class="story-item">
-            <div class="story-icon"><i class="fa-solid fa-eye"></i></div>
+          </article>
+          <article class="story-item">
+            <div class="story-icon" aria-hidden="true"><i class="fa-solid fa-eye"></i></div>
             <div class="story-text">
-              <h3>Our Vision</h3>
+              <h2>Our Vision</h2>
               <p>To become the leading sports and wellness platform in NSBM, creating opportunities for every student to get involved, stay active and grow together.</p>
             </div>
-          </div>
-        </div>
+          </article>
+        </section>
 
         <div class="right-showcase">
-          <div class="campus-card">
-            <img src="../assets/NSBM-campus.jpg" onerror="this.src='../assets/nsbm.jpg'" alt="NSBM Sunset Campus">
-            <div class="play-overlay">
+          <figure class="campus-card">
+            <img src="../assets/NSBM-campus.jpg" data-fallback="../assets/nsbm.jpg" alt="NSBM campus at sunset" loading="lazy" decoding="async">
+            <figcaption class="play-overlay">
               <span class="play-text">Play<br>Connect<br>Grow</span>
-              <div class="play-underline"></div>
-            </div>
-          </div>
-          <div class="values-card">
-            <h4>Our Values</h4>
+              <span class="play-underline" aria-hidden="true"></span>
+            </figcaption>
+          </figure>
+          <section class="values-card" aria-labelledby="values-title">
+            <h2 id="values-title">Our Values</h2>
             <div class="values-grid">
-              <div class="value"><i class="fa-solid fa-people-group"></i><strong>Inclusion</strong><span>Everyone belongs</span></div>
-              <div class="value"><i class="fa-solid fa-handshake-angle"></i><strong>Teamwork</strong><span>Stronger together</span></div>
-              <div class="value"><i class="fa-solid fa-heart-pulse"></i><strong>Health</strong><span>Active minds</span></div>
-              <div class="value"><i class="fa-solid fa-star"></i><strong>Excellence</strong><span>Always improve</span></div>
+              <div class="value"><i class="fa-solid fa-people-group" aria-hidden="true"></i><strong>Inclusion</strong><span>Everyone belongs</span></div>
+              <div class="value"><i class="fa-solid fa-handshake-angle" aria-hidden="true"></i><strong>Teamwork</strong><span>Stronger together</span></div>
+              <div class="value"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i><strong>Health</strong><span>Active minds</span></div>
+              <div class="value"><i class="fa-solid fa-star" aria-hidden="true"></i><strong>Excellence</strong><span>Always improve</span></div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
 
-      <section class="people-section">
+      <section class="clubs-section" aria-labelledby="clubs-title">
+        <span class="eyebrow">FIND YOUR SPORT</span>
+        <h2 id="clubs-title">Our Sports Clubs</h2>
+        <p class="sub">Explore the sports and clubs that bring our campus community together.</p>
+        <div class="clubs-grid">
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Football Club"><img src="../assets/football.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Football</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Cricket Club"><img src="../assets/cricket.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Cricket</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Basketball Club"><img src="../assets/basketball.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Basketball</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Hockey Club"><img src="../assets/hockey.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Hockey</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Rugby Club"><img src="../assets/rugby.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Rugby</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Swimming Club"><img src="../assets/swimming.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Swimming</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Athletics Club"><img src="../assets/athletics.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Athletics</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Badminton Club"><img src="../assets/badminton.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Badminton</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Tennis Club"><img src="../assets/tennis.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Tennis</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Volleyball Club"><img src="../assets/volleyball.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Volleyball</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Chess Club"><img src="../assets/chess.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Chess</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Archery Club"><img src="../assets/archery.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Archery</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Table Tennis Club"><img src="../assets/table-tennis.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Table Tennis</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Netball Club"><img src="../assets/netball.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Netball</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore the Karate Club"><img src="../assets/karate.jpg" data-fallback="../assets/hero.jpg" alt="" loading="lazy" decoding="async"><h3>Karate</h3></a>
+          <a class="club-card" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html" aria-label="Explore more sports clubs"><img src="../assets/hero.jpg" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"><h3>More Sports</h3></a>
+        </div>
+      </section>
+
+      <section class="people-section" aria-labelledby="team-title">
         <span class="eyebrow">OUR TEAM</span>
-        <h2>Meet the People Behind It</h2>
+        <h2 id="team-title">Meet the People Behind It</h2>
         <p class="sub">A group of passionate students working together to make NSBM SportsHub a success.</p>
         <div class="people-grid">
-          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Buthmi Ashinsa</h3><span class="role">President - Sports Council</span><span class="dept">2025/26</span></div>
-          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Prof. Bharatha</h3><span class="role">Head - Academic</span><span class="dept">Patron</span></div>
-          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Mr. Karan</h3><span class="role">Head - Student Affairs</span><span class="dept">Coordinator</span></div>
-          <div class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>Ms. Dewmini</h3><span class="role">President - Chess Club</span><span class="dept">Captain</span></div>
+          <article class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"></div><h3>Buthmi Ashinsa</h3><span class="role">President - Sports Council</span><span class="dept">2025/26</span></article>
+          <article class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"></div><h3>Prof. Bharatha</h3><span class="role">Head - Academic</span><span class="dept">Patron</span></article>
+          <article class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"></div><h3>Mr. Karan</h3><span class="role">Head - Student Affairs</span><span class="dept">Coordinator</span></article>
+          <article class="card"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"></div><h3>Ms. Dewmini</h3><span class="role">President - Chess Club</span><span class="dept">Captain</span></article>
         </div>
-        <div class="people-grid single"><div class="card group28"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt=""></div><h3>GROUP-28</h3><span class="role">Dev Team</span><span class="dept">2026 Batch</span></div></div>
+        <div class="people-grid single">
+          <article class="card group28"><div class="avatar"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" data-fallback="../assets/nsbm.jpg" alt="" loading="lazy" decoding="async"></div><h3>GROUP-28</h3><span class="role">Dev Team</span><span class="dept">2026 Batch</span></article>
+        </div>
       </section>
     </div>
 
-    <section class="cta">
-      <h2>Ready to play?</h2>
+    <section class="cta" aria-labelledby="cta-title">
+      <h2 id="cta-title">Ready to play?</h2>
       <div class="hero-actions">
         <a class="btn" href="../sports-club-directory%20and%20Details-Page(Arshi)/sport-club-directory.html">Explore clubs</a>
         <a class="btn btn-ghost" href="./login.html">Sign in</a>
@@ -119,15 +147,16 @@
   </main>
 
   <footer class="site-footer">
-    <div class="social">
-      <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-      <a href="https://web.facebook.com/nsbm.lk/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-      <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-      <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+    <div class="social" aria-label="NSBM social media">
+      <a href="https://www.instagram.com/nsbmgreenuniversity/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+      <a href="https://web.facebook.com/nsbm.lk/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+      <a href="https://www.linkedin.com/school/nsbmgreenuniversity/posts/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+      <a href="https://www.youtube.com/@NSBMGreenUniversityTown" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
     </div>
-    <p>&#169; 2026 NSBM <b>GROUP-28</b>. All Rights Reserved.</p>
+    <p class="site-footer__copyright">© 2026 NSBM <strong>GROUP-28</strong>. All Rights Reserved.</p>
   </footer>
 
   <script src="../js/theme.js" defer></script>
+  <script src="../js/about.js" defer></script>
 </body>
 </html>

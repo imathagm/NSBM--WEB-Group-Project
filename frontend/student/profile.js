@@ -12,11 +12,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   };
 
-  applyTheme(root.getAttribute('data-theme') || 'light');
+  let initialTheme = root.getAttribute('data-theme') || 'light';
+  try {
+    const savedTheme = localStorage.getItem('sportshub-theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') initialTheme = savedTheme;
+  } catch (error) {
+    console.warn('Unable to load the saved student theme.', error);
+  }
+  applyTheme(initialTheme);
   themeButton.addEventListener('click', () => {
     const nextTheme = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     applyTheme(nextTheme);
-    try { localStorage.setItem('sportshub-theme', nextTheme); } catch (error) { /* storage blocked */ }
+    try {
+      localStorage.setItem('sportshub-theme', nextTheme);
+    } catch (error) {
+      console.warn('Unable to save the selected student theme.', error);
+    }
   });
 
   const form = document.getElementById('profileForm');
@@ -45,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const maxProfilePhotoBytes = 600 * 1024;
   const maxUploadBytes = 1.5 * 1024 * 1024;
 
-  let photoReader = null;
+  let photoSelection = 0;
 
   function showMessage(text, type = '') {
     message.textContent = text;
@@ -189,45 +200,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   photoInput.addEventListener('change', async () => {
-
-  photoInput.addEventListener('change', () => {
-    if (photoReader && photoReader.readyState === FileReader.LOADING) photoReader.abort();
-
+    const selection = ++photoSelection;
     const file = photoInput.files[0];
-    if (!file) return;
+    if (!file) {
+      saveButton.disabled = false;
+      return;
+    }
     const allowedTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
     if (!allowedTypes.has(file.type)) {
       photoInput.value = '';
+      saveButton.disabled = false;
       showMessage('Choose a JPG, PNG, or WebP profile photo.', 'error');
       return;
     }
     if (file.size > maxUploadBytes) {
       photoInput.value = '';
+      saveButton.disabled = false;
       showMessage('Profile photos must be 1.5 MB or smaller.', 'error');
       return;
     }
 
-    try {
-      pendingPhoto = await prepareProfilePhoto(file);
-
-    const reader = new FileReader();
-    photoReader = reader;
     saveButton.disabled = true;
-    reader.addEventListener('loadend', () => { saveButton.disabled = false; });
-    reader.addEventListener('load', () => {
-      if (typeof reader.result !== 'string') {
-        showMessage('The selected photo could not be read.', 'error');
-        return;
-      }
-      pendingPhoto = reader.result;
-
+    try {
+      const preparedPhoto = await prepareProfilePhoto(file);
+      if (selection !== photoSelection) return;
+      pendingPhoto = preparedPhoto;
       photo.src = pendingPhoto;
       photo.hidden = false;
       avatar.hidden = true;
       showMessage('');
     } catch (error) {
+      if (selection !== photoSelection) return;
       photoInput.value = '';
       showMessage(error.message || 'The selected photo could not be processed.', 'error');
+    } finally {
+      if (selection === photoSelection) saveButton.disabled = false;
     }
   });
 
@@ -271,7 +278,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   cancelButton.addEventListener('click', () => {
-    if (photoReader && photoReader.readyState === FileReader.LOADING) photoReader.abort();
+    photoSelection += 1;
+    saveButton.disabled = false;
     if (!savedProfile) return;
     pendingPhoto = savedProfile.profilePhoto || '';
     photoInput.value = '';
