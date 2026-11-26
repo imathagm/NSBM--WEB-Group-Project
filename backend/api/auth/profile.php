@@ -54,7 +54,26 @@ $faculty = trim((string) ($input['faculty'] ?? ''));
 $degreeProgram = trim((string) ($input['degreeProgram'] ?? ''));
 $academicYear = trim((string) ($input['academicYear'] ?? ''));
 $profilePhoto = $input['profilePhoto'] ?? null;
-$allowedSports = ['Cricket', 'Football', 'Basketball', 'Volleyball', 'Badminton', 'Other', 'Swimming', 'Athletics', 'Netball', 'Table Tennis', 'Karate'];
+$allowedSports = [
+    'Swimming',
+    'Cricket',
+    'Tennis',
+    'Chess',
+    'Table Tennis',
+    'Volleyball',
+    'Martial Arts',
+    'Rugby',
+    'Netball',
+    'Badminton',
+    'Athletics',
+    'Calisthenics',
+    'Basketball',
+    'Hockey',
+    'Archery',
+    'Powerlifting',
+    'Football',
+    'Karate'
+];
 $nameLength = preg_match_all('/./us', $fullName);
 $digitCount = preg_match_all('/[0-9]/', $contactNumber);
 

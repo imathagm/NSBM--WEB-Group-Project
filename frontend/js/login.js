@@ -86,7 +86,7 @@ document.querySelectorAll("[data-view]").forEach(button => {
 });
 
 // Show or hide passwords.
-document.querySelectorAll(".show-password").forEach(button => {
+document.querySelectorAll(".toggle-password").forEach(button => {
     button.addEventListener("click", () => {
         const input = document.getElementById(button.dataset.target);
         const isHidden = input.type === "password";

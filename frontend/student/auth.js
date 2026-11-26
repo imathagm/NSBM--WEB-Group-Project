@@ -1,6 +1,6 @@
 (function () {
   var root = document.documentElement;
-  var loginUrl = "../login/login.html";
+  var loginUrl = "../pages/login.html";
 
   function showServiceError(error) {
     console.error("Unable to verify the student session.", error);

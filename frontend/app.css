@@ -1,3 +1,46 @@
+/* Administrator Sign In Button */
+/* Administrator Sign In Button */
+[data-css-page="home"] .admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+[data-css-page="home"] .admin-login-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+/* Independent student project disclaimer */
+.project-disclaimer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 20px;
+
+    border-bottom: 1px solid #e7c76a;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.project-disclaimer strong {
+    font-weight: 700;
+}
+
 @keyframes dialog-enter{
     from {
         opacity: 0;
@@ -540,7 +583,7 @@
     color: var(--ink, #17231c);
     font-family: "Source Sans 3", system-ui, sans-serif;
     -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+
 }
 
 [data-css-page="home"] .site-header .brand{
@@ -582,25 +625,13 @@
     white-space: nowrap;
 }
 
-[data-css-page="home"] .site-header nav{
-    display: block;
-    max-width: 100%;
-    padding: 0.4rem 0.5rem;
-    overflow-x: auto;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    scrollbar-width: none;
-}
 
 [data-css-page="home"] .site-header nav::-webkit-scrollbar{
     display: none;
 }
 
 [data-css-page="home"] .site-header nav a:not(.btn){
-    display: inline;
+
     min-height: 0;
     padding: 0.45rem 0.9rem;
     border-radius: 999px;
@@ -620,7 +651,7 @@
 }
 
 [data-css-page="home"] .site-header .btn-small{
-    display: inline-block;
+
     min-height: 0;
     padding: 0.45rem 1.1rem;
     flex: initial;
@@ -737,25 +768,25 @@
 /* Page style group admin-portal */
 [data-css-page="admin-portal"]{
   color-scheme: light;
-  --page: #f1f6f3;
-  --sidebar: #e4efe8;
+    --page: #f5f3ff;
+  --sidebar: #ede9fe;
   --panel: #fff;
   --panel-raised: #fff;
-  --header-surface: #07432f;
+  --header-surface: #4c1d95;
   --control-surface: #fff;
-  --inset-surface: #f7faf8;
-  --line: #d3e1d9;
-  --lime: #0b6b4a;
-  --primary-2: #12a06b;
-  --lime-soft: rgba(11, 107, 74, .14);
-  --lime-text: #0b6b4a;
-  --white: #12241b;
-  --muted: #53675c;
-  --subtle: #718279;
-  --hover-surface: #ebf3ee;
-  --hover-border: #0b6b4a;
-  --button-line: #b7cfc2;
-  --active-line: rgba(11, 107, 74, .2);
+  --inset-surface: #faf8ff;
+  --line: #ddd6fe;
+  --lime: #6d28d9;
+  --primary-2: #8b5cf6;
+  --lime-soft: rgba(109, 40, 217, .14);
+  --lime-text: #6d28d9;
+  --white: #24143f;
+  --muted: #655779;
+  --subtle: #887a9e;
+  --hover-surface: #f1edff;
+  --hover-border: #7c3aed;
+  --button-line: #c4b5fd;
+  --active-line: rgba(109, 40, 217, .2);
   --completed-text: #0a5a87;
   --completed-surface: #d9ecfa;
   --warning-text: #9a5503;
@@ -767,25 +798,25 @@
 }
 [data-css-page="admin-portal"][data-theme="dark"]{
   color-scheme: dark;
-  --page: #0c1511;
-  --sidebar: #101b16;
-  --panel: #15211b;
-  --panel-raised: #1c2d24;
-  --header-surface: #0a2b1f;
-  --control-surface: #15211b;
-  --inset-surface: #101b16;
-  --line: #26392f;
-  --lime: #2fbf8a;
-  --primary-2: #1a8a60;
-  --lime-soft: rgba(47, 191, 138, .16);
-  --lime-text: #5fdcab;
-  --white: #e8f2ec;
-  --muted: #a1b5aa;
-  --subtle: #82988c;
-  --hover-surface: #1c2d24;
-  --hover-border: #2fbf8a;
-  --button-line: #40594b;
-  --active-line: rgba(47, 191, 138, .2);
+  --page: #0c0915;
+  --sidebar: #140f20;
+  --panel: #1b1429;
+  --panel-raised: #261b38;
+  --header-surface: #2e1065;
+  --control-surface: #1b1429;
+  --inset-surface: #140f20;
+  --line: #38294d;
+  --lime: #a78bfa;
+  --primary-2: #7c3aed;
+  --lime-soft: rgba(167, 139, 250, .16);
+  --lime-text: #c4b5fd;
+  --white: #f1eafe;
+  --muted: #b9a9ce;
+  --subtle: #9584aa;
+  --hover-surface: #261b38;
+  --hover-border: #a78bfa;
+  --button-line: #594477;
+  --active-line: rgba(167, 139, 250, .2);
   --completed-text: #7acdf5;
   --completed-surface: #143247;
   --warning-text: #f3b95f;
@@ -1013,9 +1044,10 @@
     min-height: 100vh;
 }
 
-[data-css-page="standalone-login"] .page-container{
+[data-css-page="standalone-login"] .page-container {
     display: flex;
     min-height: 100vh;
+    position: relative;
 }
 
 /* LEFT WELCOME SECTION */
@@ -1042,8 +1074,16 @@
     gap: 12px;
 }
 
-[data-css-page="standalone-login"] .logo-icon{
-    font-size: 35px;
+[data-css-page="standalone-login"] .logo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+[data-css-page="standalone-login"] .logo-icon img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
 }
 
 [data-css-page="standalone-login"] .logo h2{
@@ -1052,7 +1092,7 @@
 }
 
 [data-css-page="standalone-login"] .logo h2 span{
-    color: #70e0a1;
+    color: #28b60d;
 }
 
 [data-css-page="standalone-login"] .welcome-content{
@@ -1060,7 +1100,7 @@
 }
 
 [data-css-page="standalone-login"] .small-heading{
-    color: #70e0a1;
+    color: #28b60d;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -1074,7 +1114,7 @@
 }
 
 [data-css-page="standalone-login"] .welcome-content h1 span{
-    color: #70e0a1;
+    color: #28b60d;
 }
 
 [data-css-page="standalone-login"] .welcome-description{
@@ -1109,11 +1149,21 @@
 
 [data-css-page="standalone-login"] .form-section{
     width: 52%;
-    background: #f5f8f6;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 35px 20px;
+    padding: 45px 30px;
+}
+
+[data-css-page="standalone-login"] .form-container{
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+    background: #ffffff;
+    border: 1px solid #e3ece5;
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(20, 65, 42, 0.08);
 }
 
 [data-css-page="standalone-login"] .form-container{
@@ -1274,7 +1324,7 @@
     padding: 15px;
     border: none;
     border-radius: 8px;
-    background: #176b43;
+    background: #2e093f;
     color: white;
     font-size: 14px;
     font-weight: 700;
@@ -1284,7 +1334,7 @@
 }
 
 [data-css-page="standalone-login"] .submit-btn:hover{
-    background: #105333;
+    background: #8204bd;
     transform: translateY(-2px);
 }
 
@@ -1676,7 +1726,7 @@
 [data-css-page="about"] .about-hero-banner{position:relative;height:280px;overflow:hidden;display:flex;align-items:center;background:var(--turf-dark)}
 [data-css-page="about"] .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0.55}
 [data-css-page="about"] .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg, rgba(15,45,29,0.96) 0%, rgba(23,71,45,0.78) 50%, rgba(15,45,29,0.25) 100%);z-index:1}
-[data-css-page="about"] .hero-content{position:relative;z-index:2;padding:24px 5vw;max-width:650px;color:#f6f7f2}
+[data-css-page="about"] .hero-content{position:relative;z-index:2;max-width:650px;color:#f6f7f2}
 [data-css-page="about"] .eyebrow{color:var(--medal);font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
 [data-css-page="about"] .hero-content h1{font-weight:700;font-size:clamp(1.8rem, 3.5vw, 2.6rem);line-height:1.15;margin:8px 0}
 [data-css-page="about"] .hero-content h1 span{color:var(--medal)}
@@ -7711,7 +7761,7 @@
     }
 }
 [data-css-page="account-recovery"] .recovery-wrap{
-    min-height: 100vh;
+    min-height: 60vh;
     display: grid;
     place-items: center;
     padding: 24px;
@@ -7774,7 +7824,7 @@
 [data-css-page="account-recovery"] .recovery-card a{
     display: inline-block;
     margin-top: 16px;
-    color: var(--medal);
+    color: forestgreen;
 }
 
 /* Page style group account-login */
@@ -10527,7 +10577,7 @@
 }
 
 [data-css-page="club-details"] .site-header nav a:not(.btn){
-    display: inline;
+
     min-height: 0;
     padding: 0.45rem 0.9rem;
     border-radius: 999px;
@@ -12986,7 +13036,7 @@
 }
 
 [data-css-page="club-directory"] .site-header nav a:not(.btn){
-    display: inline;
+
     min-height: 0;
     padding: 0.45rem 0.9rem;
     border-radius: 999px;
@@ -13006,7 +13056,7 @@
 }
 
 [data-css-page="club-directory"] .site-header .btn-small{
-    display: inline-block;
+
     min-height: 0;
     padding: 0.45rem 1.1rem;
     flex: initial;
@@ -14102,12 +14152,51 @@
 }
 [data-css-page="student-matches"] .sidebar-heading{ padding: .25rem .8rem 1.15rem; color: var(--subtle); font-family: "Sora", sans-serif; font-size: .68rem; font-weight: 600; letter-spacing: .14em; }
 [data-css-page="student-matches"] .sidebar-nav{ display: grid; gap: .3rem; }
-[data-css-page="student-matches"] .sidebar-link{ position: relative; display: flex; min-height: 48px; align-items: center; gap: .75rem; padding: .55rem .7rem; border: 1px solid transparent; border-radius: 12px; color: var(--white); font-size: .94rem; font-weight: 600; text-decoration: none; transition: background .18s ease, color .18s ease, border-color .18s ease; }
-[data-css-page="student-matches"] .sidebar-link > i{ display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 9px; background: var(--lime-soft); color: var(--lime-text); font-size: .95rem; text-align: center; }
-[data-css-page="student-matches"] .sidebar-link:hover{ background: var(--hover-surface); color: var(--white); }
-[data-css-page="student-matches"] .sidebar-link.is-active{ border-color: transparent; background: linear-gradient(135deg, var(--lime), var(--primary-2)); color: #ffffff; box-shadow: 0 6px 16px var(--lime-soft); }
-[data-css-page="student-matches"] .sidebar-link.is-active::before{ position: absolute; inset: 20% auto 20% -1rem; width: 5px; border-radius: 0 5px 5px 0; background: var(--lime); content: ""; }
-[data-css-page="student-matches"] .sidebar-link.is-active > i{ background: rgba(255,255,255,.22); color: #ffffff; }
+
+[data-css-page="student-matches"] .sidebar-link {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: .7rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--white);
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+
+[data-css-page="student-matches"] .sidebar-link > i {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--lime-soft);
+  color: var(--lime-text);
+  font-size: .9rem;
+  text-align: center;
+}
+
+[data-css-page="student-matches"] .sidebar-link:hover {
+  background: var(--hover-surface);
+  color: var(--white);
+}
+
+[data-css-page="student-matches"] .sidebar-link.is-active {
+  background: linear-gradient(135deg, var(--lime), var(--primary-2));
+  color: #fff;
+}
+
+[data-css-page="student-matches"] .sidebar-link.is-active > i {
+  background: rgba(255,255,255,.22);
+  color: #fff;
+}
+
 [data-css-page="student-matches"] .sidebar-bottom{ margin-top: auto; }
 [data-css-page="student-matches"] .sidebar-logout{ border-top: 1px solid var(--line); border-radius: 0; padding-top: 1.1rem; }
 [data-css-page="student-matches"] .sidebar-logout:hover{ color: #ff9a8b; }
@@ -14463,15 +14552,15 @@
 [data-css-page="student-notifications"] [hidden]{ display: none !important; }
 [data-css-page="student-notifications"] :focus-visible{ outline: 3px solid var(--primary-2); outline-offset: 2px; }
 
-[data-css-page="student-notifications"] .portal-header{ 
-  position: fixed; z-index: 40; inset: 0 0 auto; 
+[data-css-page="student-notifications"] .portal-header{
+  position: fixed; z-index: 40; inset: 0 0 auto;
   display: flex; align-items: center; justify-content: flex-start;
-  height: var(--header-height); gap: 1rem; 
-  padding: 0 1.25rem; 
-  background: var(--header-surface); color: #fff; 
+  height: var(--header-height); gap: 1rem;
+  padding: 0 1.25rem;
+  background: var(--header-surface); color: #fff;
 }
-[data-css-page="student-notifications"] .portal-brand{ 
-  display: inline-flex; align-items: center; gap: .6rem; 
+[data-css-page="student-notifications"] .portal-brand{
+  display: inline-flex; align-items: center; gap: .6rem;
   color: #fff; text-decoration: none;
   z-index: 2; flex-shrink: 0;
 }
@@ -14495,7 +14584,7 @@
   z-index: 1;
 }
 
-[data-css-page="student-notifications"] .header-student{position: absolute !important; right: 16px !important; top: 50% !important; transform: translateY(-50%) !important;display:flex !important;align-items: center !important;gap:.5rem !important;margin-left: 0 !important;z-index2;}
+[data-css-page="student-notifications"] .header-student{position: absolute !important; right: 16px !important; top: 50% !important; transform: translateY(-50%) !important;display:flex !important;align-items: center !important;gap:.5rem !important;margin-left: 0 !important;z-index: 2;}
 [data-css-page="student-notifications"] .icon-btn{ display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #fff; cursor: pointer; font-size: 1.2rem; text-decoration: none; transition: background-color .2s ease; }
 [data-css-page="student-notifications"] .icon-btn:hover{ background: rgba(255,255,255,.14); }
 [data-css-page="student-notifications"] .portal-header :focus-visible{ outline-color: #fff; }
@@ -14504,15 +14593,50 @@
 [data-css-page="student-notifications"] .menu-toggle:hover{ background: rgba(255,255,255,.14); }
 
 [data-css-page="student-notifications"] .portal-shell{ min-height: 100vh; padding-top: var(--header-height); }
-[data-css-page="student-notifications"] .portal-sidebar{ position: fixed; z-index: 35; inset: var(--header-height) auto 0 0; display: flex; width: var(--sidebar-width); flex-direction: column; overflow-y: auto; padding: 1.25rem 1rem; border-right: 1px solid var(--line); background: var(--sidebar); }
+[data-css-page="student-notifications"] .portal-sidebar{ position: fixed; z-index: 35; inset: var(--header-height) auto 0 0; display: flex; width: var(--sidebar-width); flex-direction: column; overflow-y: auto; padding: 1.25rem 1rem; border-right: 1px solid var(--border); background: var(--sidebar); }
 [data-css-page="student-notifications"] .sidebar-heading{ padding: .25rem .8rem 1.15rem; color: var(--subtle); font-family: "Sora", sans-serif; font-size: .68rem; font-weight: 600; letter-spacing: .14em; }
 [data-css-page="student-notifications"] .sidebar-nav{ display: grid; gap: .3rem; }
-[data-css-page="student-notifications"] .sidebar-link{ position: relative; display: flex; min-height: 48px; align-items: center; gap: .75rem; padding: .55rem .7rem; border: 1px solid transparent; border-radius: 12px; color: var(--white); font-size: .94rem; font-weight: 600; text-decoration: none; transition: background .18s ease, color .18s ease; }
-[data-css-page="student-notifications"] .sidebar-link > i{ display: grid; width: 34px; height: 34px; flex: 0 0 34px; place-items: center; border-radius: 9px; background: var(--lime-soft); color: var(--lime-text); font-size: .95rem; }
-[data-css-page="student-notifications"] .sidebar-link:hover{ background: var(--hover-surface); }
-[data-css-page="student-notifications"] .sidebar-link.is-active{ background: linear-gradient(135deg, var(--lime), var(--primary-2)); color: #fff; box-shadow: 0 6px 16px var(--lime-soft); }
-[data-css-page="student-notifications"] .sidebar-link.is-active::before{ position: absolute; inset: 20% auto 20% -1rem; width: 5px; border-radius: 0 5px 5px 0; background: var(--lime); content: ""; }
-[data-css-page="student-notifications"] .sidebar-link.is-active > i{ background: rgba(255,255,255,.22); color: #fff; }
+
+[data-css-page="student-notifications"] .sidebar-nav .nav-btn {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: .7rem;
+  padding: .45rem .65rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--white);
+  font-size: .88rem;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+}
+
+
+[data-css-page="student-notifications"] .sidebar-nav .nav-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--lime-soft);
+  color: var(--lime-text);
+  font-size: .9rem;
+  text-align: center;
+}
+
+
+[data-css-page="student-notifications"] .sidebar-nav .nav-btn:hover {
+  background: var(--hover-surface);
+}
+
+[data-css-page="student-notifications"] .sidebar-nav .nav-btn.is-active {
+  background: linear-gradient(135deg, var(--lime), var(--primary-2));
+  color: #fff;
+}
+
 [data-css-page="student-notifications"] .sidebar-bottom{ margin-top: auto; }
 [data-css-page="student-notifications"] .sidebar-logout{ border-top: 1px solid var(--line); border-radius: 0; padding-top: 1.1rem; }
 [data-css-page="student-notifications"] .sidebar-logout:hover{ color: #ff9a8b; }
@@ -15261,15 +15385,15 @@
 [data-css-page="student-training"] [hidden]{ display: none !important; }
 [data-css-page="student-training"] :focus-visible{ outline: 3px solid var(--primary-2); outline-offset: 2px; }
 
-[data-css-page="student-training"] .portal-header{ 
-  position: fixed; z-index: 40; inset: 0 0 auto; 
+[data-css-page="student-training"] .portal-header{
+  position: fixed; z-index: 40; inset: 0 0 auto;
   display: flex; align-items: center; justify-content: flex-start;
-  height: var(--header-height); gap: 1rem; 
-  padding: 0 1.25rem; 
-  background: var(--header-surface); color: #fff; 
+  height: var(--header-height); gap: 1rem;
+  padding: 0 1.25rem;
+  background: var(--header-surface); color: #fff;
 }
-[data-css-page="student-training"] .portal-brand{ 
-  display: inline-flex; align-items: center; gap: .6rem; 
+[data-css-page="student-training"] .portal-brand{
+  display: inline-flex; align-items: center; gap: .6rem;
   color: #fff; text-decoration: none;
   z-index: 2; flex-shrink: 0;
 }
@@ -15293,7 +15417,7 @@
   z-index: 1;
 }
 
-[data-css-page="student-training"] .header-student{position: absolute !important; right: 16px !important; top: 50% !important; transform: translateY(-50%) !important;display:flex !important;align-items: center !important;gap:.5rem !important;margin-left: 0 !important;z-index2;}
+[data-css-page="student-training"] .header-student{position: absolute !important; right: 16px !important; top: 50% !important; transform: translateY(-50%) !important;display:flex !important;align-items: center !important;gap:.5rem !important;margin-left: 0 !important;z-index: 2;}
 [data-css-page="student-training"] .icon-btn{ display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #fff; cursor: pointer; font-size: 1.2rem; text-decoration: none; transition: background-color .2s ease; }
 [data-css-page="student-training"] .icon-btn:hover{ background: rgba(255,255,255,.14); }
 [data-css-page="student-training"] .portal-header :focus-visible{ outline-color: #fff; }
@@ -16700,7 +16824,7 @@
 [data-css-page] .site-header nav .btn{
   height: 40px;
   min-height: 40px;
-  padding-block: 0;
+
   flex: 0 0 auto;
   align-items: center;
 }
@@ -16896,7 +17020,7 @@
     grid-row: 2;
     width: 100%;
     height: 44px;
-    justify-content: flex-start;
+    justify-content: center;
     overflow-x: auto;
     padding: 0 .25rem;
     scrollbar-width: thin;
@@ -16971,3 +17095,112 @@
   box-shadow: 0 8px 24px rgba(0,0,0,.2);
 }
 [data-css-page^="student-"] .sidebar-logout[aria-disabled="true"]{ opacity: .65; }
+/* NSBM Sports Hub Branding - Forgot Password */
+[data-css-page="account-recovery"] .nsbm-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin: 60px auto 30px;
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+
+[data-css-page="account-recovery"] .nsbm-brand img {
+    width: 45px !important;
+    height: 45px !important;
+    max-width: 45px !important;
+    object-fit: contain;
+}
+
+[data-css-page="account-recovery"] .nsbm-brand h2 {
+    font-size: 18px;
+    color: #14532D;
+    margin: 0;
+    font-weight: 700;
+}
+[data-css-page="standalone-login"] .back-home {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    z-index: 10;
+
+    padding: 9px 17px;
+    border: 1px solid #14532D;
+    border-radius: 25px;
+    background: #ffffff;
+    color: #14532D;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+/* Student Login - Password Show/Hide */
+[data-css-page="account-login"] .password-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+[data-css-page="account-login"] .password-box input {
+    width: 100%;
+    padding-right: 65px;
+}
+
+[data-css-page="account-login"] .toggle-password {
+    position: absolute;
+    right: 10px;
+    border: none;
+    background: transparent;
+    color: #14532D;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+/* Student Login - Remember Me */
+[data-css-page="account-login"] .form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+[data-css-page="account-login"] .form-options .remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+[data-css-page="account-login"] .form-options .remember input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+[data-css-page="account-login"] .form-options a {
+    white-space: nowrap;
+    font-size: 12px;
+}
+[data-css-page="account-login"] .form-options .remember {
+    color: #006B45;
+}
+
+/* Notifications sidebar sign-out styling */
+[data-css-page="student-notifications"] .sidebar-bottom .sidebar-logout {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  gap: .7rem;
+  padding: .45rem .65rem;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--white);
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+}

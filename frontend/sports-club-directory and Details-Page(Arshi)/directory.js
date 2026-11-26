@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function imageName(sport) {
         const key = String(sport || "").toLocaleLowerCase();
-        return key === "martial arts" ? "karate" : slug(key);
+        return key === "martial arts" ? "taekwondo" : slug(key);
     }
 
     function renderFilters() {
