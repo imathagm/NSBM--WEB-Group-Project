@@ -2,3 +2,5 @@ backend/config/mail-config.php
 backend/vendor/
 .env
 *.log
+backend/config/hosting-database.php
+/reset_admin_password.php

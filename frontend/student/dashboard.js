@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function clubImagePath(sport) {
     const key = String(sport || '').trim().toLocaleLowerCase();
     const imageName = key === 'martial arts'
-      ? 'karate'
+      ? 'taekwondo'
       : key.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     return '../assets/' + imageName + '.jpg';
   }

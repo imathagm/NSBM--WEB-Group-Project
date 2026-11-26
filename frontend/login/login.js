@@ -2,7 +2,6 @@
   "use strict";
 
   var forms = {
-    login: document.getElementById("studentLogin"),
     register: document.getElementById("studentRegister"),
     admin: document.getElementById("adminLogin"),
     forgot: document.getElementById("forgotPassword")
@@ -25,25 +24,17 @@
     message.hidden = false;
   }
 
-  function setView(view) {
-    if (!forms[view]) view = "login";
-    Object.keys(forms).forEach(function (name) {
-      forms[name].hidden = name !== view;
-      forms[name].classList.toggle("hidden", name !== view);
-    });
-    document.querySelectorAll("[data-mode]").forEach(function (tab) {
-      var isActive = view === "admin" ? tab.dataset.mode === "admin" : tab.dataset.mode === "student";
-      tab.classList.toggle("active", isActive);
-      tab.setAttribute("aria-selected", String(isActive));
-    });
-    message.hidden = true;
-  }
+ function setView(view) {
+    if (!forms[view]) view = "admin";
 
-  document.querySelectorAll("[data-mode]").forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      setView(tab.dataset.mode === "admin" ? "admin" : "login");
+    Object.keys(forms).forEach(function (name) {
+        forms[name].hidden = name !== view;
+        forms[name].classList.toggle("hidden", name !== view);
     });
-  });
+
+    message.hidden = true;
+}
+
   document.querySelectorAll("[data-view]").forEach(function (control) {
     control.addEventListener("click", function (event) {
       event.preventDefault();
@@ -59,23 +50,8 @@
     });
   });
 
-  forms.login.addEventListener("submit", async function (event) {
-    event.preventDefault();
-    var button = forms.login.querySelector('button[type="submit"]');
-    button.disabled = true;
-    try {
-      await window.sportshubAuth.post("login", {
-        identifier: document.getElementById("studentEmail").value.trim(),
-        password: document.getElementById("studentPassword").value,
-        remember: document.getElementById("rememberMe").checked
-      });
-      window.location.assign("../student/dashboard.html");
-    } catch (error) {
-      showMessage(error.message, true);
-    } finally {
-      button.disabled = false;
-    }
-  });
+
+
 
   forms.register.addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -175,7 +151,13 @@
     }
   });
 
-  var requestedView = params.get("view") || window.location.hash.slice(1) || "login";
-  if (requestedView === "register") setView("register");
-  else setView(requestedView === "admin" ? "admin" : requestedView === "forgot" ? "forgot" : "login");
+ var requestedView = params.get("view") || window.location.hash.slice(1) || "admin";
+
+if (requestedView === "register") {
+    setView("register");
+} else if (requestedView === "forgot") {
+    setView("forgot");
+} else {
+    setView("admin");
+}
 })();
